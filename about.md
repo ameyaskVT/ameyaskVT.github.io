@@ -12,8 +12,13 @@ layout: page
 
 <ul class="skill-list">
 	<li>C++</li>
-	<li>Git</li>
+	<li>Java</li>
+	<li>MATLAB</li>
+	<li>Verilog</li>
+	<li>Javascript</li>
 	<li>Python</li>
+	<li>Perl</li>
+	<li>Git</li>
 </ul>
 
 <h2>Projects</h2>
