@@ -11,3 +11,6 @@ Will use the blog to post project related stuff, and to maintain an online journ
 
 This blog was created using Jekyll 2.5 . It is to be noted that the format of the blog post file names will be :-
 "YYYY-MM-DD-title-of-my-post.md" (without the quotes).
+
+The instructions on the following websites were followed as is :- 
+http://jmcglone.com/guides/github-pages/
