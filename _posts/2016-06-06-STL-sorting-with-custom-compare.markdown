@@ -1,7 +1,7 @@
 ---
 title: "STL sort with custom compare criteria"
 layout: post
-date: 2016-06-05 05:30
+date: 2016-06-06 04:30
 tag:
 - cpp
 - stl

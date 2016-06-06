@@ -1,6 +1,6 @@
 # main text of home
 name: Ameya Khandekar
-bio: 'Computer Engineer interested in Test and Verification, EDA, CAD'
+bio: 'Computer Engineer with a research focus in EDA, CAD, Test and Verification, ASIC design, Data Mining on Graphs, Algorithms'
 
 # if it's an external image, update below for true
 # better with square images
@@ -55,7 +55,7 @@ about: true
 blog: true
 
 # do you want to show the "read time" of the posts?
-read-time: true
+read-time: false
 
 # do you want to show the "tags" inside the posts?
 show-tags: true
