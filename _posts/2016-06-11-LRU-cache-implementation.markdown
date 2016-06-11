@@ -1,5 +1,5 @@
 ---
-title: "STL sort with custom compare criteria"
+title: "LRU cache implementation example"
 layout: post
 date: 2016-06-11 16:30
 tag:
