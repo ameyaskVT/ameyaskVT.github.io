@@ -39,10 +39,10 @@ void draw() {
     rect(x,y,10,10);
 
     if(state === 0){
-        y = y + 1;
+        y = y + 4;
     }
     else if(state === 1){
-        x = x + 1;
+        x = x + 4;
     }
 
 };
