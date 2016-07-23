@@ -17,11 +17,11 @@ var y = 30;
 
 var state = 0;
 
-keyPressed = function() {
+void keyPressed() {
     state = (state + 1) % 2 ;
 };
 
-draw = function() {
+void draw() {
     
     if(y > 400){
         y = 0;
