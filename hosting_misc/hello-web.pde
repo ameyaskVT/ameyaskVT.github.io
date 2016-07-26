@@ -103,7 +103,7 @@ void draw() {
     }
     
     
-    debug(x[0],"," ,y[0]);
+   // debug(x[0],"," ,y[0]);
 
     
     for(var i = 1 ; i < 10 ; i++){
@@ -152,7 +152,7 @@ void draw() {
     
     if(tilemap[x[0]/10][y[0]/10] === 1){
         count++;
-        debug("collided body" + count);
+       // debug("collided body" + count);
         
         if(count > 4){
             reset = 1;
