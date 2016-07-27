@@ -13,8 +13,8 @@ void setup(){
 
 noStroke();
 
-var x = new Array(30);
-var y = new Array(30);
+var x = new Array(2000);
+var y = new Array(2000);
 
 var curSize = 10;
 
