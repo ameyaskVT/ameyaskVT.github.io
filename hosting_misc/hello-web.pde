@@ -35,6 +35,8 @@ var count = 0;
 var reset = 0;
 var resetPause = 0 ;
 
+var paused = 0;
+
 var newX ;
 var newY ;
 
@@ -56,6 +58,12 @@ for(var i = 1 ; i < curSize ; i++){
 
 
 void keyPressed() {
+
+
+  if(keyCode === SHIFT){
+        paused = (paused + 1) % 2;
+  }
+  
 
     if(state % 2 === 0  && keyCode === RIGHT){
         state = 1 ; 
@@ -170,6 +178,18 @@ void draw() {
     for(var i = 1 ; i < curSize ; i++){
         tilemap[x[i]/10][y[i]/10] = 0;
     }
+    
+  //Game Pause
+  if(paused === 1){
+        
+        fill(255, 255, 255);
+        rect(400,0,100,400);
+        fill(0, 0, 0);
+        text("Game Paused",410,50);
+
+        return;
+  }
+    
 
     //update position
     
