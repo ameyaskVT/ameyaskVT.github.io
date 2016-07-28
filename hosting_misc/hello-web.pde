@@ -5,7 +5,7 @@ var fps = 6;
 
 
 void setup(){
-  size( 400, 400 );
+  size( 500, 400 );
   strokeWeight( 10 );
   frameRate( fps );
  
@@ -17,6 +17,7 @@ var x = new Array(2000);
 var y = new Array(2000);
 
 var curSize = 10;
+var highScore = 0 ;
 
 //init values for snake :- 
 for(var i = 0 ; i < curSize ; i++){
@@ -104,6 +105,24 @@ void draw() {
                     rect(x[i],y[i],10,10);
                 }
             }
+            
+            
+            //display score and Game Over
+            fill(255, 255, 255);
+            rect(400,0,100,400);
+            fill(0, 0, 0);
+            text("GAME",420,50);
+            text("OVER!!",420,70);
+            text("Score :- ",420,90);
+            text(curSize - 10,430,110);
+            if(curSize - 10 === highScore){
+                text("High Score ",420,190);
+                text("Reached!!!",420,210);
+            }
+            text("High Score :-",420,130);
+            text(highScore,430,150);
+            
+            
             return;
         }
         curSize = 10;
@@ -243,7 +262,19 @@ void draw() {
         //debug(x[0]+","+y[0]);
     }
     
-
+        if(highScore < curSize - 10){
+        highScore = curSize - 10;
+    }
+    
+    fill(255, 255, 255);
+    rect(400,0,100,400);
+    fill(0, 0, 0);
+    text("Speed :- ",420,50);
+    text(fps/6,430,70);
+    text("Score :- ",420,90);
+    text(curSize - 10,430,110);
+    text("High Score :-",420,130);
+    text(highScore,430,150);
 };
 
 
