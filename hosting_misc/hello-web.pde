@@ -78,12 +78,12 @@ void keyPressed() {
         state = 0 ; 
     } 
     
-    if(keyCode === ALT && fps < 48){
-        fps *= 1.5;
+    if(keyCode === ALT && fps < 60){
+        fps += 6;
         frameRate(fps);
     }
     if(keyCode === CONTROL && fps > 6){
-        fps /= 1.5;
+        fps -= 6;
         frameRate(fps);
     }
     
