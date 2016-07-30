@@ -18,6 +18,10 @@ var count = 0;
 var reset = 0;
 var resetPause = 0 ;
 
+var campaignModeFlag = 0 ;
+var selectMenuFlag = 0 ; 
+var selectionAnimCount = 0 ; 
+
 var newX ;
 var newY ;
 
@@ -45,9 +49,53 @@ for(var i = 1 ; i < curSize ; i++){
     tilemap[x[i]/10][y[i]/10] = 1;
 }
 
-
+void selectMenu(){  //try to compress logic later.
+    
+    fill(168, 34, 201);
+    rect(110,115,300,150,15);
+    fill(255,255,255);
+    
+    textFont(createFont("monospace"),20);
+    text("press SHIFT to select",145,245);
+    
+    if(selectMenuFlag === 0){
+        if(campaignModeFlag === 0){
+            triangle(160,150,169,158,160,169);
+        }
+        else{
+            triangle(160,190,169,198,160,209);
+        }
+        text("classic mode",185,165);
+        text("campaign mode",185,205);
+    }
+    
+    else{ //selection animation
+        if(selectionAnimCount % 6 < 3){
+            if(campaignModeFlag === 0){
+                triangle(160,150,169,158,160,169);
+                text("classic mode",185,165);
+            }
+            else{
+                triangle(160,190,169,198,160,209);
+                text("campaign mode",185,205);
+            }
+        }
+        if(campaignModeFlag === 1){  //non-animated text
+            text("classic mode",185,165);
+            }
+        else{
+            text("campaign mode",185,205);
+        }
+        selectionAnimCount++;
+        if(selectionAnimCount === 18){
+            selectionAnimCount = 0;
+            selectMenuFlag = 2;
+        }
+    }
+};
 
 void scoreDisplay(flag){
+    textFont(createFont("monospace"),12);
     fill(255, 255, 255);
     rect(400,0,100,400);
     fill(0, 0, 0);
@@ -71,6 +119,23 @@ void scoreDisplay(flag){
             text("Reached!!!",420,210);
         }
     }
+};
+
+void createBlockade(){
+
+    for(var i = 0 ; i < 400 ; i = i + 10){
+        tilemap[i/10][0] = 1;
+        tilemap[i/10][39] = 1;
+        tilemap[0][i/10] = 1;
+        tilemap[39][i/10] = 1;
+        
+        fill(20, 222, 44);
+        rect(i,0,10,10);
+        rect(i,390,10,10);
+        rect(0,i,10,10);
+        rect(390,i,10,10);
+    }
+
 };
 
 void updatePosition(){
@@ -175,6 +240,15 @@ void newMealGen(){  // also checks if eaten meal
 };
 
 void keyPressed()  {
+    if(selectMenuFlag === 0 && ( keyCode === UP || keyCode === DOWN )){
+        campaignModeFlag = (campaignModeFlag + 1)%2;
+        return;
+    }
+    if(selectMenuFlag === 0 && keyCode === SHIFT){
+        selectMenuFlag = 1;
+        return;
+    }
+    
     if(keyCode === SHIFT){
         paused = (paused + 1) % 2;
     }
@@ -204,6 +278,14 @@ void keyPressed()  {
 void draw(){
     // the beautiful blue sky
     background(82, 222, 240);
+    if(selectMenuFlag < 2){
+        selectMenu();
+        return;
+    }
+    if(campaignModeFlag ===1){
+        createBlockade();
+    }
+    
     setUpCount++;
     if(resetSnake() === 0){
         return;
