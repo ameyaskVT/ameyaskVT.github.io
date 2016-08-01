@@ -193,12 +193,12 @@ void createBlockade(){
         }
         
     }
-    else if(campaignLevel === 2){
-        
-        for(var i = 100 ; i < 300 ; i = i + 10){
-            tilemap[i/10][i/10] = 1;
+   else if(campaignLevel === 2){
+        for(var i = 50 ; i < 300 ; i = i + 10){
+
+            tilemap[i/10][(i+50)/10] = 1;
             fill(20, 222, 44);
-            rect(i,i,10,10);
+            rect(i,i+50,10,10);
         }
     }
 };
@@ -312,8 +312,13 @@ void newMealGen(){  // also checks if eaten meal
             genNewPointFlag = 1; 
             mealsGen++;
         }
-    
-         rect(newX,newY,10,10);
+        if(mealsGen % 5 === 3){
+           fill(235, 18, 159);
+        }
+        else{
+           fill(17, 0, 255);
+        }
+        rect(newX,newY,10,10);
     }
     
     if(mealsGen % 5 === 3){
@@ -378,9 +383,6 @@ int campaign(){
             levelAnimCount = 0;
             levelChangeFlag = 0;
             state = 0;
-            if(campaignLevel === 2){
-                state = 2;
-            }
             initSnake();
         }
     return 1;
