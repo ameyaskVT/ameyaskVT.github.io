@@ -316,7 +316,7 @@ void newMealGen(){  // also checks if eaten meal
            fill(235, 18, 159);
         }
         else{
-           fill(17, 0, 255);
+           fill(255, 132, 0);
         }
         rect(newX,newY,10,10);
     }
@@ -353,7 +353,7 @@ void newMealGen(){  // also checks if eaten meal
 
 void drawSnake(){
     for(var i = 0 ; i < curSize ; i++){
-        fill(255, 170, 0);
+        fill(0, 34, 255);
         rect(x[i],y[i],10,10);
     }
 };
