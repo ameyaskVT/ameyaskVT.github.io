@@ -40,18 +40,23 @@ for(var i = 0 ; i < 8 ; i++)
 }
 
 
+    /* @pjs preload="http://www.picgifs.com/clip-art/cartoons/pokemon/clip-art-pokemon-508076.jpg"; */
 
-  //  var b;
+    PImage b;
 
-   // b = loadImage("http://www.picgifs.com/clip-art/cartoons/pokemon/clip-art-pokemon-508076.jpg");
+    b = loadImage("http://www.picgifs.com/clip-art/cartoons/pokemon/clip-art-pokemon-508076.jpg");
+
+   
     
 void draw() {
     
     background(255,255,255);
     
     //Draw the empty chess Board.
-    for (var i = 0, len = squares.length; i < len; i++) {
-        squares[i].draw();
-    }
+   // for (var i = 0, len = squares.length; i < len; i++) {
+   //     squares[i].draw();
+   // }
+    
+     image(b, 0, 0);
         
 };
