@@ -49,6 +49,7 @@ function knight(x,y){
 };
 
 knight.prototype.draw = function() {
+    textFont(createFont("serif"));
     textSize(65);
     fill(255, 255, 255);
     text("♞",this.xPos,this.yPos);
