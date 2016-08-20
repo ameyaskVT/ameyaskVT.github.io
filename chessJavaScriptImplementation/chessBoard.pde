@@ -41,6 +41,8 @@ square.prototype.draw = function() {
     
 };
 
+var pieceSelected = false;
+
 function knight(x,y){
     this.rowNum = x;
     this.colNum = y;
@@ -51,6 +53,15 @@ function knight(x,y){
 
 knight.prototype.draw = function() {
     textFont(createFont("Arial"));
+    if(pieceSelected === true){
+        if((this.rowNum + this.colNum)%2 === 1){
+            fill(131, 131,131);
+        }
+        else{
+            fill(240, 240, 240);
+        }
+        rect(this.rowNum*50, this.colNum*50, 50,50);
+    }
     textSize(65);
     fill(255, 255, 255);
     text("♞",this.xPos,this.yPos);
@@ -89,30 +100,42 @@ for(var i = 0 ; i < 8 ; i++)
 
 var knightW = new knight(3,4);
 squares[3][4].putPiece();
+var dragged = false;
 
+void mousePressed()
+{
 
-var pieceSelected = false;
-
-void mouseClicked(){
-  if(pieceSelected === false){
+    if(pieceSelected === false){
         if(squares[floor(mouseX/50)][floor(mouseY/50)].hasPiece() === true){
+            //println("piece Selected");
             pieceSelected = true;
             squares[floor(mouseX/50)][floor(mouseY/50)].removePiece();
             
         } 
     }
-    else{
-        if(knightW.isLegalMove()){
-            pieceSelected = false;
+
+};
+
+void mouseDragged(){
+    if(pieceSelected === true){
+        dragged = true;
+        knightW.move(mouseX-13,mouseY);
+    }
+};
+
+void mouseReleased(){
+    pieceSelected = false;
+    if(knightW.isLegalMove()){
             squares[floor(mouseX/50)][floor(mouseY/50)].putPiece();
             knightW.setPos();
         }
+    else{
+        squares[knightW.rowNum][knightW.colNum].putPiece();
+        knightW.move(knightW.rowNum*50 - 5, (knightW.colNum + 1)*50);
     }
 };
-   
-    
-void draw() {
 
+void draw() {
     background(255,255,255);
     //Draw the empty chess Board.
     for (var i = 0; i < squares.length; i++) {
@@ -120,11 +143,6 @@ void draw() {
             squares[i][j].draw();
         }
     }
-
     knightW.draw();
-    if(pieceSelected === true){
-        knightW.move(mouseX,mouseY);
-    }
 
-        
 };
