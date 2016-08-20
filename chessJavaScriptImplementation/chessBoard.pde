@@ -1,3 +1,4 @@
+/* @pjs font="Arial.ttf"; */
 
 // Setup the Processing Canvas
 var fps = 6;
@@ -49,7 +50,7 @@ function knight(x,y){
 };
 
 knight.prototype.draw = function() {
-    textFont(createFont("serif"));
+    textFont(createFont("Arial"));
     textSize(65);
     fill(255, 255, 255);
     text("♞",this.xPos,this.yPos);
