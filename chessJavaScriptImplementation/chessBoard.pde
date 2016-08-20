@@ -3,13 +3,15 @@
 // Setup the Processing Canvas
 var fps = 6;
 void setup(){
-  size( 400, 400 );
+  size( 500, 400 );
   strokeWeight( 10 );
   frameRate( fps );
 }
 
 noStroke();
 
+var numMoves = 0 ; 
+var squaresLeft = 64;
 
 function square(x,y){
 
@@ -22,7 +24,8 @@ function square(x,y){
     this.cB = (this.bwFlag === 1 ? 171 : 210);
     
     this.pieceFlag = false;
-    
+    this.firstOccupation = false;
+
 };
 
 square.prototype.hasPiece = function(){
@@ -30,6 +33,10 @@ square.prototype.hasPiece = function(){
 };
 square.prototype.putPiece = function(){
   this.pieceFlag = true;  
+  if(this.firstOccupation === false){
+      this.firstOccupation = true;
+      squaresLeft--;
+  }
 };
 square.prototype.removePiece = function(){
     this.pieceFlag = false;
@@ -98,6 +105,21 @@ for(var i = 0 ; i < 8 ; i++)
 }
 
 
+void displayScore(){
+    textFont(createFont("Arial"));
+    textSize(14);
+    fill(0, 0, 0);
+    text("Moves",420,130);
+    text(numMoves,430,150);
+    text("squares left",420,170);
+    text(squaresLeft,430,190);
+    if(squaresLeft === 0){
+        text("DONE !",420,210);
+    }
+};
+
+
+
 var knightW = new knight(3,4);
 squares[3][4].putPiece();
 var dragged = false;
@@ -119,14 +141,18 @@ void mousePressed()
 void mouseDragged(){
     if(pieceSelected === true){
         dragged = true;
-        knightW.move(mouseX-13,mouseY);
+        if(mouseX < 400){
+            knightW.move(mouseX-13,mouseY);
+        }
     }
+
 };
 
 void mouseReleased(){
-    pieceSelected = false;
-    if(knightW.isLegalMove()){
+  pieceSelected = false;
+    if(mouseX < 400 && knightW.isLegalMove()){
             squares[floor(mouseX/50)][floor(mouseY/50)].putPiece();
+            numMoves++;
             knightW.setPos();
         }
     else{
@@ -144,5 +170,5 @@ void draw() {
         }
     }
     knightW.draw();
-
+    displayScore();
 };
