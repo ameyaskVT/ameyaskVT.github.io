@@ -30,7 +30,17 @@ explodingCircle.prototype.draw = function(){
         strokeWeight(3);
         fill(this.cRp[i], this.cGp[i],this.cBp[i]);
         noStroke();
-        ellipse(this.x + this.rad*cos(i*30 + 15),this.y + this.rad*sin(i*30 + 15),5,5);
+        ellipse(this.x + this.rad*cos(i*30),this.y + this.rad*sin(i*30),5,5);
+        if(this.rad === 5){
+        
+          println("i is :- " + i + " cos " + cos(i*30) + " sin " + sin(i*30));
+          //println(cos(i*30));
+         // println(sin(i*30));
+          
+        
+        }
+        
+        
     }
     this.rad += 5;
     if(this.rad > 75){
