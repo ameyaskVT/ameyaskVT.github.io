@@ -1,4 +1,4 @@
-var fps = 12;
+var fps = 24;
 void setup(){
   size( 400, 400 );
   strokeWeight( 10 );
