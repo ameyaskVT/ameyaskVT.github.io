@@ -32,7 +32,7 @@ explodingCircle.prototype.draw = function(){
         noStroke();
         ellipse(this.x + this.rad*cos(i*30),this.y + this.rad*sin(i*30),5,5);
     }
-    this.rad += 2;
+    this.rad += 5;
     if(this.rad > 75){
         return true;
     }
