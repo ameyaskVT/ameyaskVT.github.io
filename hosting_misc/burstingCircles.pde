@@ -1,6 +1,6 @@
-var fps = 6;
+var fps = 12;
 void setup(){
-  size( 500, 400 );
+  size( 400, 400 );
   strokeWeight( 10 );
   frameRate( fps );
 }
