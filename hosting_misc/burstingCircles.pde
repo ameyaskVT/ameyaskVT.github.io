@@ -1,4 +1,4 @@
-var fps = 24;
+var fps = 96;
 void setup(){
   size( 400, 400 );
   strokeWeight( 10 );
@@ -52,7 +52,7 @@ function balloon(){
 };
 
 balloon.prototype.move = function(){
-    this.y = this.y - 5;
+    this.y = this.y - 1;
 };
 
 balloon.prototype.isBursted = function(){
