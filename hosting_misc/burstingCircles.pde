@@ -52,7 +52,7 @@ function balloon(){
 };
 
 balloon.prototype.move = function(){
-    this.y = this.y - 1;
+    this.y = this.y - 5;
 };
 
 balloon.prototype.isBursted = function(){
@@ -60,7 +60,7 @@ balloon.prototype.isBursted = function(){
 };
 
 balloon.prototype.hitCeiling = function(){
-    return this.y === 0;
+    return this.y < 0;
 };
 
 balloon.prototype.draw = function() {
