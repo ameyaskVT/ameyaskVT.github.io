@@ -384,7 +384,7 @@ explodingShip.prototype.draw = function() {
     
     if(this.timer < 40){
         for(var angle = 0 ; angle < 360 ; angle = angle + 10){
-            arc(this.x + this.timer*cos(radians(angle + 5)),this.y + this.timer*sin(radians(angle + 5)),100 ,100,angle,angle+10);
+            arc(this.x + this.timer*cos(radians(angle + 5)),this.y + this.timer*sin(radians(angle + 5)),100 ,100,radians(angle),radians(angle+10));
         }
             //propellers
         rect(this.x-30 - this.timer,this.y+70,10,70,3);
@@ -602,7 +602,6 @@ void keyReleased(){
     keyArray[keyCode] = 0;
 };
 
-var enterprise1;
 
 void draw(){
     
@@ -639,18 +638,14 @@ void draw(){
             
             break;
         case 1:
-            if(shipAlive === 1){
-              enterprise.update();
-              enterprise.draw();
-            }
-            else if(shipAlive === 2){
-              enterprise1.update();
-              enterprise1.draw();
-            }
-            else if(shipAlive === 0){
+
+            enterprise.update();
+            enterprise.draw();
+
+            if(shipAlive === 0){
                 var newX = enterprise.x;
                 var newY = enterprise.y;
-                enterprise1 = new explodingShip(newX,newY,0.5);
+                enterprise = new explodingShip(newX,newY,0.5);
                 shipAlive = 2;
             }
             stationAK.draw();
