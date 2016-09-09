@@ -602,7 +602,7 @@ void keyReleased(){
     keyArray[keyCode] = 0;
 };
 
-draw = function(){
+void draw(){
     
     background(0,0,0);
     finalFrontier.draw();
