@@ -34,7 +34,7 @@ explodingCircle.prototype.draw = function(){
         strokeWeight(3);
         fill(this.cRp[i], this.cGp[i],this.cBp[i]);
         noStroke();
-        ellipse(this.x + this.rad*cos(i*30),this.y + this.rad*sin(i*30),5,5);
+        ellipse(this.x + this.rad*cos(radians(i*30)),this.y + this.rad*sin(radians(i*30)),5,5);
 
     }
    
@@ -384,7 +384,7 @@ explodingShip.prototype.draw = function() {
     
     if(this.timer < 40){
         for(var angle = 0 ; angle < 360 ; angle = angle + 10){
-            arc(this.x + this.timer*cos(angle + 5),this.y + this.timer*sin(angle + 5),100 ,100,angle,angle+10);
+            arc(this.x + this.timer*cos(radians(angle + 5)),this.y + this.timer*sin(radians(angle + 5)),100 ,100,angle,angle+10);
         }
             //propellers
         rect(this.x-30 - this.timer,this.y+70,10,70,3);
@@ -439,8 +439,8 @@ explodingCircle.prototype.update = function(){
     this.rad += 2;
     for(var i = 0 ; i < 12 ; i++){
 
-        var tempX = this.x + this.rad*cos(i*30);
-        var tempY = this.y + this.rad*sin(i*30);
+        var tempX = this.x + this.rad*cos(radians(i*30));
+        var tempY = this.y + this.rad*sin(radians(i*30));
         if(tempX > (enterprise.x -25) && tempX < (enterprise.x + 25) && tempY < (enterprise.y + 70) && tempY > (enterprise.y - 25) ){
         
         shipAlive = 0;
