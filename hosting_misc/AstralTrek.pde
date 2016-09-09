@@ -602,6 +602,8 @@ void keyReleased(){
     keyArray[keyCode] = 0;
 };
 
+var enterprise1;
+
 void draw(){
     
     background(0,0,0);
@@ -637,18 +639,24 @@ void draw(){
             
             break;
         case 1:
-            enterprise.update();
-            enterprise.draw();
-
+            if(shipAlive === 1){
+              enterprise.update();
+              enterprise.draw();
+            }
+            else if(shipAlive === 2){
+              enterprise1.update();
+              enterprise1.draw();
+            }
+            else if(shipAlive === 0){
+                var newX = enterprise.x;
+                var newY = enterprise.y;
+                enterprise1 = new explodingShip(newX,newY,0.5);
+                shipAlive = 2;
+            }
             stationAK.draw();
             stationAK.update();
     
-            if(shipAlive === 0){
-                var newX = enterprise.x;
-                var newY = enterprise.y;
-                enterprise = new explodingShip(newX,newY,0.5);
-                shipAlive = 2;
-            }
+            
             break;
         case 2:
             fill(168, 34, 201);
