@@ -594,11 +594,11 @@ mouseClicked = function(){
     
 };
 
-keyPressed = function(){
+void keyPressed(){
     keyArray[keyCode] = 1;
 };
 
-keyReleased = function(){
+void keyReleased(){
     keyArray[keyCode] = 0;
 };
 
