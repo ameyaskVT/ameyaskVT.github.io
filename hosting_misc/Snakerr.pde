@@ -128,7 +128,7 @@ snakePart.prototype.draw = function() {
     
     pushMatrix();
     translate(this.x,this.y);
-    rotate(this.angle);
+    rotate(radians(this.angle));
     if(this.col === 0){
         fill(snkColors0.R, snkColors0.G, snkColors0.B);
     }
@@ -233,7 +233,7 @@ snakeHead.prototype.draw = function() {
     
     translate(this.x, this.y);
     
-    rotate(this.angle);
+    rotate(radians(this.angle));
     if(this.col === 0){
         if(this.y < 368 && this.y > 224){
             fill(snkColors2.R, snkColors2.G, snkColors2.B);
@@ -377,7 +377,7 @@ noStroke();
 translate(this.x-17,this.y+3);
 scale(this.scale);
 
-rotate(-10);
+rotate(radians(-10));
 curveVertex(0,0);
 curveVertex(0, 2);
 curveVertex(-8, 5);
@@ -396,7 +396,7 @@ noStroke();
 translate(this.x+15,this.y+5);
 scale(this.scale);
 
-rotate(-5);
+rotate(radians(-5));
 curveVertex(0,0);
 curveVertex(0, 2);
 curveVertex(-8, 5);
@@ -523,7 +523,7 @@ noStroke();
 translate(this.x-10,this.y+4);
 scale(this.scale);
 
-rotate(-75);
+rotate(radians(-75));
 curveVertex(0,0);
 curveVertex(0, 2);
 curveVertex(-8, 5);
@@ -543,7 +543,7 @@ noStroke();
 translate(this.x+22,this.y+5);
 scale(this.scale);
 
-rotate(-87);
+rotate(radians(-87));
 curveVertex(0,0);
 curveVertex(0, 2);
 curveVertex(-8, 5);
