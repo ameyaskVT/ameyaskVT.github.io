@@ -705,7 +705,6 @@ var wlogs = [];
 wlogs.push(new woodLog(200,176,100,2));
 wlogs.push(new woodLog(70,176,100,2));
 wlogs.push(new woodLog(320,176,80,2));
-wlogs.push(new woodLog(100,144,50,1));
 wlogs.push(new woodLog(225,112,100,-3));
 wlogs.push(new woodLog(100,112,100,-3));
 wlogs.push(new woodLog(0,80,120,1));
