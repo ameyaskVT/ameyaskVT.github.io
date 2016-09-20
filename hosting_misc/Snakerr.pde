@@ -13,6 +13,24 @@ it's tail is cut off - which is villainously attached to one of the enemy snakes
 
 /*Author : Ameya Khandekar*/
 /*ECE 4525 Project 2*/
+
+/* @pjs preload="Grass Block.png"; */
+/* @pjs preload="Stone Block.png"; */
+/* @pjs preload="Water Block.png"; */
+
+
+PImage aImg;
+
+aImg = loadImage("Grass Block.png");
+
+PImage bImg;
+
+bImg = loadImage("Stone Block.png");
+
+PImage cImg;
+
+cImg = loadImage("Water Block.png");
+
 frameRate(60);
 var currFrameCount = 0;
 
@@ -996,22 +1014,22 @@ backDrop.draw = function() {
 
     stroke(255, 0, 0);
     for(var i = 0 ; i < 10 ; i++){
-            image(getImage("cute/GrassBlock"),40*i,172,40,52);
+            image(aImg,40*i,172,40,52);
     }
     for(var i = 0 ; i < 10 ; i++){
         for(var j = 0 ; j < 5; j++){
-            image(getImage("cute/WaterBlock"),40*i,32*j,40,64);
+            image(cImg,40*i,32*j,40,64);
         }
     }
     for(var i = 0 ; i < 10 ; i++){
-        image(getImage("cute/GrassBlock"),40*i,-20,40,52);
+        image(aImg,40*i,-20,40,52);
     }
         for(var i = 0 ; i < 10 ; i++){
-        image(getImage("cute/GrassBlock"),40*i,348,40,52);
+        image(aImg,40*i,348,40,52);
     }
     for(var i = 0 ; i < 10 ; i++){
         for(var j = 0 ; j < 4; j++){
-            image(getImage("cute/StoneBlock"),40*i,32*j + 204,40,67);
+            image(bImg,40*i,32*j + 204,40,67);
         }
     }
 
