@@ -502,9 +502,9 @@ ellipse(this.x - 90, this.y - 28 , 2,2);
 stroke(0,0,0,this.opacity);
 strokeWeight(2);
 
-arc(this.x + 31, this.y + -27,18,39,-4,75);
-arc(this.x + 19, this.y + -27,18,39,-4,75);
-arc(this.x + 7, this.y + -27,18,39,-4,75);
+arc(this.x + 31, this.y + -27,18,39,radians(-4),radians(75));
+arc(this.x + 19, this.y + -27,18,39,radians(-4),radians(75));
+arc(this.x + 7, this.y + -27,18,39,radians(-4),radians(75));
 
 popMatrix();
 
@@ -637,9 +637,9 @@ ellipse(this.x - 90, this.y - 28 , 2,2);
 stroke(0,0,0,this.opacity);
 strokeWeight(2);
 
-arc(this.x + 31, this.y + -27,18,39,-4,75);
-arc(this.x + 19, this.y + -27,18,39,-4,75);
-arc(this.x + 7, this.y + -27,18,39,-4,75);
+arc(this.x + 31, this.y + -27,18,39,radians(-4),radians(75));
+arc(this.x + 19, this.y + -27,18,39,radians(-4),radians(75));
+arc(this.x + 7, this.y + -27,18,39,radians(-4),radians(75));
 
 popMatrix();
 
