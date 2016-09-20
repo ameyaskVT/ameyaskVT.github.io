@@ -705,15 +705,15 @@ var wlogs = [];
 wlogs.push(new woodLog(200,176,100,2));
 wlogs.push(new woodLog(70,176,100,2));
 wlogs.push(new woodLog(320,176,80,2));
-wlogs.push(new woodLog(100,144,50,2));
+wlogs.push(new woodLog(100,144,50,1));
 wlogs.push(new woodLog(225,112,100,-3));
 wlogs.push(new woodLog(100,112,100,-3));
 wlogs.push(new woodLog(0,80,120,1));
 wlogs.push(new woodLog(30,48,70,-2));
 wlogs.push(new woodLog(150,48,200,-2));
 wlogs.push(new woodLog(130,80,200,1));
-wlogs.push(new woodLog(300,144,140,2));
-wlogs.push(new woodLog(100,144,140,2));
+wlogs.push(new woodLog(300,144,140,1));
+wlogs.push(new woodLog(100,144,140,1));
 
 
 var snakeObj = function(x,y){
@@ -768,7 +768,7 @@ snakeObj.prototype.draw = function() {
         this.body[i].draw();
     }
 };
-var snake1 = new snakeObj(80,364);
+var snake1 = new snakeObj(80,380);
 ////var snake1 = new snakeObj(80,28);
 
 var killerSnakeObj  = function(x,y){
@@ -813,7 +813,7 @@ killerSnakes.prototype.grow = function(amt){
 var enemySnakes = new killerSnakes();
 
 snakeObj.prototype.cutTail = function(l){
-        this.body.splice(this.body.length - 1 - l,l);
+        this.body.splice(this.body.length - l,l);
 };
 
 snakeObj.prototype.jump = function(x){
@@ -882,6 +882,9 @@ snakeObj.prototype.checkBite = function(){
   
   //bite with enemy snakes check :-
   for(var j = 0 ; j < enemySnakes.data.length ; j++){
+      if(this.head.x < enemySnakes.data[j].head.x + 10 && this.head.x > enemySnakes.data[j].head.x - 10 && this.head.y < enemySnakes.data[j].head.y + 10 && this.head.y > enemySnakes.data[j].head.y - 10  ){
+            gameOver = 1;
+      }
       for(var idx = 0; idx < enemySnakes.data[j].body.length ; idx++){
         if(this.head.x < enemySnakes.data[j].body[idx].x + 10 && this.head.x > enemySnakes.data[j].body[idx].x - 10 && this.head.y < enemySnakes.data[j].body[idx].y + 10 && this.head.y > enemySnakes.data[j].body[idx].y - 10  ){
             gameOver = 1;
@@ -1001,7 +1004,9 @@ killerSnakeObj.prototype.update = function(){
     this.head.update();
     
     //check bite :- 
-    
+    if(this.head.x < snake1.head.x + 10 && this.head.x > snake1.head.x - 10 &&                    this.head.y < snake1.head.y + 10 && this.head.y > snake1.head.y - 10  ){
+            gameOver = 1;
+        }
     for(var idx = 0; idx < snake1.body.length ; idx++){
         if(this.head.x < snake1.body[idx].x + 10 && this.head.x > snake1.body[idx].x - 10 &&                    this.head.y < snake1.body[idx].y + 10 && this.head.y > snake1.body[idx].y - 10  ){
             gameOver = 1;
@@ -1164,7 +1169,7 @@ var startScreenManager = function(){
     }
     else if(gameOver === -2){
         //recreate game objects if game Over.
-        snake1 = new snakeObj(50,364);
+        snake1 = new snakeObj(50,380);
         enemySnakes = new killerSnakes();
         food = new foodObj();
         gameScore = 0;
