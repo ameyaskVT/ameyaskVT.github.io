@@ -31,7 +31,14 @@ PImage cImg;
 
 cImg = loadImage("Water Block.png");
 
-frameRate(60);
+var fps = 60;
+void setup(){
+  size( 400, 400 );
+ // strokeWeight( 10 );
+  frameRate( fps );
+}
+
+
 var currFrameCount = 0;
 
 var gameOver = -1;
