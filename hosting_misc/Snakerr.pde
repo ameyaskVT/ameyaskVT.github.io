@@ -1283,52 +1283,18 @@ var startScreenManager = function(){
     }
 };
 
-var loop1 = 0;
-/*keyPressed = function(){
-    
-    if(keyCode === SHIFT && gameOver === 0){ //Game Pause
-       loop1 = (loop1+1)%2;
-        if(loop1 === 0){
-            noLoop();
-
-        }
-        else
-        {
-            loop();
-        }
-        
-        
-    }
-    if(currFrameCount > frameCount - 12){
-        return;
-    }
-    currFrameCount = frameCount;
-    snake1.changeState(keyCode);
-
-
-};
-*/
+var pauseState = 0;
 void keyPressed(){
     if(currFrameCount > frameCount - 12){
         return;
     }
     currFrameCount = frameCount;
     keyArray[keyCode] = 1;
-    
-    if(keyArray[SHIFT] === 1 && gameOver === 0){ //Game Pause
-       loop1 = (loop1+1)%2;
-        if(loop1 === 0){
-            noLoop();
-
-        }
-        else
-        {
-            loop();
-        }
+    if(gameOver === 0 && keyArray[SHIFT] === 1){
+        pauseState = (pauseState + 1)%2;
     }
-        
     snake1.changeState();
-
+    
 };
 
 void keyReleased(){
@@ -1392,7 +1358,16 @@ void draw() {
     backDrop.draw();    
 
     if(gameOver === 0 || gameOver === 1){
-
+        
+        if(pauseState === 1){
+            fill(20, 204, 173,120);
+            rect(100,150,200,100,25);
+            textFont("monospace",40);
+            fill(27, 20, 222,180);
+            text("PAUSED",120,180,200,100);
+            return;
+        }
+        
         for(var idx = 0 ; idx < wlogs.length ; idx++){
             wlogs[idx].draw();
             wlogs[idx].update();
