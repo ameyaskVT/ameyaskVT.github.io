@@ -43,6 +43,62 @@ var currFrameCount = 0;
 
 var gameOver = -1;
 
+var keyQueue = function(){
+    
+    this.data = [];
+    this.begIdx = 0;
+    this.nextIdx = 0;
+    this.prevCode = RIGHT;
+};
+
+keyQueue.prototype.isEmpty = function(){
+    if(this.begIdx === this.nextIdx){
+        return true;
+    }
+    else{
+        return false;
+    }
+};
+
+keyQueue.prototype.enqueue = function(code){
+  if(this.prevCode === code){
+      return;
+  }
+  this.prevCode = code;
+  if(  this.nextIdx >= this.data.length){
+      this.data.push(code);
+      this.nextIdx++;
+      return;
+  }
+  this.data[this.nextIdx] = code;
+  this.nextIdx++;
+};
+
+keyQueue.prototype.dequeue = function(){  // do not dequeue without checking for emptyness first.
+    var temp = this.data[this.begIdx];
+    this.begIdx++;
+    if(this.begIdx === this.nextIdx){
+        this.data = [];
+        this.begIdx = 0;
+        this.nextIdx = 0;
+    }
+    
+    return temp;
+};
+
+keyQueue.prototype.clear = function(){
+    this.begIdx = 0;
+    this.data = [];
+    this.begIdx = 0;
+    this.nextIdx = 0;
+};
+
+var keyQ = new keyQueue();
+
+
+
+
+
 var snkStates = {
     RIGHT:0,
     LEFT:1,
@@ -301,8 +357,8 @@ snakeHead.prototype.update = function(){
 };
 
 
-snakeHead.prototype.changeState0 = function(code){
-    switch(code){
+snakeHead.prototype.changeState0 = function(state){
+    switch(state){
         case snkStates.RIGHT:
             if(this.state !== snkStates.LEFT){
                 this.angle = 0;
@@ -332,30 +388,40 @@ snakeHead.prototype.changeState0 = function(code){
     }
 };
 
-snakeHead.prototype.changeState = function(){
+snakeHead.prototype.changeState = function(code){
 
-            if(keyArray[RIGHT] === 1 && this.state !== snkStates.LEFT){
+     switch(code){
+        case RIGHT:
+            if(this.state !== snkStates.LEFT){
                 this.angle = 0;
                 this.state = snkStates.RIGHT;
             }
-
-            if(keyArray[DOWN] === 1 && this.state !== snkStates.UP){
+            break;
+        case DOWN:
+            if(this.state !== snkStates.UP){
                 this.angle = 90;
                 this.state = snkStates.DOWN;
             }
-
-            if(keyArray[LEFT] === 1 &&this.state !== snkStates.RIGHT){
+            break;
+        case LEFT:
+            if(this.state !== snkStates.RIGHT){
                 this.angle = 0;
                 this.state = snkStates.LEFT;
             }
-
-            if(keyArray[UP] === 1 &&this.state !== snkStates.DOWN){
+            break;
+        case UP:
+            if(this.state !== snkStates.DOWN){
                 this.angle = 270;
                 this.state = snkStates.UP;
 
             }
+            break;
 
+    }
 };
+
+
+
 var mongoose = function(x,y){
     this.x = x;
     this.y = y;
@@ -936,7 +1002,9 @@ snakeObj.prototype.update = function(){
         return;
     }
     
+    this.checkBite();
     this.checkLogIn();
+    
     if(this.isInside === 1 ){
         
         if(this.head.state === snkStates.RIGHT){
@@ -968,6 +1036,12 @@ snakeObj.prototype.update = function(){
     if(this.timer % this.speed !== 0){
         return;
     }
+    
+    if(!keyQ.isEmpty()){
+        this.head.changeState(keyQ.dequeue());
+    }
+    
+    
     for(var i = this.body.length - 1 ; i >= 0 ; i--){
         if(i > 0){
             this.body[i].update(this.body[i-1].x,this.body[i-1].y);
@@ -981,7 +1055,6 @@ snakeObj.prototype.update = function(){
     }
     this.head.update();
     
-    this.checkBite();
     this.checkFood();
 };
 
@@ -1171,6 +1244,7 @@ var startScreenManager = function(){
         snake1 = new snakeObj(50,380);
         enemySnakes = new killerSnakes();
         food = new foodObj();
+        keyQ.clear();
         gameScore = 0;
         gameOver = -1;
     }
@@ -1285,16 +1359,7 @@ var startScreenManager = function(){
 
 var pauseState = 0;
 void keyPressed(){
-    if(currFrameCount > frameCount - 12){
-        return;
-    }
-    currFrameCount = frameCount;
-    keyArray[keyCode] = 1;
-    if(gameOver === 0 && keyArray[SHIFT] === 1){
-        pauseState = (pauseState + 1)%2;
-    }
-    snake1.changeState();
-    
+  keyQ.enqueue(keyCode);
 };
 
 void keyReleased(){
@@ -1399,5 +1464,5 @@ void draw() {
     
     textFont(createFont("monospace"),15);
 
-    text("Score "+gameScore,2,395);
+    text("score "+gameScore,2,395);
 };
