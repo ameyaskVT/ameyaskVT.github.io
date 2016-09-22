@@ -1,34 +1,14 @@
+<script src="processing.js"></script> 
+<canvas data-processing-sources="Snakerr.pde"></canvas>
+
 <!DOCTYPE html>
-<!-- start of the document -->
-<html> 
- <head>
- <!-- Title to be displayed in browser -->
-    <title>Snakerr - Frogger with a Snake</title> 
-</head>
- 
- <!-- The body of the webpage, where all visible stuff lies. -->
- <body>
-    <p align="center"> 
-	<!--This draws the Canvas on the webpage -->
-      <canvas id="mycanvas"></canvas> 
-    </p>
-    <p>Credits for the background tiles :-</p>
-    <p><a href= "http://www.lostgarden.com/2007/05/dancs-miraculously-flexible-game.html">Planet Cute</a></p>
- </body>
+<html>
+<body>
 
 
- <!-- run all the JavaScript stuff -->
- <!-- Include the processing.js library -->
- <script src="processing.js"></script> 
- 
- <!-- The name of the Program Source Code goes here -->
- <script src="snakerr.js"></script> 
- 
- <script type="application/javascript">
-  //get the canvas that Processing-js will use
-  var canvas = document.getElementById("mycanvas"); 
-  //pass the function sketchProc (defined in myCode.js) to Processing's constructor.
-  var processingInstance = new Processing(canvas, sketchProc); 
- </script>
+<p>Credits for the background tiles :-</p>
+<p><a href= "http://www.lostgarden.com/2007/05/dancs-miraculously-flexible-game.html">Planet Cute</a></p>
 
+
+</body>
 </html>
