@@ -923,7 +923,7 @@ snakeObj.prototype.checkLogIn = function(){
 };
 snakeObj.prototype.checkFood = function(){
 
-if(abs(this.head.x - food.x) < 5 && abs(this.head.y - food.y) < 5){
+if(abs(this.head.x - food.x) < 8 && abs(this.head.y - food.y) < 8){
         this.body.push(new snakePart(this.body[this.body.length - 1].x,this.body[this.body.length - 1].y,(this.body.length)%2,this.head.state));
         food.newMeal();
         gameScore++;
@@ -1374,14 +1374,18 @@ void draw() {
         }
    
         snake1.draw();
-        snake1.update();
         enemySnakes.draw();
-        enemySnakes.update();
    
         riki.draw();
-        riki.update();
         food.draw();
         food.update();
+        
+        if(gameOver === 0){
+            snake1.update();
+            enemySnakes.update();
+            riki.update();
+        }
+        
         
         
     }
