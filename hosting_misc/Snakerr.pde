@@ -964,7 +964,7 @@ snakeObj.prototype.checkLogIn = function(){
    if(this.isInside === 1 && (this.head.state === snkStates.DOWN || this.head.state === snkStates.UP)){
        this.isInside = 0;
    }
-    else if(this.isInside === 1 && this.head.state === snkStates.RIGHT){
+    else if(this.isInside === 1 && (this.head.state === snkStates.RIGHT || this.head.state === snkStates.LEFT)){
         return;
     }
     if(this.head.state === snkStates.RIGHT || this.head.state === snkStates.LEFT){// || this.state === snkStates.RIGHT){
@@ -1025,7 +1025,12 @@ snakeObj.prototype.update = function(){
             this.body[i].state  = this.head.state;
             this.body[i].prevState = this.head.state;
         }
-        
+        if(!keyQ.isEmpty()){
+            var tempCode = keyQ.dequeue();
+            if(tempCode !== LEFT && tempCode !== RIGHT){
+                this.head.changeState(tempCode);
+            }
+        }
 
         return;
 
@@ -1464,5 +1469,5 @@ void draw() {
     
     textFont(createFont("monospace"),15);
 
-    text("score "+gameScore,2,395);
+    text("Score "+gameScore,2,395);
 };
