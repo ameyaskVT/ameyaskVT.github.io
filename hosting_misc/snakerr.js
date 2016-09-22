@@ -1,3 +1,9 @@
+var sketchProc=function(processingInstance){ with (processingInstance){
+size(400, 400); 
+frameRate(60);
+
+
+//ProgramCodeGoesHere
 /*
 
 Special and creative aspects of the code :-
@@ -1471,3 +1477,7 @@ void draw() {
 
     text("Score "+gameScore,2,395);
 };
+
+
+
+}};
