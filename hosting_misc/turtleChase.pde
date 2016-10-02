@@ -1717,6 +1717,7 @@ foodObj.prototype.eat = function(){
 };
 
 var initTilemap = function() {
+    println("tileMap Initialised");
     for (var i = 0; i< tilemap.length; i++) {
         for (var j =0; j < tilemap[i].length; j++) {
             switch (tilemap[i][j]) {
