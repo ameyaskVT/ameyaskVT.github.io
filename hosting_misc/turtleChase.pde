@@ -97,7 +97,6 @@ Making use of well designed grass tiles, makes the background look realistic.
 
 
 frameRate(60);
-angleMode = "radians";  //Comment this line out if not using on Khan Academy
 var toPI = PI/180;
 
 // Start screen to overlap time with creating custom characters
@@ -2087,7 +2086,7 @@ fireState.prototype.execute = function(me){
 };
 
 
-mouseClicked = function(){
+void mouseClicked(){
     if(start === 0){
         start = 1;
         return;
@@ -2099,10 +2098,9 @@ mouseClicked = function(){
         else if(fire.currState === 1){
              fire.bombSetOff = 1;
         }
-        println("food"+food.length);
     }
 };
-keyPressed = function(){
+void keyPressed(){
   player1.move(keyCode);  
   
   if(keyCode === SHIFT){
@@ -2117,7 +2115,7 @@ keyPressed = function(){
 var debugCount = 0;
 
 
-draw = function() {
+void draw() {
 
     if(start === 1){ //gameStarted
         pushMatrix();
