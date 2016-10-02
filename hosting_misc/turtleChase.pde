@@ -89,8 +89,13 @@ Basically, each pixel is treated as a rectangle.
 Making use of well designed grass tiles, makes the background look realistic.
 */
 
+var fps = 60;
+void setup(){
+  size( 400, 400 );
+ // strokeWeight( 10 );
+  frameRate( fps );
+}
 
-frameRate(60);
 //angleMode = "radians";  //Comment this line out if not using on Khan Academy
 var toPI = PI/180;
 
