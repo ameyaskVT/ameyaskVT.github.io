@@ -2085,7 +2085,7 @@ fireState.prototype.execute = function(me){
 };
 
 
-mouseClicked = function(){
+void mouseClicked(){
     if(start === 0){
         start = 1;
         return;
@@ -2100,7 +2100,7 @@ mouseClicked = function(){
        
     }
 };
-keyPressed = function(){
+void keyPressed(){
   player1.move(keyCode);  
   
   if(keyCode === SHIFT){
@@ -2115,7 +2115,7 @@ keyPressed = function(){
 var debugCount = 0;
 
 
-draw = function() {
+void draw(){
 
     if(start === 1){ //gameStarted
         pushMatrix();
