@@ -89,13 +89,9 @@ Basically, each pixel is treated as a rectangle.
 Making use of well designed grass tiles, makes the background look realistic.
 */
 
-var fps = 60;
-void setup(){
-  size( 400, 400 );
- // strokeWeight( 10 );
-  frameRate( fps );
-}
 
+frameRate(60);
+//angleMode = "radians";  //Comment this line out if not using on Khan Academy
 var toPI = PI/180;
 
 // Start screen to overlap time with creating custom characters
@@ -1579,7 +1575,7 @@ var xAxisVector = new PVector(1,0);
 
 /*making a general function to know if an object is drawable :- 
 assuming any object won't be larger than 40 pixels*/
-boolean isDrawable(me){
+var isDrawable = function(me){
     if( ((me.position.x - 20) > translateDist && (me.position.x - 20) < translateDist + 400)                                  ||((me.position.x + 20) > translateDist && (me.position.x + 20) < translateDist + 400)){
         return true;
     }
@@ -2085,7 +2081,7 @@ fireState.prototype.execute = function(me){
 };
 
 
-void mouseClicked(){
+mouseClicked = function(){
     if(start === 0){
         start = 1;
         return;
@@ -2100,7 +2096,7 @@ void mouseClicked(){
        
     }
 };
-void keyPressed(){
+keyPressed = function(){
   player1.move(keyCode);  
   
   if(keyCode === SHIFT){
@@ -2115,7 +2111,7 @@ void keyPressed(){
 var debugCount = 0;
 
 
-void draw(){
+draw = function() {
 
     if(start === 1){ //gameStarted
         pushMatrix();
