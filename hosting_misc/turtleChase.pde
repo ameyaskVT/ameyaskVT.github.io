@@ -2101,6 +2101,7 @@ mouseClicked = function(){
         }
        	println("value of customCharMade is :- "+customCharMade);
 	println("Reached walls draw :- "+reached);
+	println("length of walls is :-"walls.length);
     }
 };
 keyPressed = function(){
