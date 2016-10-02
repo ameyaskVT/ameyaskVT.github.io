@@ -1581,7 +1581,7 @@ var xAxisVector = new PVector(1,0);
 /*making a general function to know if an object is drawable :- 
 assuming any object won't be larger than 40 pixels*/
 var isDrawable = function(me){
-    if( ((me.position.x - 20) > translateDist && (me.position.x - 20) < translateDist + 400)                                  ||((me.position.x + 20) > translateDist && (me.position.x + 20) < translateDist + 400)){
+    if( ((me.position.x - 20) > translateDist && (me.position.x - 20) < translateDist + 400)||((me.position.x + 20) > translateDist && (me.position.x + 20) < translateDist + 400)){
         return true;
     }
     return false;
