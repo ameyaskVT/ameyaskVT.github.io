@@ -2085,6 +2085,7 @@ fireState.prototype.execute = function(me){
     }
 };
 
+var reached = 0;
 
 mouseClicked = function(){
     if(start === 0){
@@ -2098,7 +2099,8 @@ mouseClicked = function(){
         else if(fire.currState === 1){
              fire.bombSetOff = 1;
         }
-       
+       	println("value of customCharMade is :- "+customCharMade);
+	println("Reached walls draw :- "+reached);
     }
 };
 keyPressed = function(){
@@ -2114,7 +2116,6 @@ keyPressed = function(){
 };
 
 var debugCount = 0;
-
 
 draw = function() {
 
@@ -2166,6 +2167,9 @@ draw = function() {
 
         for (var i=0; i<walls.length; i++) {
             if(isDrawable(walls[i])){
+	    	if(reached === 0){
+			reached = 1;
+		}
                 walls[i].draw();
             }
         }
