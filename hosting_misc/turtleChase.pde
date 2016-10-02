@@ -1718,10 +1718,12 @@ foodObj.prototype.eat = function(){
 
 var initTilemap = function() {
     println("tileMap Initialised");
+    println("tileMap length is "+tilemap.length);
     for (var i = 0; i< tilemap.length; i++) {
         for (var j =0; j < tilemap[i].length; j++) {
             switch (tilemap[i][j]) {
                 case 'w': walls.push(new wallObj(j*20, i*20));
+		    println("inserted in walls");
                     break;
                 case ' ': grass.push(new stoneObj(j*20,i*20));
                     grass[grass.length - 1].id = grass.length - 1;
