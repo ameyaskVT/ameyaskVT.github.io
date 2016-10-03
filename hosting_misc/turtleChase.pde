@@ -1721,12 +1721,14 @@ var initTilemap = function() {
     println("tileMap length is "+tilemap.length);
     println("tileMap[0] length is "+tilemap[0].length);
 
+    println("tilemap[0][0] is " + tilemap[0][0]);
+
     for (var i = 0; i< tilemap.length; i++) {
         for (var j =0; j < tilemap[i].length; j++) {
-	    print("trying to insert");
+	  //  print("trying to insert");
             switch (tilemap[i][j]) {
                 case 'w': walls.push(new wallObj(j*20, i*20));
-		    println("inserted in walls");
+		   // println("inserted in walls");
                     break;
                 case ' ': grass.push(new stoneObj(j*20,i*20));
                     grass[grass.length - 1].id = grass.length - 1;
