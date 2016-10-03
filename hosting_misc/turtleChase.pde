@@ -1717,7 +1717,7 @@ foodObj.prototype.eat = function(){
     this.eaten  = 1;
 };
 
-wals.push(new wallObj(0,0));
+walls.push(new wallObj(0,0));
 
 var initTilemap = function() {
     println("tileMap Initialised");
