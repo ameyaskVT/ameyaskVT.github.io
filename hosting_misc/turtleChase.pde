@@ -1611,6 +1611,8 @@ var tilemap = [
         "www    wwww    wwwwwwww    wwwww   ffffw",
         "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
         ];
+	
+	
 var wallObj = function(x, y) {
     this.position = new PVector(x,y);
 };
@@ -1618,7 +1620,6 @@ var wallObj = function(x, y) {
 
 var stoneObj = function(x,y){
     this.position = new PVector(x,y);
-    this.id = -1;
 };
 var foodObj = function(x,y){
     this.position = new PVector(x,y);
@@ -1721,20 +1722,22 @@ var initTilemap = function() {
     println("tileMap length is "+tilemap.length);
     println("tileMap[0] length is "+tilemap[0].length);
 
-    println("tilemap[0][1] is " + tilemap[0][1]);
+    println("tilemap[0][1] is t2 " + tilemap[0][1]);
 
-    for (var i = 0; i< tilemap.length; i++) {
-        for (var j =0; j < tilemap[i].length; j++) {
+    for (var i = 0; i < tilemap.length; i++) {
+        for (var j = 0; j < tilemap[i].length; j++) {
 	    println("tilemap "+tilemap[i][j]);
             switch(tilemap[i][j]) {
-                case 'w': walls.push(new wallObj(j*20, i*20));
+                case 'w': 
+		    walls.push(new wallObj(j*20, i*20));
 		    println("inserted in walls");
                     break;
-                case ' ': grass.push(new stoneObj(j*20,i*20));
-                    grass[grass.length - 1].id = grass.length - 1;
+                case ' ': 
+		    grass.push(new stoneObj(j*20,i*20));
                     break;
-                case 'f': food.push(new foodObj(j*20,i*20));
-                          grass.push(new stoneObj(j*20,i*20));
+                case 'f': 
+		    food.push(new foodObj(j*20,i*20));
+                    grass.push(new stoneObj(j*20,i*20));
                     break;
             }
         }
