@@ -1723,8 +1723,9 @@ var initTilemap = function() {
     println("tileMap length is "+tilemap.length);
     println("tileMap[0] length is "+tilemap[0].length);
 
-    println("tilemap[0][1] is t6 " + tilemap[0][1]);
-
+    println("tilemap[0][1] is t7 " + tilemap[0][1]);
+    println("tilemap[0].charAt(1) === 'w' is  "+ (tilemap[0].charAt(1) === 'w'));	
+	
     for (var i = 0; i < tilemap.length; i++) {
         for (var j = 0; j < tilemap[i].length(); j++) {
 		
