@@ -1725,9 +1725,8 @@ var initTilemap = function() {
 
     for (var i = 0; i< tilemap.length; i++) {
         for (var j =0; j < tilemap[i].length; j++) {
-	  //  print("trying to insert");
-            switch (tilemap[i][j]) {
-	    	println("tilemap "+tilemap[i][j]);
+	    println("tilemap "+tilemap[i][j]);
+            switch(tilemap[i][j]) {
                 case 'w': walls.push(new wallObj(j*20, i*20));
 		    println("inserted in walls");
                     break;
