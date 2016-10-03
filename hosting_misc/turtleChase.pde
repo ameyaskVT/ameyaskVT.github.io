@@ -1719,13 +1719,13 @@ foodObj.prototype.eat = function(){
 
 
 var initTilemap = function() {
-    println("t9");
+    println("t11");
     println("tileMap Initialised");
     println("tileMap length is "+tilemap.length);
     println("tileMap[0] length is "+tilemap[0].length);
 
     println("tilemap[0][1] is " + tilemap[0][1]);
-    println("tilemap[0][1] === "w" is  "+ (tilemap[0][1] === "w"));	
+    println("tilemap[0][1] === w is  "+(tilemap[0][1]));	
 	
     for (var i = 0; i < tilemap.length; i++) {
         for (var j = 0; j < tilemap[i].length(); j++) {
