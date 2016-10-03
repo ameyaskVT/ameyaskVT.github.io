@@ -1727,8 +1727,9 @@ var initTilemap = function() {
         for (var j =0; j < tilemap[i].length; j++) {
 	  //  print("trying to insert");
             switch (tilemap[i][j]) {
+	    	println("tilemap + "tilemap[i][j]);
                 case 'w': walls.push(new wallObj(j*20, i*20));
-		   // println("inserted in walls");
+		    println("inserted in walls");
                     break;
                 case ' ': grass.push(new stoneObj(j*20,i*20));
                     grass[grass.length - 1].id = grass.length - 1;
