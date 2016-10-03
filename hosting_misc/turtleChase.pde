@@ -1722,19 +1722,19 @@ var initTilemap = function() {
     println("tileMap length is "+tilemap.length);
     println("tileMap[0] length is "+tilemap[0].length);
 
-    println("tilemap[0][1] is t3 " + tilemap[0][1]);
+    println("tilemap[0][1] is t4 " + tilemap[0][1]);
 
     for (var i = 0; i < tilemap.length; i++) {
         for (var j = 0; j < tilemap[i].length; j++) {
 		
-	    if(tilemap[i][j] === 'w'){
+	    if(tilemap[i].charAt(j) === 'w'){
 	    	walls.push(new wallObj(j*20, i*20));
 		println("inserted in walls");
 	    }
-	    else if(tilemap[i][j] === ' '){
+	    else if(tilemap[i].charAt(j) === ' '){
 	    	grass.push(new stoneObj(j*20,i*20));
 	    }
-	    else if(tilemap[i][j] === 'f'){
+	    else if(tilemap[i].charAt(j) === 'f'){
 		    food.push(new foodObj(j*20,i*20));
                     grass.push(new stoneObj(j*20,i*20));
 	    }
