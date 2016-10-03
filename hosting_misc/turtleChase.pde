@@ -1717,12 +1717,14 @@ foodObj.prototype.eat = function(){
     this.eaten  = 1;
 };
 
+wals.push(new wallObj(0,0));
+
 var initTilemap = function() {
     println("tileMap Initialised");
     println("tileMap length is "+tilemap.length);
     println("tileMap[0] length is "+tilemap[0].length);
 
-    println("tilemap[0][1] is t4 " + tilemap[0][1]);
+    println("tilemap[0][1] is t5 " + tilemap[0][1]);
 
     for (var i = 0; i < tilemap.length; i++) {
         for (var j = 0; j < tilemap[i].length; j++) {
