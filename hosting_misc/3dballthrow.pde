@@ -403,18 +403,6 @@ void draw() {
         startScreen = 1;
     }
     
-    if(restartTimer > 0 && restartTimer < 300){
-        restartTimer++;
-        noStroke();
-        fill(27, 142, 184);
-        rect(100,100,200,200,15);
-        textSize(15);
-        fill(0, 0, 0);
-        text("New Game Begins in ",140,180);
-        text(5-floor(restartTimer/60),200,200);
-        return;
-    }
-
     
     restartTimer = 0;
     
