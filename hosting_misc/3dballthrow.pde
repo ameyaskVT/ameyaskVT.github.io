@@ -18,6 +18,7 @@ var keyArray = [];
 
 var score = 5;
 var restartTimer = 0;
+var startScreen = 1 ; 
 
 var pt3d = function(x,y,z){
     this.x = x;
@@ -362,15 +363,44 @@ void keyReleased(){
     keyArray[keyCode] = 0;
 };
 
+void mouseClicked(){
+    if(startScreen ===1){
+        startScreen = 0;
+    }
+};
+
+
 void draw() {
     if(keyArray[SHIFT] === 1){
         return;
     }
     background(43, 133, 67);
     
+    if(startScreen === 1){
+        
+        textSize(18);
+        fill(23, 23, 26);
+        pushMatrix();
+        translate(0,-50);
+        text("3d BasketBall Shooting Practice",50,100);
+        text("Instructions :-",50,130);
+        text(" - Rotate the transparent blue plane ",50,160);
+        text("that passes through the ball ",50,190);
+        text("using RIGHT,LEFT arrow keys.",50,220);
+        text("Ball stays in this plane before bouncing.",50,250);
+        text("- Drag the ball back using mouse",50,280);
+        text("and release. Initial velocity depends",50,310);
+        text("on this drag-and-release",50,340);
+        text("- Win points by aiming at the targets. ",50,370);
+        text("- CLICK MOUSE TO BEGIN",50,400);
+        popMatrix();
+        return ;    
+    }
+    
     if(score < 0){
         restartTimer = 1;
         score = 5;
+        startScreen = 1;
     }
     
     if(restartTimer > 0 && restartTimer < 300){
