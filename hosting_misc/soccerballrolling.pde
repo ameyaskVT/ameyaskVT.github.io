@@ -5,11 +5,13 @@ void setup(){
   frameRate( fps );
 }
 
+{
+
 var toPI = PI/180;
 
 var ballImages = [];
 var pointSet = [];
-
+{
     
 //image 0 for soccer_animation_0    
 background(0,0,0,0);
@@ -548,7 +550,7 @@ line(197,267,159,249);
 
 ballImages.push(get(125,125,150,150)); //image 5 for soccer_animation_5*/
 
-
+}
 
 
 var ballObj = function(x, y) {
@@ -598,7 +600,7 @@ ballObj.prototype.draw = function() {
     popMatrix();
 };
 
-void mouseClicked() {
+var mouseClicked = function() {
     target.set(mouseX, mouseY);
     ball.velocity.set(target.x - ball.position.x, target.y - ball.position.y);
     ball.velocity.div(20);
@@ -606,10 +608,13 @@ void mouseClicked() {
     ball.drag.mult(-0.3);
 };
 
-void draw() {
+var draw = function() {
     background(36, 115, 36);
     ball.move();
     ball.draw();
-
+    
+    fill(0,0,0);
+    text("SoccerBall",10,20);
     
 };
+}
