@@ -2,13 +2,7 @@ var sketchProc=function(processingInstance){ with (processingInstance){
 size(400, 400); 
 frameRate(60);
 
-
-{
-
 //Beginning of processing sketch
-
-//Soccer Ball :- 
-angleMode = "radians";
 
 var toPI = PI/180;
 
@@ -598,7 +592,7 @@ var projectionObj = function(){
 //this sets the pt2d object to the required value.
 //also for processingJS offline version make sure to use set function with (x,y,0) to avoid errors.
 projectionObj.prototype.compute = function(node3){
-    this.pt2d.set(round(this.f*((node3.x-this.camPos.x)/node3.z))+this.camPos.x,round(this.f*((node3.y-this.camPos.y)/node3.z))+this.camPos.y);
+    this.pt2d.set(round(this.f*((node3.x-this.camPos.x)/node3.z))+this.camPos.x,round(this.f*((node3.y-this.camPos.y)/node3.z))+this.camPos.y,0);
     
 };
 
@@ -678,7 +672,7 @@ goalPostObj.prototype.draw = function() {
 ballObj.prototype.update = function() {
     this.velocity.add(this.drag);
     this.position.add(this.velocity);
-    this.drag.set(this.velocity.x, this.velocity.y);
+    this.drag.set(this.velocity.x, this.velocity.y,0);
     this.drag.mult(-0.03);
     
     this.aAcc = this.velocity.mag()/10;	// modify constant 10
@@ -689,10 +683,10 @@ ballObj.prototype.update = function() {
     this.aVelocity *= 0.98; // drag
     this.angle += this.aVelocity/2;
     this.idx  = floor((this.moveCount%60)/10);
-    this.changePos.set(this.position.x,this.position.y);
+    this.changePos.set(this.position.x,this.position.y,0);
     this.changePos.sub(this.prevPosition);
     this.moveCount += floor(this.changePos.mag());
-    this.prevPosition.set(this.position.x,this.position.y);
+    this.prevPosition.set(this.position.x,this.position.y,0);
 };
 
 ballObj.prototype.draw = function() {
@@ -708,10 +702,10 @@ ballObj.prototype.draw = function() {
 
 // Mouse Keyboard methods :- 
 var mouseClicked = function() {
-    target.set(mouseX, mouseY);
-    ball.velocity.set(target.x - ball.position.x, target.y - ball.position.y);
+    target.set(mouseX, mouseY,0);
+    ball.velocity.set(target.x - ball.position.x, target.y - ball.position.y,0);
     ball.velocity.div(20);
-    ball.drag.set(ball.velocity.x, ball.velocity.y);
+    ball.drag.set(ball.velocity.x, ball.velocity.y,0);
     ball.drag.mult(-0.3);
 };
 
