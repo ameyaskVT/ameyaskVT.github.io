@@ -4,8 +4,6 @@ frameRate(60);
 
 //Beginning of processing sketch
 
-
-
 var start = 0;
 
 var toPI = PI/180;
@@ -775,6 +773,14 @@ this.line4pt2 = new PVector(projection.pt2d.x,projection.pt2d.y);
 
 
 };
+
+var startScreenObj = function(){
+    this.timer = 0;
+    this.yPos = -200;
+    this.display = 0;
+};
+var startScreen = new startScreenObj();
+
 backgroundObj.prototype.draw = function() {
 
     noStroke();
@@ -942,9 +948,6 @@ ballObj.prototype.draw = function() {
     popMatrix();
     
     
-
-    
-    
 };
 
 
@@ -966,67 +969,135 @@ goalieObj.prototype.draw = function() {
 var goalie = new goalieObj(160,140,170);
 
 
-var startScreenObj = function(){
-    this.timer = 0;
-    this.yPos = -200;
-};
-var startScreen = new startScreenObj();
 
 startScreenObj.prototype.draw = function() {
+    if(this.display === 1){
+        fill(48, 217, 70);
+        rect(0,0,400,400);
+    }
+    if(this.timer % 4000 < 2000){
+        fill(145, 36, 120,125 + (this.timer%2000)/16);
+    }
+    else{
+        fill(145, 36, 120,250 - (this.timer%2000)/16);
+    }
+    
+    if(this.display < 2){
 
-    fill(145, 36, 120,125 + (this.timer%2000)/16);
-    noStroke();
-    pushMatrix();
-    translate(50,this.yPos);
-    rect(0,0,300,200,20);
-    fill(15, 244, 252);
-    textSize(25);
-    text("Soccer",40,30);
-    fill(232, 213, 5);
-    text("Soccer-in-a-Maze",40,60);
-    fill(59, 240, 14);
+        noStroke();
+        pushMatrix();
+        translate(50,this.yPos);
+        rect(0,0,300,200,20);
+        fill(15, 244, 252);
+        textSize(25);
+        text("Soccer",40,30);
+        fill(232, 213, 5);
+        text("Soccer-in-a-Maze",40,60);
+        fill(59, 240, 14);
+    
+        text("Instructions",40,120);
+        fill(198, 226, 227);
+    
+        text("Penalty kick",40,90);
+        fill(232, 171, 18);
+        text("Credits",40,150);
+        textSize(15);
+        fill(230, 214, 207);
+        text("click mouse to select option",20,180);
+        popMatrix();
 
-    text("Instructions",40,120);
-    fill(198, 226, 227);
-
-    text("Penalty kick",40,90);
-    fill(232, 171, 18);
-    text("Credits",40,150);
-    textSize(15);
-    fill(230, 214, 207);
-    text("click mouse to select option",20,180);
-    popMatrix();
+    
+    }
+    
+    else if(this.display > 1){
+        fill(48, 217, 70);
+        rect(0,0,400,400);
+        fill(26, 26, 23);
+        textSize(30);
+        if(this.display === 2){
+            text("Soccer",150,200);
+        }
+        else if(this.display === 3){
+            text("Soccer-in-a-Maze",100,200);
+        }
+        else if(this.display === 4){
+            text("Penalty Shootout",100,200);
+        }
+        else if(this.display === 5){
+            textSize(18);
+            text("Instructions :-\nSelect one of the available games - \nSoccer or Soccer-in-a-maze or \njust practice Penalty kicks in 3-d !!\n(Soccer-in-a-maze is a new game which\ncan be said to be a hybrid of Soccer \nand Maze solving games.)\nUse arrow keys to move \nthe controlling player around.\nUse SHIFT key to shoot/kick.",40,100);
+        }
+        else if(this.display === 6){
+            textSize(20);
+            text("Author : Ameya Khandekar\nVirginia Tech\nECE 4525\nVideo Game Design and Engg\nFinal Project ",80,150);
+            
+        }
+        fill(34, 75, 199);
+        rect(150,350,120,30,5);
+        triangle(153,340,153,390,130,365);
+        fill(48, 217, 70);
+        textSize(20);
+        text("Main Menu",155,370);
+    }
 };
+
+startScreenObj.prototype.processClick = function(){
+    if(this.display < 2){
+        if(mouseX > 80 && mouseX < 300){
+            if(mouseY > 110 && mouseY < 130){
+                this.display = 2;
+            }
+            else if(mouseY > 140 && mouseY < 160){
+                this.display = 3;
+            }
+            else if(mouseY > 170 && mouseY < 190){
+                this.display = 4;
+            }
+            else if(mouseY > 200 && mouseY < 220){
+                this.display = 5;
+            }
+            else if(mouseY > 220 && mouseY < 250){
+                this.display = 6;
+            }
+        }
+    }
+    else{ //for now enable escape to main menu from all other screens
+        //        rect(150,350,120,30,5);
+        if(mouseX > 150 && mouseX < 270 && mouseY > 350 && mouseY < 380){
+            this.display = 1;
+        }
+    }
+};
+
 startScreenObj.prototype.update = function(){
-    if(this.timer > 300 && this.timer < 600){
+    if(this.timer > 120 && this.timer < 420){
         this.yPos++;
     }
     this.timer++;
 };
 // Mouse Keyboard methods :- 
 var mouseClicked = function() {
-/*    target.set(mouseX, mouseY);
-    ball.velocity.set(target.x - ball.position.x, target.y - ball.position.y);
-    ball.velocity.div(20);
-    ball.drag.set(ball.velocity.x, ball.velocity.y);
-    ball.drag.mult(-0.3);*/
+    if(start === 0 && startScreen.timer > 420){
+        startScreen.processClick();
+    }
 };
 
 draw = function() {
     
     background(255,255,255);
+
     if(start === 0){
         if(customCharMade === 0){
             customChar();
         }
         bg.draw();
         goalPost.draw();
-        goalie.draw();
-        ball.draw();
-
+        if(startScreen.display === 0){
+            goalie.draw();
+            ball.draw();
         //update methods :- 
-        ball.update();
-    
+            ball.update();
+        }
         startScreen.draw();
         startScreen.update();
     }
@@ -1041,7 +1112,11 @@ draw = function() {
             ball.update();
     
     }
+    //fill(0,0,0,120);
+    //rect(80,230,220,20);
 };
+
+
 
 
 //End of processing sketch.
