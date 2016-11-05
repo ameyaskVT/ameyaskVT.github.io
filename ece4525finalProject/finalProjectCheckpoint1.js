@@ -4,13 +4,142 @@ frameRate(60);
 
 //Beginning of processing sketch
 
+
+
+var start = 0;
+
 var toPI = PI/180;
 
 var ballImages = [];
 var pointSet = [];
 
+var spritemap = [];
+
+var initspritemap = function(){
+    for(var i = 0 ; i < 16 ; i++){
+        spritemap[i] = [];
+    }
+    
+    for(var i = 0 ; i < 16 ; i++){
+        for(var j = 0 ; j < 16 ; j++){
+            spritemap[i][j] = color(255,255,255);
+        }
+    }
+};
+
+var drawspritemap = function(){
+    noStroke();
+    for(var i = 0 ; i < 16 ; i++){
+        for(var j = 0 ; j < 16 ; j++){
+            if(spritemap[i][j] !== color(255,255,255)){
+                fill(spritemap[i][j]);
+                rect(20*i,20*j,20,20);
+            }
+        }
+    }
+};
+
+var images = [];
+
+var customCharMade = 0;
+
 var customChar = function()
 {
+customCharMade = 1;
+//images 0
+initspritemap();
+    
+background(0,0,0,0);
+//paste sprite values here :-
+{
+    spritemap[2][8] = -15345972;
+spritemap[3][5] = -1241556;
+spritemap[3][6] = -1241556;
+spritemap[3][7] = -15345972;
+spritemap[3][8] = -15345972;
+spritemap[4][4] = -1241556;
+spritemap[4][5] = -1241556;
+spritemap[4][6] = -1241556;
+spritemap[4][7] = -15345972;
+spritemap[4][14] = -16777216;
+spritemap[5][4] = -1241556;
+spritemap[5][10] = -2722025;
+spritemap[5][11] = -1317155;
+spritemap[5][12] = -1317155;
+spritemap[5][13] = -16777216;
+spritemap[5][14] = -16777216;
+spritemap[6][3] = -1241556;
+spritemap[6][4] = -1241556;
+spritemap[6][5] = -1241556;
+spritemap[6][6] = -1241556;
+spritemap[6][8] = -2722025;
+spritemap[6][9] = -2722025;
+spritemap[6][10] = -2722025;
+spritemap[6][11] = -1317155;
+spritemap[6][12] = -1317155;
+spritemap[6][13] = -16777216;
+spritemap[6][14] = -16777216;
+spritemap[7][1] = -16777216;
+spritemap[7][2] = -1663991;
+spritemap[7][3] = -1241556;
+spritemap[7][4] = -1241556;
+spritemap[7][5] = -1241556;
+spritemap[7][6] = -1241556;
+spritemap[7][7] = -16777216;
+spritemap[7][8] = -16777216;
+spritemap[7][9] = -2722025;
+spritemap[8][1] = -16777216;
+spritemap[8][2] = -1663991;
+spritemap[8][3] = -1241556;
+spritemap[8][4] = -1241556;
+spritemap[8][5] = -1241556;
+spritemap[8][6] = -1241556;
+spritemap[8][7] = -16777216;
+spritemap[8][8] = -16777216;
+spritemap[9][1] = -16777216;
+spritemap[9][2] = -1663991;
+spritemap[9][3] = -1241556;
+spritemap[9][4] = -1241556;
+spritemap[9][5] = -1241556;
+spritemap[9][6] = -1241556;
+spritemap[9][7] = -16777216;
+spritemap[9][8] = -16777216;
+spritemap[9][9] = -2722025;
+spritemap[10][3] = -1241556;
+spritemap[10][4] = -1241556;
+spritemap[10][5] = -1241556;
+spritemap[10][6] = -1241556;
+spritemap[10][8] = -2722025;
+spritemap[10][9] = -2722025;
+spritemap[10][10] = -2722025;
+spritemap[10][11] = -1317155;
+spritemap[10][12] = -1317155;
+spritemap[10][13] = -16777216;
+spritemap[10][14] = -16777216;
+spritemap[11][4] = -1241556;
+spritemap[11][10] = -2722025;
+spritemap[11][11] = -1317155;
+spritemap[11][12] = -1317155;
+spritemap[11][13] = -16777216;
+spritemap[11][14] = -16777216;
+spritemap[12][4] = -1241556;
+spritemap[12][5] = -1241556;
+spritemap[12][6] = -1241556;
+spritemap[12][7] = -15345972;
+spritemap[12][14] = -16777216;
+spritemap[13][5] = -1241556;
+spritemap[13][6] = -1241556;
+spritemap[13][7] = -15345972;
+spritemap[13][8] = -15345972;
+spritemap[14][8] = -15345972;
+
+}
+drawspritemap();
+images.push(get(0,0,320,320));  // image 0 - goalie position 0.
+
+
+
+
     
 //image 0 for soccer_animation_0    
 background(0,0,0,0);
@@ -584,15 +713,15 @@ pt3d.prototype.mag = function(){
 
 var projectionObj = function(){
     
-    this.f = 120;
-    this.camPos = new pt3d(110,70,70);
+    this.f = 200;
+    this.camPos = new pt3d(80,50,-30);
     this.pt2d = new PVector(0,0);
 
 };
 //this sets the pt2d object to the required value.
 //also for processingJS offline version make sure to use set function with (x,y,0) to avoid errors.
 projectionObj.prototype.compute = function(node3){
-    this.pt2d.set(round(this.f*((node3.x-this.camPos.x)/node3.z))+this.camPos.x,round(this.f*((node3.y-this.camPos.y)/node3.z))+this.camPos.y,0);
+    this.pt2d.set(round(this.f*((node3.x-this.camPos.x)/(node3.z - this.camPos.z)))+this.camPos.x,round(this.f*((node3.y-this.camPos.y)/(node3.z-this.camPos.z)))+this.camPos.y,0);
     
 };
 
@@ -606,36 +735,46 @@ projectionObj.prototype.getY = function(){
 
 var projection = new projectionObj();
 
-
-
 var backgroundObj = function(){
- 
+
+// Marking 1 :- 
+this.node3 = new pt3d(0,30,200);
+projection.compute(this.node3);
+this.line1pt1 = new PVector(projection.pt2d.x,projection.pt2d.y);
+
+this.node3.set(400,30,200);
+projection.compute(this.node3);
+this.line1pt2 = new PVector(projection.pt2d.x,projection.pt2d.y);
+
+this.node3.set(0,180,200);
+projection.compute(this.node3);
+this.line2pt1 = new PVector(projection.pt2d.x,projection.pt2d.y);
+
+this.node3.set(400,180,200);
+projection.compute(this.node3);
+this.line2pt2 = new PVector(projection.pt2d.x,projection.pt2d.y);
+
+
+this.node3.set(150,50,50);
+projection.compute(this.node3);
+this.line3pt1 = new PVector(projection.pt2d.x,projection.pt2d.y);
+
+this.node3.set(150,50,200);
+projection.compute(this.node3);
+this.line3pt2 = new PVector(projection.pt2d.x,projection.pt2d.y);
+
+
+this.node3.set(150,180,50);
+projection.compute(this.node3);
+this.line4pt1 = new PVector(projection.pt2d.x,projection.pt2d.y);
+
+this.node3.set(150,180,200);
+projection.compute(this.node3);
+this.line4pt2 = new PVector(projection.pt2d.x,projection.pt2d.y);
+
+
+
 };
-
-var goalPostObj = function(x,y){
-    this.position = new PVector(x,y);
-};
-
-var ballObj = function(x, y) {
-    this.position = new PVector(x, y);
-    this.prevPosition = new PVector(x,y);
-    this.changePos = new PVector(x,y);
-    this.acceleration = new PVector(0, 0);
-    this.velocity = new PVector(0, 0);
-    this.drag = new PVector(0, 0);
-    this.aAcc = 0;
-    this.aVelocity = 0;
-    this.angle = 0;
-    this.idx = 0;
-    this.moveCount = 0;
-};
-
-var ball = new ballObj(100, 100);
-var target = new PVector(0, 0);
-
-var bg = new backgroundObj();
-var goalPost = new goalPostObj(120,180);
-
 backgroundObj.prototype.draw = function() {
 
     noStroke();
@@ -648,7 +787,73 @@ backgroundObj.prototype.draw = function() {
     
     fill(107, 79, 107);
     rect(0,0,400,100);
+    
+    //the goal and above lines were drawn using normal co-ordinates. can be changed later.
+    
+    // Fix the markings first :- 
+/*    fill(189, 30, 30);
+    line(this.line1pt1.x,this.line1pt1.y,this.line1pt2.x,this.line1pt2.y);
+
+    line(this.line2pt1.x,this.line2pt1.y,this.line2pt2.x,this.line2pt2.y);
+    
+    line(this.line3pt1.x,this.line3pt1.y,this.line3pt2.x,this.line3pt2.y);
+    line(this.line4pt1.x,this.line4pt1.y,this.line4pt2.x,this.line4pt2.y);
+*/
+
 };
+
+var goalPostObj = function(x,y,z){
+    this.pos3d = new pt3d(x,y,z);
+    projection.compute(this.pos3d);
+    this.position = new PVector(projection.pt2d.x,projection.pt2d.y);
+};
+
+var ballObj = function(x, y, z) {
+    this.init = new pt3d(x,y,z);
+    this.pos3d = new pt3d(x,y,z);
+    this.shadowPos3d = new pt3d(x,180,z);
+    
+    projection.compute(this.pos3d);
+    
+    this.position = new PVector(projection.pt2d.x,projection.pt2d.y);
+    this.initPos = new PVector(this.position.x,this.position.y);
+    
+    //assume ball is initially on ground :- 
+    projection.compute(this.shadowPos3d);
+    this.shadowPos = new PVector(projection.pt2d.x,projection.pt2d.y); 
+
+    
+    this.thrown = 0;
+    this.velocity = new pt3d(0,-2,2); // init velocity - later change using mouse click
+    this.acceleration = new pt3d(0, 0.01,0);
+    this.aVelocity = 0;
+    this.angle = 0;
+    this.bounceCoeff = -0.5;
+    this.boardCoeff = -0.001;
+    this.size = 25;
+    this.fallenFloor = 0;
+    this.hitBoard = 0;
+    this.bounce = 0;
+
+    
+    
+    this.prevPosition = new PVector(this.position.x,this.position.y);
+    this.changePos = new PVector(this.position.x,this.position.y);
+
+//    this.drag = new PVector(0, 0);
+  //  this.aAcc = 0;
+//    this.aVelocity = 0;
+    this.angle = 0;
+    this.idx = 0;
+    this.moveCount = 0;
+};
+
+var ball = new ballObj(150, 180,50);
+var target = new PVector(0, 0);
+
+var bg = new backgroundObj();
+var goalPost = new goalPostObj(80,180,200);
+
 
 goalPostObj.prototype.draw = function() {
     pushMatrix();
@@ -670,12 +875,36 @@ goalPostObj.prototype.draw = function() {
 
 // Ball Obj methods.
 ballObj.prototype.update = function() {
-    this.velocity.add(this.drag);
-    this.position.add(this.velocity);
-    this.drag.set(this.velocity.x, this.velocity.y,0);
-    this.drag.mult(-0.03);
+    //this.pos3d.z += 1;
+    if(start === 0){
+        this.velocity.add(this.acceleration);
+        this.pos3d.add(this.velocity);
+        
+        if(this.pos3d.z > 200){
+            this.pos3d.z = 50;
+            this.pos3d.y = 180;
+            this.pos3d.x = 150;
+            
+            this.velocity.x = random(-1,1);
+            this.velocity.y = random(-2,0.5);
+            this.velocity.z = 2;
+        }
+        if(this.pos3d.y > 180){
+            this.velocity.y *= -1;
+        }
+    }
     
-    this.aAcc = this.velocity.mag()/10;	// modify constant 10
+    projection.compute(this.pos3d);
+    this.position.set(projection.pt2d.x,projection.pt2d.y,0);
+
+    this.shadowPos3d.x = this.pos3d.x;
+    this.shadowPos3d.z = this.pos3d.z;
+
+    projection.compute(this.shadowPos3d);
+    this.shadowPos.set(projection.pt2d.x,projection.pt2d.y,0); 
+
+
+    this.aAcc = 1/10;	// modify constant 10
     if (this.velocity.x < 0) {
         this.aAcc = -this.aAcc;
     }
@@ -690,40 +919,130 @@ ballObj.prototype.update = function() {
 };
 
 ballObj.prototype.draw = function() {
+    pushMatrix();
+    translate(this.shadowPos.x, this.shadowPos.y);
+    scale(0.75);
+    var scl = (this.pos3d.z - 50)/150;
+    scale(1 - (0.1)*scl,1-(0.3)*scl);
+    //scale(1-(0.3*scl));
+    fill(0,0,0,128);
+    ellipse(0,0,40,40);
+    popMatrix();
+    
     fill(255, 255, 255);
     pushMatrix();
     translate(this.position.x, this.position.y);
     rotate(toPI*this.angle);
     scale(0.75);
+    scl = (this.pos3d.z - 50)/150;
+    //scale(1 - (0.1)*scl,1-(0.3)*scl);
+    scale(1-(0.3*scl));
+    
     image(ballImages[this.idx],-20,-20,40,40);
+    popMatrix();
+    
+    
+
+    
+    
+};
+
+
+var goalieObj  = function(x,y,z){
+    
+    this.pos3d = new pt3d(x,y,z);
+    projection.compute(this.pos3d);
+    this.position = new PVector(projection.pt2d.x,projection.pt2d.y);
+
+};
+
+goalieObj.prototype.draw = function() {
+    pushMatrix();
+    translate(this.position.x,this.position.y);
+    image(images[0],-40,-40,80,80);
     popMatrix();
 };
 
+var goalie = new goalieObj(160,140,170);
 
+
+var startScreenObj = function(){
+    this.timer = 0;
+    this.yPos = -200;
+};
+var startScreen = new startScreenObj();
+
+startScreenObj.prototype.draw = function() {
+
+    fill(145, 36, 120,125 + (this.timer%2000)/16);
+    noStroke();
+    pushMatrix();
+    translate(50,this.yPos);
+    rect(0,0,300,200,20);
+    fill(15, 244, 252);
+    textSize(25);
+    text("Soccer",40,30);
+    fill(232, 213, 5);
+    text("Soccer-in-a-Maze",40,60);
+    fill(59, 240, 14);
+
+    text("Instructions",40,120);
+    fill(198, 226, 227);
+
+    text("Penalty kick",40,90);
+    fill(232, 171, 18);
+    text("Credits",40,150);
+    textSize(15);
+    fill(230, 214, 207);
+    text("click mouse to select option",20,180);
+    popMatrix();
+};
+startScreenObj.prototype.update = function(){
+    if(this.timer > 300 && this.timer < 600){
+        this.yPos++;
+    }
+    this.timer++;
+};
 // Mouse Keyboard methods :- 
 var mouseClicked = function() {
-    target.set(mouseX, mouseY,0);
-    ball.velocity.set(target.x - ball.position.x, target.y - ball.position.y,0);
+/*    target.set(mouseX, mouseY);
+    ball.velocity.set(target.x - ball.position.x, target.y - ball.position.y);
     ball.velocity.div(20);
-    ball.drag.set(ball.velocity.x, ball.velocity.y,0);
-    ball.drag.mult(-0.3);
+    ball.drag.set(ball.velocity.x, ball.velocity.y);
+    ball.drag.mult(-0.3);*/
 };
 
-
-
-customChar();
 draw = function() {
     
     background(255,255,255);
+    if(start === 0){
+        if(customCharMade === 0){
+            customChar();
+        }
+        bg.draw();
+        goalPost.draw();
+        goalie.draw();
+        ball.draw();
+
+        //update methods :- 
+        ball.update();
     
+        startScreen.draw();
+        startScreen.update();
+    }
+    else{
     //Draw methods :-
-    bg.draw();
-    goalPost.draw();
-    ball.draw();
+            bg.draw();
+            goalPost.draw();
+            goalie.draw();
+            ball.draw();
+
+            //update methods :- 
+            ball.update();
     
-    //update methods :- 
-    ball.update();
+    }
 };
+
 
 //End of processing sketch.
 
