@@ -22,6 +22,10 @@ var keyArray = [];
 var ballImages = [];
 var pointSet = [];
 var p2 = [];
+var bgImages = [];
+var translateState = 0;
+var translateDist = 0;
+
 
 
 var iterations = 0;
@@ -65,6 +69,38 @@ var customCharMade = 0;
 var customChar = function()
 {
 customCharMade = 1;
+
+
+// 2d game images :- 
+    //background();
+    background(0,0,0,0);
+    noFill();
+    stroke(245,245,245,60);
+    for(var i = 0 ; i < 16 ; i++){
+        rect(floor(i/4)*100,(i%4)*100,100,100);
+    }
+    stroke(245,245,245);
+    rect(10,10,390,380);
+    ellipse(400,200,100,100);
+    bgImages.push(get(0,0,400,400));
+    
+    background(0,0,0,0);
+
+    noFill();
+    stroke(245,245,245,60);
+    for(var i = 0 ; i < 16 ; i++){
+        rect(floor(i/4)*100,(i%4)*100,100,100);
+    }
+    stroke(245,245,245);
+    rect(0,10,390,380);
+    ellipse(0,200,100,100);
+    bgImages.push(get(0,0,400,400));
+
+
+// 2d game images end here.
+
+
+
 {
 //images 0
 background(0,0,0,0);
@@ -1821,6 +1857,12 @@ var goalie = new goalieObj(160,140,170);
 
 // Objects  for Final Project CheckPoint 2 
 
+var trialFieldObj = function(){
+
+};
+
+var trialField = new trialFieldObj();
+
 var trialBallObj = function(x,y){
     this.position = new PVector(x,y);
     this.velocity = new PVector(0,0);
@@ -1828,26 +1870,76 @@ var trialBallObj = function(x,y){
     this.radius = 10;
     
 };
-var trialBall = new trialBallObj(140,140);
 
-
-var trialPlayerObj = function(x,y,id,teamId){
+var trialBall = new trialBallObj(400,200);
+var trialPlayerObj = function(id,teamId){
+    
+    var x,y ; 
+    
+    if(id % 2 === 0){
+        y = round(random(240,280));
+    }
+    else{
+        y = round(random(140,180));
+    }
+    x = id*100 + round(random(40,80));
+    if(teamId === 1){
+        x = 800 - x;
+    }
     this.position = new PVector(x,y);
     this.team = teamId;
     this.id = id;
     this.angle = toPI*0;
     this.step = new PVector(0,0);
+    this.keyPlayer = false;
     this.hasControl = false;
     this.radius = 15;
+    this.relBallPos = new PVector(0,0);
     //this.dir = 0;
 };
-var trialPlayer = new trialPlayerObj(200,200,3,1);
 
+var prep2kickOffState = function(){
+
+};
+
+var defendState = function(){
+
+};
+
+var attackState = function(){
+
+};
+
+var teamObj = function(id){
+    this.id = id;
+    this.states = [new prep2kickOffState(),new defendState(), new attackState()];
+    this.currState = 0;
+    this.players = [new trialPlayerObj(0,this.id),new trialPlayerObj(1,this.id),new trialPlayerObj(2,this.id),new trialPlayerObj(3,this.id)];
+    this.keyPlayerIdx = 3;
+    if(id === 0){
+        this.players[this.keyPlayerIdx].keyPlayer = true;
+    }
+};
+teamObj.prototype.changeState = function(x){
+    this.currState = x;
+};
+
+var teams = [new teamObj(0), new teamObj(1)];
+
+var trialPlayer = new trialPlayerObj(3,0);
+
+trialFieldObj.prototype.draw = function() {
+    //if(trialPlayer.position.x 
+};
 
 trialPlayerObj.prototype.draw = function() {
 
     pushMatrix();
         translate(this.position.x,this.position.y);
+        if(this.keyPlayer && frameCount % 60 < 30){
+            fill(0,0,0,128);
+            triangle(-20,-35,0,-35,-10,-20);
+        }
         rotate(this.angle + toPI*90);
         
         fill(31, 28, 31);
@@ -1867,35 +1959,38 @@ trialPlayerObj.prototype.draw = function() {
     popMatrix();
 };
 trialPlayerObj.prototype.move = function(){
+    this.relBallPos.x = trialBall.position.x - this.position.x;
+    this.relBallPos.y = trialBall.position.y - this.position.y;
 
-    if(keyArray[RIGHT] === 1 && (frameCount % 3) === 0){
-        this.angle = this.angle + toPI;
-        if(this.angle >= PI){
-            this.angle = -PI;
-        } 
-
-    }
-    if(keyArray[LEFT] === 1 && (frameCount % 3) === 0){
-        this.angle = this.angle - toPI;
-        if(this.angle <= -PI){
-            this.angle = PI;
+    this.angle = this.relBallPos.heading();
+    if(this.keyPlayer === true){
+        if(keyArray[RIGHT] === 1 && (frameCount % 3) === 0){
+            this.angle = this.angle + toPI;
+            if(this.angle >= PI){
+                this.angle = -PI;
+            } 
+    
+        }
+        if(keyArray[LEFT] === 1 && (frameCount % 3) === 0){
+            this.angle = this.angle - toPI;
+            if(this.angle <= -PI){
+                this.angle = PI;
+            }
+        }
+        this.step.x = cos(this.angle);
+        this.step.y = sin(this.angle);
+        this.step.normalize();
+        if(keyArray[UP] === 1){
+            this.position.add(this.step);
+            if(this.hasControl){
+                trialBall.position.add(this.step);
+            }
+        }
+        if(keyArray[DOWN] === 1){
+            this.position.sub(this.step);
         }
     }
-    this.step.x = cos(this.angle);
-    this.step.y = sin(this.angle);
-    this.step.normalize();
-    if(keyArray[UP] === 1){
-        this.position.add(this.step);
-        if(this.hasControl){
-            trialBall.position.add(this.step);
-        }
-    }
-    if(keyArray[DOWN] === 1){
-        this.position.sub(this.step);
-/*        if(this.hasControl){
-            trialBall.position.sub(this.step);
-        }*/
-    }
+
     var d = (this.position.x - trialBall.position.x)*(this.position.x - trialBall.position.x) + (this.position.y - trialBall.position.y)*(this.position.y - trialBall.position.y);
     if(d <= sq(this.radius + trialBall.radius) ){
         this.hasControl = true;
@@ -1918,7 +2013,7 @@ trialBallObj.prototype.draw = function() {
 
 trialBallObj.prototype.move = function(){
     if(!trialPlayer.hasControl){
-        this.velocity.add(this.deceleration);
+   //     this.velocity.add(this.deceleration);
 
 /*        if(this.velocity.mag() !== 0){
             this.velocity.normalize();
@@ -1936,11 +2031,27 @@ trialBallObj.prototype.move = function(){
             this.velocity.mult(0);
         }
         this.position.add(this.velocity);
-        if(this.position.x < 0 || this.position.x > 400 || this.position.y < 0 || this.position.y > 400){
+        if(this.position.x < 0 || this.position.x > 800 || this.position.y < 0 || this.position.y > 400){
             this.velocity.mult(-1);
             //println("velocity "+this.velocity.mag());
         }
         
+    }
+};
+
+teamObj.prototype.draw = function() {
+    for(var i = 0 ; i < this.players.length ; i++){
+        this.players[i].draw();
+    }
+};
+teamObj.prototype.move = function() {
+    if(this.id === 0 && (keyArray[CONTROL] === 1) && (frameCount % 10 === 0)){
+        this.players[this.keyPlayerIdx].keyPlayer = false;
+        this.keyPlayerIdx = (this.keyPlayerIdx + 1)%4;
+        this.players[this.keyPlayerIdx].keyPlayer = true;
+    }
+    for(var i = 0 ; i < this.players.length ; i++){
+        this.players[i].move();
     }
 };
 
@@ -2007,7 +2118,7 @@ startScreenObj.prototype.draw = function() {
         }
         else if(this.display === 5){
             textSize(18);
-            text("Instructions :-\nSelect one of the available games - \nSoccer or Soccer-in-a-maze or \njust practice Penalty kicks in 3-d !!\n(Soccer-in-a-maze is a new game which\ncan be said to be a hybrid of Soccer \nand Maze solving games.)\nUse arrow keys to move \nthe controlling player around.\nUse SHIFT key to shoot/kick.\nGames marked n/a are under development \nand not available for playing for checkpoint 2",40,100);
+            text("Instructions :-\nSelect one of the available games - \nSoccer or Soccer-in-a-maze or \njust practice Penalty kicks in 3-d !!\n(Soccer-in-a-maze is a new game which\ncan be said to be a hybrid of Soccer \nand Maze solving games.)\nGames marked n/a are under development \nand not available for playing for checkpoint 2\nUsing simple shapes for Players,\nwill be upgraded soon\n\nUse arrow keys to move \nthe controlling player around.\nUse MOUSECLICK to shoot/kick.\nCHOOSE controlling player using CTRL key,\na triangle flashes on its head ",40,20);
         }
         else if(this.display === 6){
             textSize(20);
@@ -2122,15 +2233,62 @@ draw = function() {
             //update methods :- 
             ball.update();
     	*/
+       background(57, 179, 23);
+        //image(bgImages[0],-20,0,400,400);
+        //image(bgImages[1],380,0,400,400);
+         pushMatrix();
+         switch(translateState){
+            case 0:
+                if(trialBall.position.x > 300){
+                    translateState = 1; 
+                }
+                break;
+            case 1:
+                if(trialBall.position.x > 700){
+                    translateState = 2;
+                }
+                else if(trialBall.position.x < 300){
+                    translateState = 0;
+                }
+                break;
+            case 2:
+                if(trialBall.position.x < 700){
+                    translateState = 1;
+                }
+                break;
+            
+        }
+        
+        switch(translateState){
+
+            case 1:
+                translateDist = trialBall.position.x - 300;
+                break;
+            case 2:
+                translateDist = 400;
+                break;
+            
+        }
+        translate(-translateDist, 0);
+
+        image(bgImages[0],0,0,400,400);
+        image(bgImages[1],400,0,400,400);
+        //draw the Objects :- 
+      //  trialPlayer.draw();
+        trialBall.draw();
+        for(var i = 0 ; i < teams.length ; i++){
+            teams[i].draw();
+        }
+        
+        popMatrix();
+        
+//        trialPlayer.move();
+        trialBall.move();
+        for(var i = 0 ; i < teams.length ; i++){
+            teams[i].move();
+        }
 
 		
-   		background(57, 179, 23);
-    	trialPlayer.draw();
-    	trialPlayer.move();
-    
-    	trialBall.draw();
-    	trialBall.move();
-    
     }
     //fill(0,0,0,120);
     //rect(80,230,220,20);
