@@ -17,7 +17,7 @@ Creative aspect :-
 var start = 0;
 var toPI = PI/180;
 
-
+var keyArray = [];
 
 var ballImages = [];
 var pointSet = [];
@@ -1819,7 +1819,132 @@ goalieObj.prototype.update = function(){
 
 var goalie = new goalieObj(160,140,170);
 
+// Objects  for Final Project CheckPoint 2 
 
+var trialBallObj = function(x,y){
+    this.position = new PVector(x,y);
+    this.velocity = new PVector(0,0);
+    this.deceleration = new PVector(0,0);
+    this.radius = 10;
+    
+};
+var trialBall = new trialBallObj(140,140);
+
+
+var trialPlayerObj = function(x,y,id,teamId){
+    this.position = new PVector(x,y);
+    this.team = teamId;
+    this.id = id;
+    this.angle = toPI*0;
+    this.step = new PVector(0,0);
+    this.hasControl = false;
+    this.radius = 15;
+    //this.dir = 0;
+};
+var trialPlayer = new trialPlayerObj(200,200,3,1);
+
+
+trialPlayerObj.prototype.draw = function() {
+
+    pushMatrix();
+        translate(this.position.x,this.position.y);
+        rotate(this.angle + toPI*90);
+        
+        fill(31, 28, 31);
+        quad(-25,-10,25,-10,15,10,-15,10);
+        noStroke();
+        if(this.team === 0){
+            fill(96, 86, 237);
+        }
+        else{
+            fill(212, 30, 30);
+        }
+        ellipse(0,0,2*this.radius,2*this.radius);
+        rotate(-(this.angle + toPI*90));
+        fill(13, 13, 12);
+        textSize(12);
+        text(this.id,-2 ,2 );
+    popMatrix();
+};
+trialPlayerObj.prototype.move = function(){
+
+    if(keyArray[RIGHT] === 1 && (frameCount % 3) === 0){
+        this.angle = this.angle + toPI;
+        if(this.angle >= PI){
+            this.angle = -PI;
+        } 
+
+    }
+    if(keyArray[LEFT] === 1 && (frameCount % 3) === 0){
+        this.angle = this.angle - toPI;
+        if(this.angle <= -PI){
+            this.angle = PI;
+        }
+    }
+    this.step.x = cos(this.angle);
+    this.step.y = sin(this.angle);
+    this.step.normalize();
+    if(keyArray[UP] === 1){
+        this.position.add(this.step);
+        if(this.hasControl){
+            trialBall.position.add(this.step);
+        }
+    }
+    if(keyArray[DOWN] === 1){
+        this.position.sub(this.step);
+/*        if(this.hasControl){
+            trialBall.position.sub(this.step);
+        }*/
+    }
+    var d = (this.position.x - trialBall.position.x)*(this.position.x - trialBall.position.x) + (this.position.y - trialBall.position.y)*(this.position.y - trialBall.position.y);
+    if(d <= sq(this.radius + trialBall.radius) ){
+        this.hasControl = true;
+    }
+    else{
+        this.hasControl = false;
+    }
+};
+
+trialBallObj.prototype.draw = function() {
+    pushMatrix();
+        translate(this.position.x,this.position.y);
+        fill(233,233,233);
+        ellipse(0,0,2*this.radius,2*this.radius);
+        stroke(0,0,0);
+        line(-9,4,9,4);
+        line(-9,-4,9,-4);
+    popMatrix();
+};
+
+trialBallObj.prototype.move = function(){
+    if(!trialPlayer.hasControl){
+        this.velocity.add(this.deceleration);
+
+/*        if(this.velocity.mag() !== 0){
+            this.velocity.normalize();
+        }*/
+        this.deceleration.x = this.velocity.x;
+        this.deceleration.y = this.velocity.y;
+        
+/*        if(this.deceleration.mag() !== 0){
+            this.deceleration.normalize();
+        }*/
+        this.deceleration.mult(-0.03);
+        
+       // this.velocity.mult(2);
+        if(this.velocity.mag() < 0.3){
+            this.velocity.mult(0);
+        }
+        this.position.add(this.velocity);
+        if(this.position.x < 0 || this.position.x > 400 || this.position.y < 0 || this.position.y > 400){
+            this.velocity.mult(-1);
+            //println("velocity "+this.velocity.mag());
+        }
+        
+    }
+};
+
+//  Final Project CheckPoint 2
 
 startScreenObj.prototype.draw = function() {
     if(this.display === 1){
@@ -1937,12 +2062,33 @@ startScreenObj.prototype.update = function(){
     }
     this.timer++;
 };
+
 // Mouse Keyboard methods :- 
 var mouseClicked = function() {
     if(start === 0 && startScreen.timer > 420){
         startScreen.processClick();
     }
+
+	if(start !== 0){
+		if(trialPlayer.hasControl){
+        	trialBall.velocity.x = 2*cos(trialPlayer.angle);
+        	trialBall.velocity.y = 2*sin(trialPlayer.angle);
+        	trialBall.velocity.normalize();
+        	trialBall.velocity.mult(5);
+        	trialBall.position.add(trialBall.velocity);
+    	}
+
+	}
+
 };
+
+keyPressed = function(){
+    keyArray[keyCode] = 1;
+};
+keyReleased = function(){
+    keyArray[keyCode] = 0;
+};
+
 
 draw = function() {
     
@@ -1966,6 +2112,7 @@ draw = function() {
     }
     else{
     //Draw methods :-
+		/*
             bg.draw();
             goalPost.draw();
             goalie.draw();
@@ -1974,6 +2121,15 @@ draw = function() {
 
             //update methods :- 
             ball.update();
+    	*/
+
+		
+   		background(57, 179, 23);
+    	trialPlayer.draw();
+    	trialPlayer.move();
+    
+    	trialBall.draw();
+    	trialBall.move();
     
     }
     //fill(0,0,0,120);
