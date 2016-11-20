@@ -1872,6 +1872,20 @@ var trialBallObj = function(x,y){
 };
 
 var trialBall = new trialBallObj(400,200);
+
+var keyState = function(){
+
+};
+var haltState = function(){
+
+};
+var chaseState = function(){
+
+};
+var controlState = function(){
+
+};
+
 var trialPlayerObj = function(id,teamId){
     
     var x,y ; 
@@ -1887,6 +1901,7 @@ var trialPlayerObj = function(id,teamId){
         x = 800 - x;
     }
     this.position = new PVector(x,y);
+    this.velocity = new PVector(0,0);
     this.team = teamId;
     this.id = id;
     this.angle = toPI*0;
@@ -1896,7 +1911,16 @@ var trialPlayerObj = function(id,teamId){
     this.radius = 15;
     this.relBallPos = new PVector(0,0);
     //this.dir = 0;
+    
+    this.ballDist = sq(1000);
+    
+    this.states = [new keyState(), new haltState(), new chaseState(), new controlState()];
+    this.currState = 1;  
 };
+trialPlayerObj.prototype.changeState = function(x){
+    this.currState = x;
+};
+
 
 var prep2kickOffState = function(){
 
@@ -1912,12 +1936,13 @@ var attackState = function(){
 
 var teamObj = function(id){
     this.id = id;
+    this.score = 0;
     this.states = [new prep2kickOffState(),new defendState(), new attackState()];
     this.currState = 0;
     this.players = [new trialPlayerObj(0,this.id),new trialPlayerObj(1,this.id),new trialPlayerObj(2,this.id),new trialPlayerObj(3,this.id)];
     this.keyPlayerIdx = 3;
     if(id === 0){
-        this.players[this.keyPlayerIdx].keyPlayer = true;
+        this.players[this.keyPlayerIdx].changeState(0);
     }
 };
 teamObj.prototype.changeState = function(x){
@@ -1925,13 +1950,21 @@ teamObj.prototype.changeState = function(x){
 };
 
 var teams = [new teamObj(0), new teamObj(1)];
-
 var trialPlayer = new trialPlayerObj(3,0);
 
 trialFieldObj.prototype.draw = function() {
     //if(trialPlayer.position.x 
 };
-
+trialBallObj.prototype.draw = function() {
+    pushMatrix();
+        translate(this.position.x,this.position.y);
+        fill(233,233,233);
+        ellipse(0,0,2*this.radius,2*this.radius);
+        stroke(0,0,0);
+        line(-9,4,9,4);
+        line(-9,-4,9,-4);
+    popMatrix();
+};
 trialPlayerObj.prototype.draw = function() {
 
     pushMatrix();
@@ -1958,41 +1991,67 @@ trialPlayerObj.prototype.draw = function() {
         text(this.id,-2 ,2 );
     popMatrix();
 };
-trialPlayerObj.prototype.move = function(){
-    this.relBallPos.x = trialBall.position.x - this.position.x;
-    this.relBallPos.y = trialBall.position.y - this.position.y;
+teamObj.prototype.draw = function() {
+    for(var i = 0 ; i < this.players.length ; i++){
+        this.players[i].draw();
+    }
+};
 
-    this.angle = this.relBallPos.heading();
-    if(this.keyPlayer === true){
+keyState.prototype.execute = function(me){
+        me.keyPlayer = true;
         if(keyArray[RIGHT] === 1 && (frameCount % 3) === 0){
-            this.angle = this.angle + toPI;
-            if(this.angle >= PI){
-                this.angle = -PI;
+            me.angle = me.angle + toPI;
+            if(me.angle >= PI){
+                me.angle = -PI;
             } 
     
         }
         if(keyArray[LEFT] === 1 && (frameCount % 3) === 0){
-            this.angle = this.angle - toPI;
-            if(this.angle <= -PI){
-                this.angle = PI;
+            me.angle = me.angle - toPI;
+            if(me.angle <= -PI){
+                me.angle = PI;
             }
         }
-        this.step.x = cos(this.angle);
-        this.step.y = sin(this.angle);
-        this.step.normalize();
+        me.step.x = cos(me.angle);
+        me.step.y = sin(me.angle);
+        me.step.normalize();
         if(keyArray[UP] === 1){
-            this.position.add(this.step);
-            if(this.hasControl){
-                trialBall.position.add(this.step);
+            me.position.add(me.step);
+            if(me.hasControl){
+                trialBall.position.add(me.step);
             }
         }
         if(keyArray[DOWN] === 1){
-            this.position.sub(this.step);
+            me.position.sub(me.step);
         }
+};
+haltState.prototype.execute = function(me){
+    me.keyPlayer = false;
+    me.relBallPos.x = trialBall.position.x - me.position.x;
+    me.relBallPos.y = trialBall.position.y - me.position.y;
+    me.angle = me.relBallPos.heading();
+    if(me.ballDist <= sq(80)){
+        me.changeState(2);
     }
+};
+chaseState.prototype.execute = function(me){
+    me.velocity.x = trialBall.position.x - me.position.x;
+    me.velocity.y = trialBall.position.y - me.position.y;
+    me.velocity.normalize();
+    me.velocity.mult(3);
+    me.position.add(me.velocity);
+    if(me.hasControl){
+        me.changeState(3);
+    }
+};
+controlState.prototype.execute = function(me){
+    
+};
 
-    var d = (this.position.x - trialBall.position.x)*(this.position.x - trialBall.position.x) + (this.position.y - trialBall.position.y)*(this.position.y - trialBall.position.y);
-    if(d <= sq(this.radius + trialBall.radius) ){
+trialPlayerObj.prototype.move = function(){
+    this.states[this.currState].execute(this);
+    this.ballDist = (this.position.x - trialBall.position.x)*(this.position.x - trialBall.position.x) + (this.position.y - trialBall.position.y)*(this.position.y - trialBall.position.y);
+    if(this.ballDist <= sq(this.radius + trialBall.radius) ){
         this.hasControl = true;
     }
     else{
@@ -2000,60 +2059,34 @@ trialPlayerObj.prototype.move = function(){
     }
 };
 
-trialBallObj.prototype.draw = function() {
-    pushMatrix();
-        translate(this.position.x,this.position.y);
-        fill(233,233,233);
-        ellipse(0,0,2*this.radius,2*this.radius);
-        stroke(0,0,0);
-        line(-9,4,9,4);
-        line(-9,-4,9,-4);
-    popMatrix();
-};
-
 trialBallObj.prototype.move = function(){
     if(!trialPlayer.hasControl){
-   //     this.velocity.add(this.deceleration);
 
-/*        if(this.velocity.mag() !== 0){
-            this.velocity.normalize();
-        }*/
         this.deceleration.x = this.velocity.x;
         this.deceleration.y = this.velocity.y;
-        
-/*        if(this.deceleration.mag() !== 0){
-            this.deceleration.normalize();
-        }*/
         this.deceleration.mult(-0.03);
-        
-       // this.velocity.mult(2);
         if(this.velocity.mag() < 0.3){
             this.velocity.mult(0);
         }
         this.position.add(this.velocity);
         if(this.position.x < 0 || this.position.x > 800 || this.position.y < 0 || this.position.y > 400){
             this.velocity.mult(-1);
-            //println("velocity "+this.velocity.mag());
         }
-        
     }
 };
 
-teamObj.prototype.draw = function() {
-    for(var i = 0 ; i < this.players.length ; i++){
-        this.players[i].draw();
-    }
-};
 teamObj.prototype.move = function() {
     if(this.id === 0 && (keyArray[CONTROL] === 1) && (frameCount % 10 === 0)){
-        this.players[this.keyPlayerIdx].keyPlayer = false;
+        this.players[this.keyPlayerIdx].changeState(1); //halt it
         this.keyPlayerIdx = (this.keyPlayerIdx + 1)%4;
-        this.players[this.keyPlayerIdx].keyPlayer = true;
+        this.players[this.keyPlayerIdx].changeState(0);
     }
     for(var i = 0 ; i < this.players.length ; i++){
         this.players[i].move();
     }
 };
+
+
 
 //  Final Project CheckPoint 2
 
