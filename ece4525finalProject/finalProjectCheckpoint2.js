@@ -64,6 +64,23 @@ var subdivide = function() {
 
 var images = [];
 
+
+//2-d Images :- 
+
+
+//image variables -
+var rightPlayerBlue = [];
+var leftPlayerBlue = [];
+var frontPlayerBlue = [];
+var backPlayerBlue = [];
+//image variables -
+var rightPlayerRed = [];
+var leftPlayerRed = [];
+var frontPlayerRed = [];
+var backPlayerRed = [];
+
+
+
 var customCharMade = 0;
 
 var customChar = function()
@@ -72,6 +89,2147 @@ customCharMade = 1;
 
 
 // 2d game images :- 
+
+//Red Player :- 
+
+background(0,0,0,0);
+
+
+noStroke();
+
+//back thighs
+fill(242, 190, 106);
+quad(200,230,220,200,220,250,210,250);
+
+//back Leg
+pushMatrix();
+translate(217,240);
+rotate(toPI*60);
+rect(0,0,30,20);  // ankle
+fill(233,233,233);
+rect(20,0,20,20); //socks
+fill(0,0,0);
+rect(40,0,10,28); //shoes
+popMatrix();
+
+
+fill(242, 190, 106);
+
+
+//front leg
+pushMatrix();
+translate(-3,0);
+rect(194,250,20,20,2); //ankles
+quad(194,250,214,250,220,230,200,230); //thighs
+popMatrix();
+
+//face and neck
+rect(190,120,20,20,2);
+rect(198,140,16,10);
+
+
+fill(0,0,0);
+ellipse(200,125,5,5);  //eyes
+rect(185,110,30,10,2); //hair
+rect(210,110,10,30,2); //hair
+noStroke();
+
+//backhand
+fill(242, 190, 106);
+//quad(195,150,195,165,235,185,235,170);
+pushMatrix();
+translate(165,180);
+rotate(toPI*(-20));
+rect(0,0,28,12,5);
+ellipse(-1,5,15,13);
+popMatrix();
+//shirt
+fill(194, 37, 37);
+rect(192,150,32,60,5);
+//shorts
+fill(0,0,0);
+rect(192,200,32,30,5);
+
+//front leg socks
+fill(233,233,233);
+rect(190,270,20,20);
+//front leg shoes
+fill(0,0,0);
+rect(180,290,30,10);
+
+//front hand
+fill(242, 190, 106);
+quad(210,155,210,175,190,199,186,185);
+
+pushMatrix();
+translate(180,210);
+rotate(toPI*-80);
+rect(-7,0,30,10);
+ellipse(-5,5,20,12);
+popMatrix();
+
+leftPlayerRed.push(get(100,100,200,200));
+
+background(0,0,0,0);
+noFill();
+
+
+noStroke();
+
+//back thighs
+fill(242, 190, 106);
+quad(200,230,220,230,230,250,210,250);
+
+//back Leg
+pushMatrix();
+translate(217,240);
+rotate(toPI*37);
+rect(0,0,30,20);  // ankle
+fill(233,233,233);
+rect(20,0,20,20); //socks
+fill(0,0,0);
+rect(40,0,10,28); //shoes
+popMatrix();
+
+
+fill(242, 190, 106);
+
+
+//front leg
+pushMatrix();
+translate(-3,0);
+rect(194,250,20,20,2); //ankles
+quad(194,250,214,250,220,230,200,230); //thighs
+popMatrix();
+
+//face and neck
+rect(190,120,20,20,2);
+rect(198,140,16,10);
+
+
+fill(0,0,0);
+ellipse(200,125,5,5);  //eyes
+rect(185,110,30,10,2); //hair
+rect(210,110,10,30,2); //hair
+noStroke();
+
+//backhand
+fill(242, 190, 106);
+quad(195,150,195,165,235,185,235,170);
+rect(228,170,12,28,5);
+ellipse(235,204,13,15);
+
+//shirt
+fill(194, 37, 37);
+rect(192,150,32,60,5);
+//shorts
+fill(0,0,0);
+rect(192,200,32,30,5);
+
+//front leg socks
+fill(233,233,233);
+rect(190,270,20,20);
+//front leg shoes
+fill(0,0,0);
+rect(180,290,30,10);
+
+//front hand
+fill(242, 190, 106);
+quad(210,160,210,175,180,190,180,175);
+rect(160,175,30,13);
+ellipse(155,180,20,12);
+//front hand fingers
+stroke(0,0,0);
+line(145,180,152,180);
+line(145,177,152,177);
+line(145,183,152,183);
+
+leftPlayerRed.push(get(100,100,200,200));
+
+background(0,0,0,0);
+
+noStroke();
+
+//back thighs
+fill(242, 190, 106);
+quad(200,230,220,200,220,250,210,250);
+
+//back Leg
+pushMatrix();
+translate(215,246);
+rotate(toPI*110);
+rect(0,0,30,20);  // ankle
+fill(233,233,233);
+rect(20,0,20,20); //socks
+fill(0,0,0);
+rect(40,0,10,28); //shoes
+popMatrix();
+
+
+fill(242, 190, 106);
+
+
+//front leg
+pushMatrix();
+translate(-3,0);
+rect(200,250,20,20,2); //ankles
+quad(200,250,214,250,220,230,200,230); //thighs
+popMatrix();
+
+//face and neck
+rect(190,120,20,20,2);
+rect(198,140,16,10);
+
+
+fill(0,0,0);
+ellipse(200,125,5,5);  //eyes
+rect(185,110,30,10,2); //hair
+rect(210,110,10,30,2); //hair
+noStroke();
+
+//backhand
+fill(242, 190, 106);
+//quad(195,150,195,165,235,185,235,170);
+pushMatrix();
+translate(165,180);
+rotate(toPI*(-20));
+rect(0,0,28,12,5);
+ellipse(-1,5,15,13);
+popMatrix();
+//shirt
+fill(194, 37, 37);
+rect(192,150,32,60,5);
+//shorts
+fill(0,0,0);
+rect(192,200,32,30,5);
+
+//front leg socks
+fill(233,233,233);
+rect(200,270,20,20);
+//front leg shoes
+fill(0,0,0);
+rect(190,290,30,10);
+
+//front hand
+fill(242, 190, 106);
+quad(210,155,210,175,230,199,234,185);
+
+pushMatrix();
+translate(238,190);
+
+rotate(toPI*60);
+rect(-7,0,30,10);
+ellipse(22,5,20,12);
+popMatrix();
+leftPlayerRed.push(get(100,100,200,200));
+
+
+//Left Poses End
+
+//Red Player
+//Right Poses
+
+
+background(0,0,0,0);
+
+
+
+pushMatrix();
+noStroke();
+translate(200,200);
+//back thighs
+fill(242, 190, 106);
+quad(0,30,-20,30,-30,50,-10,50);
+
+//back Leg
+pushMatrix();
+translate(-30,44);
+rotate(-toPI*41);
+rect(0,0,30,20);  // ankle
+fill(233,233,233);
+rect(-20,0,20,20); //socks
+fill(0,0,0);
+rect(-30,0,10,28); //shoes
+popMatrix();
+
+
+fill(242, 190, 106);
+
+
+//front leg
+
+rect(-10,50,20,20,2); //ankles
+quad(-10,50,11,50,1,30,-21,30); //thighs
+
+//face and neck
+rect(-10,-80,20,20,2);
+rect(-14,-60,16,10);
+
+
+fill(0,0,0);
+ellipse(0,-75,5,5);  //eyes
+rect(-15,-90,30,10,2); //hair
+rect(-20,-90,10,30,2); //hair
+noStroke();
+
+//backhand
+fill(242, 190, 106);
+quad(5,-50,5,-35,-35,-15,-35,-30);
+rect(-40,-30,12,28,5);
+ellipse(-35,4,13,15);
+//front hand
+fill(242, 190, 106);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+
+//shirt
+fill(194, 37, 37);
+rect(-24,-50,32,60,5);
+//shorts
+fill(0,0,0);
+rect(-24,0,32,30,5);
+
+//front leg socks
+fill(233,233,233);
+rect(-10,70,20,20);
+//front leg shoes
+fill(0,0,0);
+rect(-10,90,30,10);
+
+
+
+popMatrix();
+
+rightPlayerRed.push(get(100,100,200,200));
+
+background(0,0,0,0);
+
+
+pushMatrix();
+noStroke();
+translate(200,200);
+//back thighs
+fill(242, 190, 106);
+quad(0,30,-20,30,-30,50,-10,50);
+
+//back Leg
+pushMatrix();
+translate(-33,62);
+rotate(-toPI*72);
+rect(0,0,30,20);  // ankle
+fill(233,233,233);
+rect(-20,0,20,20); //socks
+fill(0,0,0);
+rect(-30,0,10,28); //shoes
+popMatrix();
+
+
+fill(242, 190, 106);
+
+
+//front leg
+
+rect(-10,50,20,20,2); //ankles
+quad(-10,50,11,50,1,30,-21,30); //thighs
+
+//face and neck
+rect(-10,-80,20,20,2);
+rect(-14,-60,16,10);
+
+
+fill(0,0,0);
+ellipse(0,-75,5,5);  //eyes
+rect(-15,-90,30,10,2); //hair
+rect(-20,-90,10,30,2); //hair
+noStroke();
+
+//backhand
+fill(242, 190, 106);
+quad(5,-50,5,-35,-35,-15,-35,-30);
+pushMatrix();
+translate(9,-19);
+rotate(toPI*-35);
+rect(-40,-30,12,28,5);
+ellipse(-35,4,13,15);
+popMatrix();
+//front hand
+fill(242, 190, 106);
+pushMatrix();
+translate(-18,0);
+rotate(toPI*49);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(194, 37, 37);
+rect(-24,-50,32,60,5);
+//shorts
+fill(0,0,0);
+rect(-24,0,32,30,5);
+
+//front leg socks
+fill(233,233,233);
+rect(-10,70,20,20);
+//front leg shoes
+fill(0,0,0);
+rect(-10,90,30,10);
+
+
+
+popMatrix();
+
+rightPlayerRed.push(get(100,100,200,200));
+
+background(0,0,0,0);
+
+
+
+pushMatrix();
+noStroke();
+translate(200,200);
+
+//front leg
+pushMatrix();
+translate(-12,0);
+rotate(toPI*18);
+//thighs
+//front leg socks
+fill(233,233,233);
+rect(-10,70,20,20);
+//front leg shoes
+fill(0,0,0);
+rect(-10,90,30,10);
+fill(242, 190, 106);
+rect(-9,30,20,40);
+popMatrix();
+
+//back thighs
+fill(242, 190, 106);
+//quad(0,30,-20,30,-30,50,-10,50);
+
+//back Leg
+pushMatrix();
+translate(-13,75);
+rotate(-toPI*89);
+rect(0,0,50,20);  // ankle
+fill(233,233,233);
+rect(-20,0,20,20); //socks
+fill(0,0,0);
+rect(-30,0,10,28); //shoes
+popMatrix();
+
+
+fill(242, 190, 106);
+
+
+
+//face and neck
+rect(-10,-80,20,20,2);
+rect(-14,-60,16,10);
+
+
+fill(0,0,0);
+ellipse(0,-75,5,5);  //eyes
+rect(-15,-90,30,10,2); //hair
+rect(-20,-90,10,30,2); //hair
+noStroke();
+
+//backhand
+fill(242, 190, 106);
+quad(5,-50,5,-35,-35,-15,-35,-30);
+pushMatrix();
+translate(27,-43);
+rotate(toPI*-82);
+rect(-40,-30,12,28,5);
+ellipse(-35,4,13,15);
+popMatrix();
+//front hand
+fill(242, 190, 106);
+pushMatrix();
+translate(-38,-39);
+rotate(toPI*129);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(194, 37, 37);
+rect(-24,-50,32,60,5);
+//shorts
+fill(0,0,0);
+rect(-24,0,32,30,5);
+
+
+
+
+
+popMatrix();
+
+rightPlayerRed.push(get(100,100,200,200));
+
+
+
+
+//Right Poses End
+
+
+
+//Red Player
+//Front Poses
+
+background(0,0,0,0);
+
+
+
+pushMatrix();
+noStroke();
+translate(200,200);
+
+
+
+//back thighs
+fill(242, 190, 106);
+//quad(0,30,-20,30,-30,50,-10,50);
+
+//back Leg
+pushMatrix();
+translate(-19,75);
+rotate(-toPI*89);
+rect(0,0,50,20);  // ankle
+fill(233,233,233);
+rect(-20,0,20,20); //socks
+fill(0,0,0);
+rect(-30,0,10,20); //shoes
+popMatrix();
+
+
+fill(242, 190, 106);
+//front Leg
+pushMatrix();
+translate(2,75);
+rotate(-toPI*93);
+rect(0,0,50,20);  // ankle
+fill(233,233,233);
+rect(-1,0,20,20); //socks
+fill(0,0,0);
+rect(-10,0,10,20); //shoes
+popMatrix();
+
+fill(242, 190, 106);
+
+//face and neck
+rect(-10,-80,20,20,2);
+rect(-8,-60,16,10);
+
+
+fill(0,0,0);
+ellipse(-4,-75,5,5);  //eyes
+ellipse(4,-75,5,5);  //eyes
+
+rect(-15,-90,30,10,2); //hair
+rect(-20,-90,10,30,2); //hair
+rect(10,-90,10,30,2); //hair
+
+noStroke();
+
+
+//front hand
+fill(242, 190, 106);
+pushMatrix();
+translate(-42,-36);
+rotate(toPI*116);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(194, 37, 37);
+rect(-20,-50,40,60,5);
+//shorts
+fill(0,0,0);
+rect(-20,0,40,30,5);
+
+//back hand
+fill(242, 190, 106);
+pushMatrix();
+translate(6,1);
+rotate(toPI*3);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(194, 37, 37);
+rect(-20,-50,40,60,5);
+//shorts
+fill(0,0,0);
+rect(-20,0,40,30,5);
+
+
+
+popMatrix();
+
+frontPlayerRed.push(get(100,100,200,200));
+
+background(0,0,0,0);
+
+
+pushMatrix();
+noStroke();
+translate(200,200);
+
+
+
+//back thighs
+fill(242, 190, 106);
+//quad(0,30,-20,30,-30,50,-10,50);
+
+//back Leg
+pushMatrix();
+translate(-19,75);
+rotate(-toPI*89);
+rect(0,0,50,20);  // ankle
+fill(233,233,233);
+rect(-20,0,20,20); //socks
+fill(0,0,0);
+rect(-30,0,10,20); //shoes
+popMatrix();
+
+
+fill(242, 190, 106);
+//front Leg
+pushMatrix();
+translate(2,75);
+rotate(-toPI*93);
+rect(0,0,50,20);  // ankle
+fill(233,233,233);
+rect(-20,0,20,20); //socks
+fill(0,0,0);
+rect(-30,0,10,20); //shoes
+popMatrix();
+
+fill(242, 190, 106);
+
+//face and neck
+rect(-10,-80,20,20,2);
+rect(-8,-60,16,10);
+
+
+fill(0,0,0);
+ellipse(-4,-75,5,5);  //eyes
+ellipse(4,-75,5,5);  //eyes
+
+rect(-15,-90,30,10,2); //hair
+rect(-20,-90,10,30,2); //hair
+rect(10,-90,10,30,2); //hair
+
+noStroke();
+
+
+//front hand
+fill(242, 190, 106);
+pushMatrix();
+translate(-33,-48);
+rotate(toPI*129);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(194, 37, 37);
+rect(-20,-50,40,60,5);
+//shorts
+fill(0,0,0);
+rect(-20,0,40,30,5);
+
+//back hand
+fill(242, 190, 106);
+pushMatrix();
+translate(14,-3);
+rotate(toPI*8);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(194, 37, 37);
+rect(-20,-50,40,60,5);
+//shorts
+fill(0,0,0);
+rect(-20,0,40,30,5);
+
+
+
+popMatrix();
+
+frontPlayerRed.push(get(100,100,200,200));
+
+background(0,0,0,0);
+
+
+pushMatrix();
+noStroke();
+translate(200,200);
+
+
+
+//back thighs
+fill(242, 190, 106);
+//quad(0,30,-20,30,-30,50,-10,50);
+
+//back Leg
+pushMatrix();
+translate(-19,75);
+rotate(-toPI*89);
+rect(0,0,50,20);  // ankle
+fill(233,233,233);
+rect(1,0,20,20); //socks
+fill(0,0,0);
+rect(-6,0,10,20); //shoes
+popMatrix();
+
+
+fill(242, 190, 106);
+//front Leg
+pushMatrix();
+translate(2,75);
+rotate(-toPI*93);
+rect(0,0,50,20);  // ankle
+fill(233,233,233);
+rect(-20,0,20,20); //socks
+fill(0,0,0);
+rect(-30,0,10,20); //shoes
+popMatrix();
+
+fill(242, 190, 106);
+
+//face and neck
+rect(-10,-80,20,20,2);
+rect(-8,-60,16,10);
+
+
+fill(0,0,0);
+ellipse(-4,-75,5,5);  //eyes
+ellipse(4,-75,5,5);  //eyes
+
+rect(-15,-90,30,10,2); //hair
+rect(-20,-90,10,30,2); //hair
+rect(10,-90,10,30,2); //hair
+
+noStroke();
+
+
+//front hand
+fill(242, 190, 106);
+pushMatrix();
+translate(-33,-48);
+rotate(toPI*129);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(194, 37, 37);
+rect(-20,-50,40,60,5);
+//shorts
+fill(0,0,0);
+rect(-20,0,40,30,5);
+
+//back hand
+fill(242, 190, 106);
+pushMatrix();
+translate(-6,-3);
+rotate(toPI*56);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(194, 37, 37);
+rect(-20,-50,40,60,5);
+//shorts
+fill(0,0,0);
+rect(-20,0,40,30,5);
+
+
+
+popMatrix();
+
+frontPlayerRed.push(get(100,100,200,200));
+
+
+
+
+//Front Poses End
+
+//Back Poses
+//Red Player
+
+background(0,0,0,0);
+
+
+pushMatrix();
+noStroke();
+translate(200,200);
+
+
+
+//back thighs
+fill(242, 190, 106);
+//quad(0,30,-20,30,-30,50,-10,50);
+
+//back Leg
+pushMatrix();
+translate(-19,75);
+rotate(-toPI*89);
+rect(0,0,50,20);  // ankle
+fill(233,233,233);
+rect(-20,0,20,20); //socks
+fill(0,0,0);
+rect(-30,0,10,20); //shoes
+popMatrix();
+
+
+fill(242, 190, 106);
+//front Leg
+pushMatrix();
+translate(2,75);
+rotate(-toPI*93);
+rect(0,0,50,20);  // ankle
+fill(233,233,233);
+rect(-1,0,20,20); //socks
+fill(0,0,0);
+rect(-10,0,10,20); //shoes
+popMatrix();
+
+fill(242, 190, 106);
+
+//face and neck
+rect(-10,-80,20,20,2);
+rect(-8,-60,16,10);
+
+
+fill(0,0,0);
+ellipse(-4,-75,5,5);  //eyes
+ellipse(4,-75,5,5);  //eyes
+
+rect(-15,-90,30,10,2); //hair
+rect(-20,-90,40,30,2); //hair
+rect(10,-90,10,30,2); //hair
+
+noStroke();
+
+
+//front hand
+fill(242, 190, 106);
+pushMatrix();
+translate(-42,-36);
+rotate(toPI*116);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(194, 37, 37);
+rect(-20,-50,40,60,5);
+//shorts
+fill(0,0,0);
+rect(-20,0,40,30,5);
+
+//back hand
+fill(242, 190, 106);
+pushMatrix();
+translate(6,1);
+rotate(toPI*3);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(194, 37, 37);
+rect(-20,-50,40,60,5);
+//shorts
+fill(0,0,0);
+rect(-20,0,40,30,5);
+
+
+
+popMatrix();
+
+backPlayerRed.push(get(100,100,200,200));
+
+background(0,0,0,0);
+
+noFill();
+
+
+pushMatrix();
+noStroke();
+translate(200,200);
+
+
+
+//back thighs
+fill(242, 190, 106);
+//quad(0,30,-20,30,-30,50,-10,50);
+
+//back Leg
+pushMatrix();
+translate(-19,75);
+rotate(-toPI*89);
+rect(0,0,50,20);  // ankle
+fill(233,233,233);
+rect(-20,0,20,20); //socks
+fill(0,0,0);
+rect(-30,0,10,20); //shoes
+popMatrix();
+
+
+fill(242, 190, 106);
+//front Leg
+pushMatrix();
+translate(2,75);
+rotate(-toPI*93);
+rect(0,0,50,20);  // ankle
+fill(233,233,233);
+rect(-20,0,20,20); //socks
+fill(0,0,0);
+rect(-30,0,10,20); //shoes
+popMatrix();
+
+fill(242, 190, 106);
+
+//face and neck
+rect(-10,-80,20,20,2);
+rect(-8,-60,16,10);
+
+
+fill(0,0,0);
+ellipse(-4,-75,5,5);  //eyes
+ellipse(4,-75,5,5);  //eyes
+
+rect(-15,-90,30,10,2); //hair
+rect(-20,-90,40,30,2); //hair
+rect(10,-90,10,30,2); //hair
+
+noStroke();
+
+
+//front hand
+fill(242, 190, 106);
+pushMatrix();
+translate(-33,-48);
+rotate(toPI*129);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(194, 37, 37);
+rect(-20,-50,40,60,5);
+//shorts
+fill(0,0,0);
+rect(-20,0,40,30,5);
+
+//back hand
+fill(242, 190, 106);
+pushMatrix();
+translate(14,-3);
+rotate(toPI*8);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(194, 37, 37);
+rect(-20,-50,40,60,5);
+//shorts
+fill(0,0,0);
+rect(-20,0,40,30,5);
+
+
+
+popMatrix();
+
+backPlayerRed.push(get(100,100,200,200));
+
+background(0,0,0,0);
+
+noFill();
+
+
+pushMatrix();
+noStroke();
+translate(200,200);
+
+
+
+//back thighs
+fill(242, 190, 106);
+//quad(0,30,-20,30,-30,50,-10,50);
+
+//back Leg
+pushMatrix();
+translate(-19,75);
+rotate(-toPI*89);
+rect(0,0,50,20);  // ankle
+fill(233,233,233);
+rect(1,0,20,20); //socks
+fill(0,0,0);
+rect(-6,0,10,20); //shoes
+popMatrix();
+
+
+fill(242, 190, 106);
+//front Leg
+pushMatrix();
+translate(2,75);
+rotate(-toPI*93);
+rect(0,0,50,20);  // ankle
+fill(233,233,233);
+rect(-20,0,20,20); //socks
+fill(0,0,0);
+rect(-30,0,10,20); //shoes
+popMatrix();
+
+fill(242, 190, 106);
+
+//face and neck
+rect(-10,-80,20,20,2);
+rect(-8,-60,16,10);
+
+
+fill(0,0,0);
+ellipse(-4,-75,5,5);  //eyes
+ellipse(4,-75,5,5);  //eyes
+
+rect(-15,-90,30,10,2); //hair
+rect(-20,-90,40,30,2); //hair
+rect(10,-90,10,30,2); //hair
+
+noStroke();
+
+
+//front hand
+fill(242, 190, 106);
+pushMatrix();
+translate(-33,-48);
+rotate(toPI*129);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(194, 37, 37);
+rect(-20,-50,40,60,5);
+//shorts
+fill(0,0,0);
+rect(-20,0,40,30,5);
+
+//back hand
+fill(242, 190, 106);
+pushMatrix();
+translate(-6,-3);
+rotate(toPI*56);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(194, 37, 37);
+rect(-20,-50,40,60,5);
+//shorts
+fill(0,0,0);
+rect(-20,0,40,30,5);
+
+
+
+popMatrix();
+backPlayerRed.push(get(100,100,200,200));
+
+
+
+//Back Poses End
+
+	
+	
+	
+	//Blue Player
+//Left Poses
+
+
+background(0,0,0,0);
+noFill();
+
+
+noStroke();
+
+//back thighs
+fill(242, 190, 106);
+quad(200,230,220,200,220,250,210,250);
+
+//back Leg
+pushMatrix();
+translate(217,240);
+rotate(toPI*60);
+rect(0,0,30,20);  // ankle
+fill(233,233,233);
+rect(20,0,20,20); //socks
+fill(0,0,0);
+rect(40,0,10,28); //shoes
+popMatrix();
+
+
+fill(242, 190, 106);
+
+
+//front leg
+pushMatrix();
+translate(-3,0);
+rect(194,250,20,20,2); //ankles
+quad(194,250,214,250,220,230,200,230); //thighs
+popMatrix();
+
+//face and neck
+rect(190,120,20,20,2);
+rect(198,140,16,10);
+
+
+fill(0,0,0);
+ellipse(200,125,5,5);  //eyes
+rect(185,110,30,10,2); //hair
+rect(210,110,10,30,2); //hair
+noStroke();
+
+//backhand
+fill(242, 190, 106);
+//quad(195,150,195,165,235,185,235,170);
+pushMatrix();
+translate(165,180);
+rotate(toPI*(-20));
+rect(0,0,28,12,5);
+ellipse(-1,5,15,13);
+popMatrix();
+//shirt
+fill(39, 91, 194);
+rect(192,150,32,60,5);
+//shorts
+fill(0,0,0);
+rect(192,200,32,30,5);
+
+//front leg socks
+fill(233,233,233);
+rect(190,270,20,20);
+//front leg shoes
+fill(0,0,0);
+rect(180,290,30,10);
+
+//front hand
+fill(242, 190, 106);
+quad(210,155,210,175,190,199,186,185);
+
+pushMatrix();
+translate(180,210);
+rotate(toPI*-80);
+rect(-7,0,30,10);
+ellipse(-5,5,20,12);
+popMatrix();
+
+leftPlayerBlue.push(get(100,100,200,200));
+
+background(0,0,0,0);
+noFill();
+
+
+noStroke();
+
+//back thighs
+fill(242, 190, 106);
+quad(200,230,220,230,230,250,210,250);
+
+//back Leg
+pushMatrix();
+translate(217,240);
+rotate(toPI*37);
+rect(0,0,30,20);  // ankle
+fill(233,233,233);
+rect(20,0,20,20); //socks
+fill(0,0,0);
+rect(40,0,10,28); //shoes
+popMatrix();
+
+
+fill(242, 190, 106);
+
+
+//front leg
+pushMatrix();
+translate(-3,0);
+rect(194,250,20,20,2); //ankles
+quad(194,250,214,250,220,230,200,230); //thighs
+popMatrix();
+
+//face and neck
+rect(190,120,20,20,2);
+rect(198,140,16,10);
+
+
+fill(0,0,0);
+ellipse(200,125,5,5);  //eyes
+rect(185,110,30,10,2); //hair
+rect(210,110,10,30,2); //hair
+noStroke();
+
+//backhand
+fill(242, 190, 106);
+quad(195,150,195,165,235,185,235,170);
+rect(228,170,12,28,5);
+ellipse(235,204,13,15);
+
+//shirt
+fill(39, 91, 194);
+rect(192,150,32,60,5);
+//shorts
+fill(0,0,0);
+rect(192,200,32,30,5);
+
+//front leg socks
+fill(233,233,233);
+rect(190,270,20,20);
+//front leg shoes
+fill(0,0,0);
+rect(180,290,30,10);
+
+//front hand
+fill(242, 190, 106);
+quad(210,160,210,175,180,190,180,175);
+rect(160,175,30,13);
+ellipse(155,180,20,12);
+//front hand fingers
+stroke(0,0,0);
+line(145,180,152,180);
+line(145,177,152,177);
+line(145,183,152,183);
+
+leftPlayerBlue.push(get(100,100,200,200));
+
+background(0,0,0,0);
+noFill();
+
+
+noStroke();
+
+//back thighs
+fill(242, 190, 106);
+quad(200,230,220,200,220,250,210,250);
+
+//back Leg
+pushMatrix();
+translate(215,246);
+rotate(toPI*110);
+rect(0,0,30,20);  // ankle
+fill(233,233,233);
+rect(20,0,20,20); //socks
+fill(0,0,0);
+rect(40,0,10,28); //shoes
+popMatrix();
+
+
+fill(242, 190, 106);
+
+
+//front leg
+pushMatrix();
+translate(-3,0);
+rect(200,250,20,20,2); //ankles
+quad(200,250,214,250,220,230,200,230); //thighs
+popMatrix();
+
+//face and neck
+rect(190,120,20,20,2);
+rect(198,140,16,10);
+
+
+fill(0,0,0);
+ellipse(200,125,5,5);  //eyes
+rect(185,110,30,10,2); //hair
+rect(210,110,10,30,2); //hair
+noStroke();
+
+//backhand
+fill(242, 190, 106);
+//quad(195,150,195,165,235,185,235,170);
+pushMatrix();
+translate(165,180);
+rotate(toPI*(-20));
+rect(0,0,28,12,5);
+ellipse(-1,5,15,13);
+popMatrix();
+//shirt
+fill(39, 91, 194);
+rect(192,150,32,60,5);
+//shorts
+fill(0,0,0);
+rect(192,200,32,30,5);
+
+//front leg socks
+fill(233,233,233);
+rect(200,270,20,20);
+//front leg shoes
+fill(0,0,0);
+rect(190,290,30,10);
+
+//front hand
+fill(242, 190, 106);
+quad(210,155,210,175,230,199,234,185);
+
+pushMatrix();
+translate(238,190);
+
+rotate(toPI*60);
+rect(-7,0,30,10);
+ellipse(22,5,20,12);
+popMatrix();
+leftPlayerBlue.push(get(100,100,200,200));
+
+
+//Left Poses End
+
+//Blue Player
+//Right Poses
+
+
+background(0,0,0,0);
+
+
+
+pushMatrix();
+noStroke();
+translate(200,200);
+//back thighs
+fill(242, 190, 106);
+quad(0,30,-20,30,-30,50,-10,50);
+
+//back Leg
+pushMatrix();
+translate(-30,44);
+rotate(-toPI*41);
+rect(0,0,30,20);  // ankle
+fill(233,233,233);
+rect(-20,0,20,20); //socks
+fill(0,0,0);
+rect(-30,0,10,28); //shoes
+popMatrix();
+
+
+fill(242, 190, 106);
+
+
+//front leg
+
+rect(-10,50,20,20,2); //ankles
+quad(-10,50,11,50,1,30,-21,30); //thighs
+
+//face and neck
+rect(-10,-80,20,20,2);
+rect(-14,-60,16,10);
+
+
+fill(0,0,0);
+ellipse(0,-75,5,5);  //eyes
+rect(-15,-90,30,10,2); //hair
+rect(-20,-90,10,30,2); //hair
+noStroke();
+
+//backhand
+fill(242, 190, 106);
+quad(5,-50,5,-35,-35,-15,-35,-30);
+rect(-40,-30,12,28,5);
+ellipse(-35,4,13,15);
+//front hand
+fill(242, 190, 106);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+
+//shirt
+fill(39, 91, 194);
+rect(-24,-50,32,60,5);
+//shorts
+fill(0,0,0);
+rect(-24,0,32,30,5);
+
+//front leg socks
+fill(233,233,233);
+rect(-10,70,20,20);
+//front leg shoes
+fill(0,0,0);
+rect(-10,90,30,10);
+
+
+
+popMatrix();
+
+rightPlayerBlue.push(get(100,100,200,200));
+
+background(0,0,0,0);
+
+
+pushMatrix();
+noStroke();
+translate(200,200);
+//back thighs
+fill(242, 190, 106);
+quad(0,30,-20,30,-30,50,-10,50);
+
+//back Leg
+pushMatrix();
+translate(-33,62);
+rotate(-toPI*72);
+rect(0,0,30,20);  // ankle
+fill(233,233,233);
+rect(-20,0,20,20); //socks
+fill(0,0,0);
+rect(-30,0,10,28); //shoes
+popMatrix();
+
+
+fill(242, 190, 106);
+
+
+//front leg
+
+rect(-10,50,20,20,2); //ankles
+quad(-10,50,11,50,1,30,-21,30); //thighs
+
+//face and neck
+rect(-10,-80,20,20,2);
+rect(-14,-60,16,10);
+
+
+fill(0,0,0);
+ellipse(0,-75,5,5);  //eyes
+rect(-15,-90,30,10,2); //hair
+rect(-20,-90,10,30,2); //hair
+noStroke();
+
+//backhand
+fill(242, 190, 106);
+quad(5,-50,5,-35,-35,-15,-35,-30);
+pushMatrix();
+translate(9,-19);
+rotate(toPI*-35);
+rect(-40,-30,12,28,5);
+ellipse(-35,4,13,15);
+popMatrix();
+//front hand
+fill(242, 190, 106);
+pushMatrix();
+translate(-18,0);
+rotate(toPI*49);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(39, 91, 194);
+rect(-24,-50,32,60,5);
+//shorts
+fill(0,0,0);
+rect(-24,0,32,30,5);
+
+//front leg socks
+fill(233,233,233);
+rect(-10,70,20,20);
+//front leg shoes
+fill(0,0,0);
+rect(-10,90,30,10);
+
+
+
+popMatrix();
+
+rightPlayerBlue.push(get(100,100,200,200));
+
+background(0,0,0,0);
+
+noFill();
+
+
+pushMatrix();
+noStroke();
+translate(200,200);
+
+//front leg
+pushMatrix();
+translate(-12,0);
+rotate(toPI*18);
+//thighs
+//front leg socks
+fill(233,233,233);
+rect(-10,70,20,20);
+//front leg shoes
+fill(0,0,0);
+rect(-10,90,30,10);
+fill(242, 190, 106);
+rect(-9,30,20,40);
+popMatrix();
+
+//back thighs
+fill(242, 190, 106);
+//quad(0,30,-20,30,-30,50,-10,50);
+
+//back Leg
+pushMatrix();
+translate(-13,75);
+rotate(-toPI*89);
+rect(0,0,50,20);  // ankle
+fill(233,233,233);
+rect(-20,0,20,20); //socks
+fill(0,0,0);
+rect(-30,0,10,28); //shoes
+popMatrix();
+
+
+fill(242, 190, 106);
+
+
+
+//face and neck
+rect(-10,-80,20,20,2);
+rect(-14,-60,16,10);
+
+
+fill(0,0,0);
+ellipse(0,-75,5,5);  //eyes
+rect(-15,-90,30,10,2); //hair
+rect(-20,-90,10,30,2); //hair
+noStroke();
+
+//backhand
+fill(242, 190, 106);
+quad(5,-50,5,-35,-35,-15,-35,-30);
+pushMatrix();
+translate(27,-43);
+rotate(toPI*-82);
+rect(-40,-30,12,28,5);
+ellipse(-35,4,13,15);
+popMatrix();
+//front hand
+fill(242, 190, 106);
+pushMatrix();
+translate(-38,-39);
+rotate(toPI*129);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(39, 91, 194);
+rect(-24,-50,32,60,5);
+//shorts
+fill(0,0,0);
+rect(-24,0,32,30,5);
+
+
+
+
+
+popMatrix();
+
+rightPlayerBlue.push(get(100,100,200,200));
+
+
+
+
+//Right Poses End
+
+
+
+//Blue Player
+//Front Poses
+
+background(0,0,0,0);
+
+
+
+pushMatrix();
+noStroke();
+translate(200,200);
+
+
+
+//back thighs
+fill(242, 190, 106);
+//quad(0,30,-20,30,-30,50,-10,50);
+
+//back Leg
+pushMatrix();
+translate(-19,75);
+rotate(-toPI*89);
+rect(0,0,50,20);  // ankle
+fill(233,233,233);
+rect(-20,0,20,20); //socks
+fill(0,0,0);
+rect(-30,0,10,20); //shoes
+popMatrix();
+
+
+fill(242, 190, 106);
+//front Leg
+pushMatrix();
+translate(2,75);
+rotate(-toPI*93);
+rect(0,0,50,20);  // ankle
+fill(233,233,233);
+rect(-1,0,20,20); //socks
+fill(0,0,0);
+rect(-10,0,10,20); //shoes
+popMatrix();
+
+fill(242, 190, 106);
+
+//face and neck
+rect(-10,-80,20,20,2);
+rect(-8,-60,16,10);
+
+
+fill(0,0,0);
+ellipse(-4,-75,5,5);  //eyes
+ellipse(4,-75,5,5);  //eyes
+
+rect(-15,-90,30,10,2); //hair
+rect(-20,-90,10,30,2); //hair
+rect(10,-90,10,30,2); //hair
+
+noStroke();
+
+
+//front hand
+fill(242, 190, 106);
+pushMatrix();
+translate(-42,-36);
+rotate(toPI*116);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(39, 91, 194);
+rect(-20,-50,40,60,5);
+//shorts
+fill(0,0,0);
+rect(-20,0,40,30,5);
+
+//back hand
+fill(242, 190, 106);
+pushMatrix();
+translate(6,1);
+rotate(toPI*3);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(39, 91, 194);
+rect(-20,-50,40,60,5);
+//shorts
+fill(0,0,0);
+rect(-20,0,40,30,5);
+
+
+
+popMatrix();
+
+frontPlayerBlue.push(get(100,100,200,200));
+
+background(0,0,0,0);
+
+
+
+pushMatrix();
+noStroke();
+translate(200,200);
+
+
+
+//back thighs
+fill(242, 190, 106);
+//quad(0,30,-20,30,-30,50,-10,50);
+
+//back Leg
+pushMatrix();
+translate(-19,75);
+rotate(-toPI*89);
+rect(0,0,50,20);  // ankle
+fill(233,233,233);
+rect(-20,0,20,20); //socks
+fill(0,0,0);
+rect(-30,0,10,20); //shoes
+popMatrix();
+
+
+fill(242, 190, 106);
+//front Leg
+pushMatrix();
+translate(2,75);
+rotate(-toPI*93);
+rect(0,0,50,20);  // ankle
+fill(233,233,233);
+rect(-20,0,20,20); //socks
+fill(0,0,0);
+rect(-30,0,10,20); //shoes
+popMatrix();
+
+fill(242, 190, 106);
+
+//face and neck
+rect(-10,-80,20,20,2);
+rect(-8,-60,16,10);
+
+
+fill(0,0,0);
+ellipse(-4,-75,5,5);  //eyes
+ellipse(4,-75,5,5);  //eyes
+
+rect(-15,-90,30,10,2); //hair
+rect(-20,-90,10,30,2); //hair
+rect(10,-90,10,30,2); //hair
+
+noStroke();
+
+
+//front hand
+fill(242, 190, 106);
+pushMatrix();
+translate(-33,-48);
+rotate(toPI*129);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(39, 91, 194);
+rect(-20,-50,40,60,5);
+//shorts
+fill(0,0,0);
+rect(-20,0,40,30,5);
+
+//back hand
+fill(242, 190, 106);
+pushMatrix();
+translate(14,-3);
+rotate(toPI*8);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(39, 91, 194);
+rect(-20,-50,40,60,5);
+//shorts
+fill(0,0,0);
+rect(-20,0,40,30,5);
+
+
+
+popMatrix();
+
+frontPlayerBlue.push(get(100,100,200,200));
+
+background(0,0,0,0);
+
+pushMatrix();
+noStroke();
+translate(200,200);
+
+
+
+//back thighs
+fill(242, 190, 106);
+//quad(0,30,-20,30,-30,50,-10,50);
+
+//back Leg
+pushMatrix();
+translate(-19,75);
+rotate(-toPI*89);
+rect(0,0,50,20);  // ankle
+fill(233,233,233);
+rect(1,0,20,20); //socks
+fill(0,0,0);
+rect(-6,0,10,20); //shoes
+popMatrix();
+
+
+fill(242, 190, 106);
+//front Leg
+pushMatrix();
+translate(2,75);
+rotate(-toPI*93);
+rect(0,0,50,20);  // ankle
+fill(233,233,233);
+rect(-20,0,20,20); //socks
+fill(0,0,0);
+rect(-30,0,10,20); //shoes
+popMatrix();
+
+fill(242, 190, 106);
+
+//face and neck
+rect(-10,-80,20,20,2);
+rect(-8,-60,16,10);
+
+
+fill(0,0,0);
+ellipse(-4,-75,5,5);  //eyes
+ellipse(4,-75,5,5);  //eyes
+
+rect(-15,-90,30,10,2); //hair
+rect(-20,-90,10,30,2); //hair
+rect(10,-90,10,30,2); //hair
+
+noStroke();
+
+
+//front hand
+fill(242, 190, 106);
+pushMatrix();
+translate(-33,-48);
+rotate(toPI*129);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(39, 91, 194);
+rect(-20,-50,40,60,5);
+//shorts
+fill(0,0,0);
+rect(-20,0,40,30,5);
+
+//back hand
+fill(242, 190, 106);
+pushMatrix();
+translate(-6,-3);
+rotate(toPI*56);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(39, 91, 194);
+rect(-20,-50,40,60,5);
+//shorts
+fill(0,0,0);
+rect(-20,0,40,30,5);
+
+
+
+popMatrix();
+
+frontPlayerBlue.push(get(100,100,200,200));
+
+
+
+
+//Front Poses End
+
+//Back Poses
+//Blue Player
+
+background(0,0,0,0);
+
+
+
+pushMatrix();
+noStroke();
+translate(200,200);
+
+
+
+//back thighs
+fill(242, 190, 106);
+//quad(0,30,-20,30,-30,50,-10,50);
+
+//back Leg
+pushMatrix();
+translate(-19,75);
+rotate(-toPI*89);
+rect(0,0,50,20);  // ankle
+fill(233,233,233);
+rect(-20,0,20,20); //socks
+fill(0,0,0);
+rect(-30,0,10,20); //shoes
+popMatrix();
+
+
+fill(242, 190, 106);
+//front Leg
+pushMatrix();
+translate(2,75);
+rotate(-toPI*93);
+rect(0,0,50,20);  // ankle
+fill(233,233,233);
+rect(-1,0,20,20); //socks
+fill(0,0,0);
+rect(-10,0,10,20); //shoes
+popMatrix();
+
+fill(242, 190, 106);
+
+//face and neck
+rect(-10,-80,20,20,2);
+rect(-8,-60,16,10);
+
+
+fill(0,0,0);
+ellipse(-4,-75,5,5);  //eyes
+ellipse(4,-75,5,5);  //eyes
+
+rect(-15,-90,30,10,2); //hair
+rect(-20,-90,40,30,2); //hair
+rect(10,-90,10,30,2); //hair
+
+noStroke();
+
+
+//front hand
+fill(242, 190, 106);
+pushMatrix();
+translate(-42,-36);
+rotate(toPI*116);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(39, 91, 194);
+rect(-20,-50,40,60,5);
+//shorts
+fill(0,0,0);
+rect(-20,0,40,30,5);
+
+//back hand
+fill(242, 190, 106);
+pushMatrix();
+translate(6,1);
+rotate(toPI*3);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(39, 91, 194);
+rect(-20,-50,40,60,5);
+//shorts
+fill(0,0,0);
+rect(-20,0,40,30,5);
+
+
+
+popMatrix();
+
+backPlayerBlue.push(get(100,100,200,200));
+
+background(0,0,0,0);
+
+
+pushMatrix();
+noStroke();
+translate(200,200);
+
+
+
+//back thighs
+fill(242, 190, 106);
+//quad(0,30,-20,30,-30,50,-10,50);
+
+//back Leg
+pushMatrix();
+translate(-19,75);
+rotate(-toPI*89);
+rect(0,0,50,20);  // ankle
+fill(233,233,233);
+rect(-20,0,20,20); //socks
+fill(0,0,0);
+rect(-30,0,10,20); //shoes
+popMatrix();
+
+
+fill(242, 190, 106);
+//front Leg
+pushMatrix();
+translate(2,75);
+rotate(-toPI*93);
+rect(0,0,50,20);  // ankle
+fill(233,233,233);
+rect(-20,0,20,20); //socks
+fill(0,0,0);
+rect(-30,0,10,20); //shoes
+popMatrix();
+
+fill(242, 190, 106);
+
+//face and neck
+rect(-10,-80,20,20,2);
+rect(-8,-60,16,10);
+
+
+fill(0,0,0);
+ellipse(-4,-75,5,5);  //eyes
+ellipse(4,-75,5,5);  //eyes
+
+rect(-15,-90,30,10,2); //hair
+rect(-20,-90,40,30,2); //hair
+rect(10,-90,10,30,2); //hair
+
+noStroke();
+
+
+//front hand
+fill(242, 190, 106);
+pushMatrix();
+translate(-33,-48);
+rotate(toPI*129);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(39, 91, 194);
+rect(-20,-50,40,60,5);
+//shorts
+fill(0,0,0);
+rect(-20,0,40,30,5);
+
+//back hand
+fill(242, 190, 106);
+pushMatrix();
+translate(14,-3);
+rotate(toPI*8);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(39, 91, 194);
+rect(-20,-50,40,60,5);
+//shorts
+fill(0,0,0);
+rect(-20,0,40,30,5);
+
+
+
+popMatrix();
+
+backPlayerBlue.push(get(100,100,200,200));
+
+background(0,0,0,0);
+
+noFill();
+
+
+pushMatrix();
+noStroke();
+translate(200,200);
+
+
+
+//back thighs
+fill(242, 190, 106);
+//quad(0,30,-20,30,-30,50,-10,50);
+
+//back Leg
+pushMatrix();
+translate(-19,75);
+rotate(-toPI*89);
+rect(0,0,50,20);  // ankle
+fill(233,233,233);
+rect(1,0,20,20); //socks
+fill(0,0,0);
+rect(-6,0,10,20); //shoes
+popMatrix();
+
+
+fill(242, 190, 106);
+//front Leg
+pushMatrix();
+translate(2,75);
+rotate(-toPI*93);
+rect(0,0,50,20);  // ankle
+fill(233,233,233);
+rect(-20,0,20,20); //socks
+fill(0,0,0);
+rect(-30,0,10,20); //shoes
+popMatrix();
+
+fill(242, 190, 106);
+
+//face and neck
+rect(-10,-80,20,20,2);
+rect(-8,-60,16,10);
+
+
+fill(0,0,0);
+ellipse(-4,-75,5,5);  //eyes
+ellipse(4,-75,5,5);  //eyes
+
+rect(-15,-90,30,10,2); //hair
+rect(-20,-90,40,30,2); //hair
+rect(10,-90,10,30,2); //hair
+
+noStroke();
+
+
+//front hand
+fill(242, 190, 106);
+pushMatrix();
+translate(-33,-48);
+rotate(toPI*129);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(39, 91, 194);
+rect(-20,-50,40,60,5);
+//shorts
+fill(0,0,0);
+rect(-20,0,40,30,5);
+
+//back hand
+fill(242, 190, 106);
+pushMatrix();
+translate(-6,-3);
+rotate(toPI*56);
+quad(-24,-40,-24,-25,20,-10,20,-25);
+rect(10,-25,30,13);
+ellipse(45,-20,20,12);
+popMatrix();
+//shirt
+fill(39, 91, 194);
+rect(-20,-50,40,60,5);
+//shorts
+fill(0,0,0);
+rect(-20,0,40,30,5);
+
+
+
+popMatrix();
+backPlayerBlue.push(get(100,100,200,200));
+
+
+
+//Back Poses End
+
+
+	
+	
+	
+	
+	
     //background();
     background(0,0,0,0);
     noFill();
@@ -95,8 +2253,6 @@ customCharMade = 1;
     rect(0,10,390,380);
     ellipse(0,200,100,100);
     bgImages.push(get(0,0,400,400));
-
-
 // 2d game images end here.
 
 
@@ -1855,7 +4011,8 @@ goalieObj.prototype.update = function(){
 
 var goalie = new goalieObj(160,140,170);
 
-// Objects  for Final Project CheckPoint 2 
+// Final Project Checkpoint 2 
+
 
 var trialFieldObj = function(){
 
@@ -1868,7 +4025,13 @@ var trialBallObj = function(x,y){
     this.velocity = new PVector(0,0);
     this.deceleration = new PVector(0,0);
     this.radius = 10;
-    
+	this.dragCoeff = 0.3;
+	
+	//for debug purposes :-
+	this.wanderState = false;
+	this.wanderAngle = 0;
+	this.wanderDist = 0;
+	this.step = new PVector(0,0);
 };
 
 var trialBall = new trialBallObj(400,200);
@@ -1885,6 +4048,11 @@ var chaseState = function(){
 var controlState = function(){
 
 };
+
+var waitState = function(){
+	this.timer = 120 ;
+};
+
 
 var trialPlayerObj = function(id,teamId){
     
@@ -1908,14 +4076,30 @@ var trialPlayerObj = function(id,teamId){
     this.step = new PVector(0,0);
     this.keyPlayer = false;
     this.hasControl = false;
+    this.holdsBall = false;
     this.radius = 15;
     this.relBallPos = new PVector(0,0);
     //this.dir = 0;
     
     this.ballDist = sq(1000);
     
-    this.states = [new keyState(), new haltState(), new chaseState(), new controlState()];
+    this.states = [new keyState(), new haltState(), new chaseState(), new controlState(), new waitState()];
     this.currState = 1;  
+    
+    //Image data :- 
+    this.prevPosition = new PVector(x,y);
+
+	this.rightImgIdx = 0;
+	this.leftImgIdx = 0;
+	this.frontImgIdx = 0;
+	this.backImgIdx = 0;
+
+	this.mode = 0;
+
+    
+    
+    
+    
 };
 trialPlayerObj.prototype.changeState = function(x){
     this.currState = x;
@@ -1969,26 +4153,62 @@ trialPlayerObj.prototype.draw = function() {
 
     pushMatrix();
         translate(this.position.x,this.position.y);
-        if(this.keyPlayer && frameCount % 60 < 30){
-            fill(0,0,0,128);
+        if(this.keyPlayer ){
+            if(!this.hasControl){
+                fill(0,0,0,175);
+            }
+            else{
+                fill(0,255,255,175);
+            }
             triangle(-20,-35,0,-35,-10,-20);
-        }
-        rotate(this.angle + toPI*90);
-        
-        fill(31, 28, 31);
-        quad(-25,-10,25,-10,15,10,-15,10);
+             rotate(this.angle + toPI*90);
         noStroke();
-        if(this.team === 0){
-            fill(96, 86, 237);
+        fill(31, 28, 31,55);
+       // quad(-25,-10,25,-10,15,10,-15,10);
+                triangle(0,-20,15,10,-15,10);
+
+         rotate(-(this.angle + toPI*90));
         }
-        else{
-            fill(212, 30, 30);
-        }
-        ellipse(0,0,2*this.radius,2*this.radius);
-        rotate(-(this.angle + toPI*90));
+    if(this.team === 0){
+    switch(this.mode){
+		case 0 :
+				image(backPlayerBlue[this.backImgIdx],-20,-20,40,40);
+				break;
+		case 1 :
+				image(frontPlayerBlue[this.frontImgIdx],-20,-20,40,40);
+				break;
+		case 2 :
+				image(rightPlayerBlue[this.rightImgIdx],-20,-20,40,40);
+				break;
+		case 3 :
+				image(leftPlayerBlue[this.leftImgIdx],-20,-20,40,40);
+				break;
+		
+	}
+    }
+    else{
+            switch(this.mode){
+		case 0 :
+				image(backPlayerRed[this.backImgIdx],-20,-20,40,40);
+				break;
+		case 1 :
+				image(frontPlayerRed[this.frontImgIdx],-20,-20,40,40);
+				break;
+		case 2 :
+				image(rightPlayerRed[this.rightImgIdx],-20,-20,40,40);
+				break;
+		case 3 :
+				image(leftPlayerRed[this.leftImgIdx],-20,-20,40,40);
+				break;
+		
+	}
+        
+    }
+        
+
         fill(13, 13, 12);
         textSize(12);
-        text(this.id,-2 ,2 );
+        text(this.id,-5 ,-20 );
     popMatrix();
 };
 teamObj.prototype.draw = function() {
@@ -1999,30 +4219,51 @@ teamObj.prototype.draw = function() {
 
 keyState.prototype.execute = function(me){
         me.keyPlayer = true;
+        if(me.holdsBall){
+            if(keyArray[ALT] === 1){
+				trialBall.dribble(me);
+				me.holdsBall = false;
+            }
+            return;
+        }
+/*        if(keyArray[SHIFT] === 1){
+            if(me.hasControl){
+                trialBall.hold(); //this stops the ball if player wants to intercept
+            }
+            return;
+        }*/
+        
         if(keyArray[RIGHT] === 1 && (frameCount % 3) === 0){
-            me.angle = me.angle + toPI;
+            me.angle = me.angle + 2*toPI;
             if(me.angle >= PI){
                 me.angle = -PI;
             } 
-    
         }
         if(keyArray[LEFT] === 1 && (frameCount % 3) === 0){
-            me.angle = me.angle - toPI;
+            me.angle = me.angle - 2*toPI;
             if(me.angle <= -PI){
                 me.angle = PI;
             }
         }
-        me.step.x = cos(me.angle);
-        me.step.y = sin(me.angle);
-        me.step.normalize();
+        me.velocity.x = cos(me.angle);
+        me.velocity.y = sin(me.angle);
+        me.velocity.normalize();
         if(keyArray[UP] === 1){
-            me.position.add(me.step);
+            me.position.add(me.velocity);
             if(me.hasControl){
-                trialBall.position.add(me.step);
+				if(keyArray[SHIFT] === 1){
+					//trialBall.kick();
+                    trialBall.hold();
+                    me.holdsBall = true;
+				}
+				else{
+					trialBall.dribble(me);
+		        }
+//			   trialBall.velocity.mult(0.3);
             }
         }
         if(keyArray[DOWN] === 1){
-            me.position.sub(me.step);
+            me.position.sub(me.velocity);
         }
 };
 haltState.prototype.execute = function(me){
@@ -2031,22 +4272,43 @@ haltState.prototype.execute = function(me){
     me.relBallPos.y = trialBall.position.y - me.position.y;
     me.angle = me.relBallPos.heading();
     if(me.ballDist <= sq(80)){
-        me.changeState(2);
+		me.changeState(2);
     }
 };
 chaseState.prototype.execute = function(me){
+//	return;  //FOR DEBUG purposes.
     me.velocity.x = trialBall.position.x - me.position.x;
     me.velocity.y = trialBall.position.y - me.position.y;
     me.velocity.normalize();
-    me.velocity.mult(3);
+    me.velocity.mult(1);
     me.position.add(me.velocity);
-    if(me.hasControl){
-        me.changeState(3);
-    }
+    me.angle = me.velocity.heading();
+	if(me.hasControl){
+		//me.changeState(4);  //changing to wait State for debug purposes.
+		//trialBall.hold();
+		trialBall.dribble(me);
+	}
 };
 controlState.prototype.execute = function(me){
-    
+//start taking the ball towards the goal :- 
+
+
+
 };
+
+// this will be useful for debug purposes
+waitState.prototype.execute = function(me){
+	this.timer--;
+	//if(this.timer === 30){
+	//	trialBall.wanderState = true;	
+	//}
+	if(this.timer === 0){
+			this.timer = 120 ; 
+			me.changeState(1) ;  
+	}
+
+};
+
 
 trialPlayerObj.prototype.move = function(){
     this.states[this.currState].execute(this);
@@ -2057,22 +4319,103 @@ trialPlayerObj.prototype.move = function(){
     else{
         this.hasControl = false;
     }
+    
+    var d = sq(this.position.x - this.prevPosition.x) + sq(this.position.y - this.prevPosition.y);
+
+	if(d >= 49){
+		this.prevPosition.x = this.position.x;
+		this.prevPosition.y = this.position.y;
+	
+		this.rightImgIdx = (this.rightImgIdx + 1)%rightPlayerBlue.length;
+
+		this.leftImgIdx = (this.leftImgIdx + 1)%leftPlayerBlue.length;
+		this.frontImgIdx = (this.frontImgIdx + 1)%frontPlayerBlue.length;
+		this.backImgIdx = (this.backImgIdx + 1)%backPlayerBlue.length;
+	
+	}
+    
+    if(this.angle > -PI/4 && this.angle < PI/4){
+        this.mode = 2;
+    }
+    if(this.angle > PI/4 && this.angle < 3*PI/4){
+        this.mode = 1;
+    }
+    if(this.angle > 3*PI/4 || this.angle < -3*PI/4){
+        this.mode = 3;
+    }
+    if(this.angle < -PI/4 && this.angle > -3*PI/4){
+        this.mode = 0;
+    }
 };
 
-trialBallObj.prototype.move = function(){
-    if(!trialPlayer.hasControl){
+trialBallObj.prototype.hold = function(){
+    this.wanderState = false;
+	this.velocity.set(0,0);
+};
 
-        this.deceleration.x = this.velocity.x;
-        this.deceleration.y = this.velocity.y;
-        this.deceleration.mult(-0.03);
-        if(this.velocity.mag() < 0.3){
-            this.velocity.mult(0);
-        }
-        this.position.add(this.velocity);
-        if(this.position.x < 0 || this.position.x > 800 || this.position.y < 0 || this.position.y > 400){
-            this.velocity.mult(-1);
-        }
+trialBallObj.prototype.dribble = function(me){
+	this.wanderState = false;
+	this.velocity.x = me.velocity.x;
+	this.velocity.y = me.velocity.y;
+	this.velocity.mult(5);
+	this.dragCoeff = 0.1 ; 
+};
+
+trialBallObj.prototype.kick = function(){
+	this.dragCoeffv = 0.05;
+};
+
+
+trialBallObj.prototype.wander = function() {
+    // make the ball wander around so that,chase logic of the players can be implemented.
+
+    this.step.set(cos(toPI*this.wanderAngle), sin(toPI*this.wanderAngle));
+    this.position.add(this.step);
+    this.wanderAngle += random(-15, 15); //store in degrees
+    this.wanderDist--;
+    if (this.wanderDist < 0) {
+        this.wanderDist = random(70, 100);
+        this.wanderAngle += random(-90, 90);
     }
+    
+    if(this.position.x > 800 || this.position.x < 0 || this.position.y < 0 || this.position.y > 400){
+        this.wanderAngle += 180;  
+    }
+    if(this.wanderAngle > 180){
+        this.wanderAngle -= 360 ; 
+    }  
+    if(this.wanderAngle < -180){
+        this.wanderAngle += 360 ;
+    }
+/*    if (this.position.x > 800) {this.position.x = -20;}
+    else if (this.position.x < -20) {this.position.x = 420;}
+    if (this.position.y > 420) {this.position.y = -20;}
+    else if (this.position.y < -20) {this.position.y = 420;}*/
+};
+
+
+trialBallObj.prototype.move = function(){
+    if(this.wanderState){
+        this.wander();
+        return;
+    }
+//    if(!trialPlayer.hasControl){
+	if(this.velocity.mag() < 0.3){
+		this.velocity.mult(0);
+	}
+	this.deceleration.x = this.velocity.x;
+	this.deceleration.y = this.velocity.y;
+	this.deceleration.mult(-this.dragCoeff);
+	this.velocity.add(this.deceleration);
+	this.position.add(this.velocity);
+	if(this.position.x < 0 || this.position.x > 800 || this.position.y < 0 || this.position.y > 400){
+		this.velocity.mult(-1);
+	}
+
+	if(frameCount % 60 === 0){
+		//println(floor(frameCount/60)+" Velocity :- "+this.velocity.mag()+"Deceleration :- "+this.deceleration.mag()+"(drag coefficient "+this.dragCoeff+")");
+	}
+//    }
 };
 
 teamObj.prototype.move = function() {
@@ -2086,6 +4429,7 @@ teamObj.prototype.move = function() {
     }
 };
 
+/////    final project checkpoint 2 objects End here
 
 
 //  Final Project CheckPoint 2
@@ -2112,8 +4456,8 @@ startScreenObj.prototype.draw = function() {
         textSize(25);
         text("Soccer (available)",40,30);
         fill(232, 213, 5);
-        text("Soccer-in-a-Maze(n/a)",40,60);
-        fill(59, 240, 14);
+//        text("Soccer-in-a-Maze(n/a)",40,60);
+//        fill(59, 240, 14);
     
         text("Instructions",40,120);
         fill(198, 226, 227);
@@ -2143,9 +4487,9 @@ startScreenObj.prototype.draw = function() {
 				start = 3;
 			}
         }
-        else if(this.display === 3){
-            text("Soccer-in-a-Maze",100,200);
-        }
+  //      else if(this.display === 3){
+    //        text("Soccer-in-a-Maze",100,200);
+    //    }
         else if(this.display === 4){
             text("Penalty Shootout",100,200);
         }
