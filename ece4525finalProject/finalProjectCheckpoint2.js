@@ -2230,10 +2230,6 @@ backPlayerBlue.push(get(100,100,200,200));
     //background();
     background(0,0,0,0);
     noFill();
-    stroke(245,245,245,60);
-    for(var i = 0 ; i < 16 ; i++){
-        rect(floor(i/4)*100,(i%4)*100,100,100);
-    }
     stroke(245,245,245);
     rect(10,10,390,380);
     ellipse(400,200,100,100);
@@ -2242,10 +2238,6 @@ backPlayerBlue.push(get(100,100,200,200));
     background(0,0,0,0);
 
     noFill();
-    stroke(245,245,245,60);
-    for(var i = 0 ; i < 16 ; i++){
-        rect(floor(i/4)*100,(i%4)*100,100,100);
-    }
     stroke(245,245,245);
     rect(0,10,390,380);
     ellipse(0,200,100,100);
@@ -4117,6 +4109,29 @@ var trialPlayerObj = function(id,teamId){
     
     
 };
+
+trialPlayerObj.prototype.resetState = function(){
+    
+    if(this.id % 2 === 0){
+        y = round(random(240,280));
+    }
+    else{
+        y = round(random(140,180));
+    }
+    x = 100*this.id + round(random(40,80));
+    if(this.team === 1){
+        x = 800 - x;
+    }
+    this.position.set(x,y,0);
+    this.velocity.mult(0);
+	if(!this.keyPlayer){
+	
+    	this.currState = 1;  
+	} 
+
+};
+
+
 trialPlayerObj.prototype.changeState = function(x){
     this.currState = x;
 };
@@ -4157,6 +4172,15 @@ var trialPlayer = new trialPlayerObj(3,0);
 trialFieldObj.prototype.draw = function() {
     //if(trialPlayer.position.x 
 };
+
+trialBallObj.prototype.resetState = function(){
+	
+	this.position.set(400,200,0);
+	this.velocity.set(0,0,0);
+	
+};
+
+
 trialBallObj.prototype.draw = function() {
     pushMatrix();
     translate(this.position.x, this.position.y);
@@ -4246,7 +4270,7 @@ keyState.prototype.execute = function(me){
 /*        if(keyArray[SHIFT] === 1){
             if(me.hasControl){
                 trialBall.hold(); //this stops the ball if player wants to intercept
-            }
+            }y
             return;
         }*/
         
@@ -4271,6 +4295,12 @@ keyState.prototype.execute = function(me){
 					//trialBall.kick();
                     trialBall.hold();
                     me.holdsBall = true;
+				}
+				else if(keyArray[TAB] === 1){
+					var closeId =  teams[0].findClosestPlayer(me.id);
+					var xpos = teams[0].players[closeId].position.x - me.position.x;
+					var ypos = teams[1].players[closeId].position.y - me.position.y;
+					trialBall.kick(xpos,ypos);
 				}
 				else{
 					trialBall.dribble(me);
@@ -4300,7 +4330,30 @@ chaseState.prototype.execute = function(me){
 	if(trialBall.position.x > 100 && trialBall.position.y < 700){
 		if(trialBall.position.y < 60 && trialBall.position.y > 340){
 			me.changeState(5);
+			return;
 		}
+	}
+
+	//wander if too much crowd. 
+	var d ;
+	var count = 0 ;
+
+	for(var i = 0 ; i < teams[0].players.length ; i++){
+		d = sq(teams[0].players[i].position.x - me.position.x) + sq(teams[0].players[i].position.y - me.position.y);
+
+		if(d < 625){
+			count++;
+		}
+
+		d = sq(teams[1].players[i].position.x - me.position.x) + sq(teams[1].players[i].position.y - me.position.y);
+		if(d < 625){
+			count++;
+		}
+	}
+
+	if(count > 2){
+		me.changeState(5);
+		return;
 	}
 
     me.velocity.x = trialBall.position.x - me.position.x;
@@ -4313,7 +4366,7 @@ chaseState.prototype.execute = function(me){
 		//me.changeState(4);  //changing to wait State for debug purposes.
 		//trialBall.hold();
 		trialBall.heldBy = me.team ;
-		if(teams[me.team].isAttacked(me.id)){
+		if(teams[me.team].isAttacked(me.id) || trialBall.position.y < 20 || trialBall.position.y > 380){
 			
 
 			var closeId = teams[me.team].findClosestPlayer(me.id);
@@ -4324,6 +4377,19 @@ chaseState.prototype.execute = function(me){
 		else{
 			trialBall.dribble(me);
 		}
+
+		if(trialBall.position.x < 70 && me.team === 1){
+			var xpos = - me.position.x ;
+			var ypos = 200 - me.position.y ;
+			trialBall.kick(xpos,ypos);
+		}
+		if(trialBall.position.x > 730 && me.team === 0){
+			var xpos1 = 800 - me.position.x;
+			var ypos1 = 200 - me.position.y ;
+			trialBall.kick(xpos1,ypos1);
+		}
+
+
 	}
 };
 
@@ -4426,7 +4492,7 @@ trialBallObj.prototype.dribble = function(me){
 	this.velocity.x = me.velocity.x;
 	this.velocity.y = me.velocity.y;
 	this.velocity.normalize();
-	this.velocity.x = -5;
+	this.velocity.x = 5*(me.goalDir);
 	this.velocity.normalize();
 	this.velocity.mult(5);
 	this.dragCoeff = 0.1 ; 
@@ -4537,6 +4603,16 @@ teamObj.prototype.isAttacked = function(id){
 	}
 	return false;
 };
+
+
+teamObj.prototype.resetState = function(){
+	for(var i = 0 ; i < this.players.length ; i++){
+		this.players[i].resetState();
+	}
+
+};
+
+
 /////    final project checkpoint 2 objects End here
 
 
@@ -4603,7 +4679,7 @@ startScreenObj.prototype.draw = function() {
         }
         else if(this.display === 5){
             textSize(18);
-            text("Instructions :-\nSelect one of the available games - \nSoccer or Soccer-in-a-maze or \njust practice Penalty kicks in 3-d !!\n(Soccer-in-a-maze is a new game which\ncan be said to be a hybrid of Soccer \nand Maze solving games.)\nGames marked n/a are under development \nand not available for playing for checkpoint 2\nUsing simple shapes for Players,\nwill be upgraded soon\n\nUse arrow keys to move \nthe controlling player around.\nUse MOUSECLICK to shoot/kick.\nCHOOSE controlling player using CTRL key,\na triangle flashes on its head ",40,20);
+            text("Instructions :-\nSelect one of the available games - \nSoccer or Soccer-in-a-maze or \njust practice Penalty kicks in 3-d !!\n(Soccer-in-a-maze is a new game which\ncan be said to be a hybrid of Soccer \nand Maze solving games.)\nGames marked n/a are under development \nand not available for playing for checkpoint 2\nUsing simple shapes for Players,\nwill be upgraded soon\n\nUse arrow keys to move \nthe controlling player around.\nUse TAB to shoot/kick.\nCHOOSE controlling player using CTRL key,\na triangle flashes on its head ",40,20);
         }
         else if(this.display === 6){
             textSize(20);
@@ -4758,6 +4834,11 @@ draw = function() {
 
         image(bgImages[0],0,0,400,400);
         image(bgImages[1],400,0,400,400);
+
+		stroke(255,255,255);
+		noFill();
+		rect(0,160,30,80);
+		rect(770,160,30,80);
         //draw the Objects :- 
       //  trialPlayer.draw();
         trialBall.draw();
@@ -4772,7 +4853,27 @@ draw = function() {
         for(var i = 0 ; i < teams.length ; i++){
             teams[i].move();
         }
+		textSize(15);
+        fill(0,0,233);
+        text("Score "+teams[0].score,10,16);
+        fill(233,0,0);
+        text("Score "+teams[1].score,330,16);
+				if(trialBall.position.y > 160 && trialBall.position.y < 240){
+				if(trialBall.position.x < 10){
+					teams[1].score++;
+				}
+				if(trialBall.position.x > 790){
+					teams[0].score++;
+				}
+			}
 
+
+	
+		if(trialBall.position.x < 10 || trialBall.position.x > 790){
+			trialBall.resetState();
+			teams[0].resetState();
+			teams[1].resetState();
+		}
 		
     }
     //fill(0,0,0,120);
