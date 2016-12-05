@@ -8,10 +8,7 @@ frameRate(60);
 
 Author : Ameya Khandekar
 ECE 4525 - Video Game Design and Engineering
-Final Project Checkpoint 2
-
-Creative aspect :-
-
+Final Project Submission
 
 */
 var start = 0;
@@ -4026,7 +4023,16 @@ var trialBallObj = function(x,y){
     this.deceleration = new PVector(0,0);
     this.radius = 10;
 	this.dragCoeff = 0.3;
-	
+	this.prevPosition = new PVector(this.position.x,this.position.y);
+    this.changePos = new PVector(this.position.x,this.position.y);
+	this.heldBy = -1;
+//    this.drag = new PVector(0, 0);
+  //  this.aAcc = 0;
+//    this.aVelocity = 0;
+    this.angle = 0;
+    this.idx = 0;
+    this.moveCount = 0;
+
 	//for debug purposes :-
 	this.wanderState = false;
 	this.wanderAngle = 0;
@@ -4040,7 +4046,7 @@ var keyState = function(){
 
 };
 var haltState = function(){
-
+	this.timer = 180;
 };
 var chaseState = function(){
 
@@ -4052,7 +4058,12 @@ var controlState = function(){
 var waitState = function(){
 	this.timer = 120 ;
 };
-
+var wanderPlayerState = function(){
+	this.step = new PVector(0,0);
+	this.wanderAngle = 0;
+	this.wanderDist = 0;
+	this.timer = 180;
+};
 
 var trialPlayerObj = function(id,teamId){
     
@@ -4080,10 +4091,15 @@ var trialPlayerObj = function(id,teamId){
     this.radius = 15;
     this.relBallPos = new PVector(0,0);
     //this.dir = 0;
-    
+   
+	this.goalDir = -1;
+	if(teamId === 0){
+		this.goalDir = 1;
+	}
+
     this.ballDist = sq(1000);
     
-    this.states = [new keyState(), new haltState(), new chaseState(), new controlState(), new waitState()];
+    this.states = [new keyState(), new haltState(), new chaseState(), new controlState(), new waitState(),new wanderPlayerState()];
     this.currState = 1;  
     
     //Image data :- 
@@ -4120,6 +4136,7 @@ var attackState = function(){
 
 var teamObj = function(id){
     this.id = id;
+	this.oppId = 0;
     this.score = 0;
     this.states = [new prep2kickOffState(),new defendState(), new attackState()];
     this.currState = 0;
@@ -4127,7 +4144,8 @@ var teamObj = function(id){
     this.keyPlayerIdx = 3;
     if(id === 0){
         this.players[this.keyPlayerIdx].changeState(0);
-    }
+    	this.oppId = 1;
+	}
 };
 teamObj.prototype.changeState = function(x){
     this.currState = x;
@@ -4141,13 +4159,12 @@ trialFieldObj.prototype.draw = function() {
 };
 trialBallObj.prototype.draw = function() {
     pushMatrix();
-        translate(this.position.x,this.position.y);
-        fill(233,233,233);
-        ellipse(0,0,2*this.radius,2*this.radius);
-        stroke(0,0,0);
-        line(-9,4,9,4);
-        line(-9,-4,9,-4);
+    translate(this.position.x, this.position.y);
+    rotate(toPI*this.angle);
+    scale(0.4);
+    image(ballImages[this.idx],-20,-20,40,40);
     popMatrix();
+    
 };
 trialPlayerObj.prototype.draw = function() {
 
@@ -4247,7 +4264,6 @@ keyState.prototype.execute = function(me){
         }
         me.velocity.x = cos(me.angle);
         me.velocity.y = sin(me.angle);
-        me.velocity.normalize();
         if(keyArray[UP] === 1){
             me.position.add(me.velocity);
             if(me.hasControl){
@@ -4267,16 +4283,26 @@ keyState.prototype.execute = function(me){
         }
 };
 haltState.prototype.execute = function(me){
-    me.keyPlayer = false;
+    this.timer--;
+	me.keyPlayer = false;
     me.relBallPos.x = trialBall.position.x - me.position.x;
     me.relBallPos.y = trialBall.position.y - me.position.y;
     me.angle = me.relBallPos.heading();
-    if(me.ballDist <= sq(80)){
+    if(me.ballDist <= sq(80) && trialBall.heldBy !== me.team){
 		me.changeState(2);
     }
+	else if(this.timer < 0){
+		me.changeState(5);
+		this.timer = 180 ; 
+	}
 };
 chaseState.prototype.execute = function(me){
-//	return;  //FOR DEBUG purposes.
+	if(trialBall.position.x > 100 && trialBall.position.y < 700){
+		if(trialBall.position.y < 60 && trialBall.position.y > 340){
+			me.changeState(5);
+		}
+	}
+
     me.velocity.x = trialBall.position.x - me.position.x;
     me.velocity.y = trialBall.position.y - me.position.y;
     me.velocity.normalize();
@@ -4286,9 +4312,51 @@ chaseState.prototype.execute = function(me){
 	if(me.hasControl){
 		//me.changeState(4);  //changing to wait State for debug purposes.
 		//trialBall.hold();
-		trialBall.dribble(me);
+		trialBall.heldBy = me.team ;
+		if(teams[me.team].isAttacked(me.id)){
+			
+
+			var closeId = teams[me.team].findClosestPlayer(me.id);
+			var x = teams[me.team].players[closeId].position.x - me.position.x;
+			var y = teams[me.team].players[closeId].position.y - me.position.y;
+			trialBall.kick(x,y);
+		}
+		else{
+			trialBall.dribble(me);
+		}
 	}
 };
+
+wanderPlayerState.prototype.execute = function(me){
+	
+	this.timer--;
+
+    this.step.set(cos(toPI*this.wanderAngle), sin(toPI*this.wanderAngle),0);
+    me.position.add(this.step);
+    me.angle = this.wanderAngle;
+	this.wanderAngle += random(-15, 15); //store in degrees
+    this.wanderDist--;
+    if (this.wanderDist < 0) {
+        this.wanderDist = random(70, 100);
+        this.wanderAngle += random(-90, 90);
+    }
+    
+    if(me.position.x > 800 || me.position.x < 0 || me.position.y < 0 || me.position.y > 400){
+        this.wanderAngle += 180;  
+    }
+    if(this.wanderAngle > 180){
+        this.wanderAngle -= 360 ; 
+    }  
+    if(this.wanderAngle < -180){
+        this.wanderAngle += 360 ;
+    }
+	if(this.timer < 0){
+		me.changeState(1);
+		this.timer = 180;
+	}
+
+};
+
 controlState.prototype.execute = function(me){
 //start taking the ball towards the goal :- 
 
@@ -4357,12 +4425,20 @@ trialBallObj.prototype.dribble = function(me){
 	this.wanderState = false;
 	this.velocity.x = me.velocity.x;
 	this.velocity.y = me.velocity.y;
+	this.velocity.normalize();
+	this.velocity.x = -5;
+	this.velocity.normalize();
 	this.velocity.mult(5);
 	this.dragCoeff = 0.1 ; 
 };
 
-trialBallObj.prototype.kick = function(){
+trialBallObj.prototype.kick = function(x,y){
+	this.wanderState = false;
 	this.dragCoeffv = 0.05;
+	this.velocity.x = x;
+	this.velocity.y = y;
+	this.velocity.normalize();
+	this.velocity.mult(13);
 };
 
 
@@ -4412,10 +4488,11 @@ trialBallObj.prototype.move = function(){
 		this.velocity.mult(-1);
 	}
 
-	if(frameCount % 60 === 0){
-		//println(floor(frameCount/60)+" Velocity :- "+this.velocity.mag()+"Deceleration :- "+this.deceleration.mag()+"(drag coefficient "+this.dragCoeff+")");
-	}
-//    }
+    this.idx  = floor((this.moveCount%60)/10);
+    this.changePos.set(this.position.x,this.position.y,0);
+    this.changePos.sub(this.prevPosition);
+    this.moveCount += floor(this.changePos.mag());
+    this.prevPosition.set(this.position.x,this.position.y,0);
 };
 
 teamObj.prototype.move = function() {
@@ -4429,6 +4506,37 @@ teamObj.prototype.move = function() {
     }
 };
 
+teamObj.prototype.findClosestPlayer = function(id){
+
+	var minDist = 10000000;
+	var minIdx = -1;
+	var d;
+
+	for(var i = 0 ; i < this.players.length ; i++){
+		if(i !== id){
+			d = sq(this.players[id].position.x - this.players[i].position.x) + sq(this.players[id].position.y - this.players[i].position.y); 
+			if(d < minDist){
+				minDist = d;
+				minIdx = i ; 
+			}
+		
+		}
+	}
+	return minIdx;
+}; 
+
+teamObj.prototype.isAttacked = function(id){
+
+	var d ; 
+	for(var i = 0 ; i < teams[this.oppId].players.length ; i++){
+		d = sq(teams[this.oppId].players[i].position.x - this.players[id].position.x) +  sq(teams[this.oppId].players[i].position.y - this.players[id].position.y);
+		if(d < sq(90)){
+			return true;
+		}
+	
+	}
+	return false;
+};
 /////    final project checkpoint 2 objects End here
 
 
@@ -4518,7 +4626,7 @@ startScreenObj.prototype.processClick = function(){
         if(mouseX > 80 && mouseX < 300){
             if(mouseY > 110 && mouseY < 130){
                 this.display = 2;
-				this.soccerTimer = 300;
+				this.soccerTimer = 180;
             }
             else if(mouseY > 140 && mouseY < 160){
                 this.display = 3;
