@@ -80,7 +80,1184 @@ var backPlayerRed = [];
 
 var customCharMade = 0;
 
-var customChar = function()
+var customCharObj = function(){
+};
+
+var customChar = new customCharObj();
+
+// 3-d Projection functions :- 
+//Data Structure for points in 3-d Space
+
+var pt3d = function(x,y,z){
+    this.x = x;
+    this.y = y;
+    this.z = z;
+};
+pt3d.prototype.add = function(node3){
+    this.x += node3.x;
+    this.y += node3.y;
+    this.z += node3.z;
+};
+pt3d.prototype.set = function(x,y,z){
+    this.x = x;
+    this.y = y;
+    this.z = z;
+};
+//add check for divide by zero later.
+pt3d.prototype.div = function(k){
+    this.x /= k ;
+    this.y /= k ;
+    this.z /= k ;
+};
+pt3d.prototype.mag = function(){
+    return sqrt(sq(this.x)+sq(this.y)+sq(this.z));
+};
+
+//converts point in 3-d to equivalent point in 2-d space.
+//for optimization purpose - we will avoid creation of new PVector in each call.
+
+var projectionObj = function(){
+    
+    this.f = 200;
+    this.camPos = new pt3d(80,50,-30);
+    this.pt2d = new PVector(0,0);
+
+};
+//this sets the pt2d object to the required value.
+//also for processingJS offline version make sure to use set function with (x,y,0) to avoid errors.
+projectionObj.prototype.compute = function(node3){
+    this.pt2d.set(round(this.f*((node3.x-this.camPos.x)/(node3.z - this.camPos.z)))+this.camPos.x,round(this.f*((node3.y-this.camPos.y)/(node3.z-this.camPos.z)))+this.camPos.y,0);
+    
+};
+
+projectionObj.prototype.getX = function(){
+    return this.pt2d.x;
+};
+
+projectionObj.prototype.getY = function(){
+    return this.pt2d.y;
+};
+
+var projection = new projectionObj();
+var startScreenObj = function(){
+    this.timer = 0;
+    this.yPos = -200;
+    this.display = 0;
+	this.soccerTimer = 0;
+};
+var startScreen = new startScreenObj();
+var backgroundObj = function(){
+
+// Marking 1 :- 
+this.node3 = new pt3d(-20,180,200);
+projection.compute(this.node3);
+this.line1pt1 = new PVector(projection.pt2d.x,projection.pt2d.y);
+
+this.node3.set(500,180,200);
+projection.compute(this.node3);
+this.line1pt2 = new PVector(projection.pt2d.x,projection.pt2d.y);
+
+this.node3.set(0,180,200);
+projection.compute(this.node3);
+this.line2pt1 = new PVector(projection.pt2d.x,projection.pt2d.y);
+
+this.node3.set(400,180,200);
+projection.compute(this.node3);
+this.line2pt2 = new PVector(projection.pt2d.x,projection.pt2d.y);
+
+
+this.node3.set(150,50,50);
+projection.compute(this.node3);
+this.line3pt1 = new PVector(projection.pt2d.x,projection.pt2d.y);
+
+this.node3.set(150,50,200);
+projection.compute(this.node3);
+this.line3pt2 = new PVector(projection.pt2d.x,projection.pt2d.y);
+
+
+this.node3.set(150,180,50);
+projection.compute(this.node3);
+this.line4pt1 = new PVector(projection.pt2d.x,projection.pt2d.y);
+
+this.node3.set(150,180,200);
+projection.compute(this.node3);
+this.line4pt2 = new PVector(projection.pt2d.x,projection.pt2d.y);
+
+
+
+};
+
+
+
+backgroundObj.prototype.draw = function() {
+
+    noStroke();
+    fill(48, 217, 70);
+    rect(0,140,400,260);
+ 
+    stroke(0,0,0);
+    fill(60, 80, 110);
+    rect(0,100,400,40);
+    
+    fill(107, 79, 107);
+    rect(0,0,400,100);
+    
+    //the goal and above lines were drawn using normal co-ordinates. can be changed later.
+    
+    // Fix the markings first :- 
+    stroke(255, 255, 255);
+    line(this.line1pt1.x,this.line1pt1.y,this.line1pt2.x,this.line1pt2.y);
+/*
+    line(this.line2pt1.x,this.line2pt1.y,this.line2pt2.x,this.line2pt2.y);
+    
+    line(this.line3pt1.x,this.line3pt1.y,this.line3pt2.x,this.line3pt2.y);
+    line(this.line4pt1.x,this.line4pt1.y,this.line4pt2.x,this.line4pt2.y);
+*/
+
+};
+
+var goalPostObj = function(x,y,z){
+    this.pos3d = new pt3d(x,y,z);
+    projection.compute(this.pos3d);
+    this.position = new PVector(projection.pt2d.x,projection.pt2d.y);
+};
+
+var ballObj = function(x, y, z) {
+    this.init = new pt3d(x,y,z);
+    this.pos3d = new pt3d(x,y,z);
+    this.shadowPos3d = new pt3d(x,180,z);
+    
+    projection.compute(this.pos3d);
+    
+    this.position = new PVector(projection.pt2d.x,projection.pt2d.y);
+    this.initPos = new PVector(this.position.x,this.position.y);
+    
+    //assume ball is initially on ground :- 
+    projection.compute(this.shadowPos3d);
+    this.shadowPos = new PVector(projection.pt2d.x,projection.pt2d.y); 
+
+    
+    this.thrown = 0;
+    this.velocity = new pt3d(0,-2,2); // init velocity - later change using mouse click
+    this.acceleration = new pt3d(0, 0.01,0);
+    this.aVelocity = 0;
+    this.angle = 0;
+    this.bounceCoeff = -0.5;
+    this.boardCoeff = -0.001;
+    this.size = 25;
+    this.fallenFloor = 0;
+    this.hitBoard = 0;
+    this.bounce = 0;
+
+
+    this.timer = 0 ; 
+    
+    
+    this.prevPosition = new PVector(this.position.x,this.position.y);
+    this.changePos = new PVector(this.position.x,this.position.y);
+
+//    this.drag = new PVector(0, 0);
+  //  this.aAcc = 0;
+//    this.aVelocity = 0;
+    this.angle = 0;
+    this.idx = 0;
+    this.moveCount = 0;
+};
+
+var ball = new ballObj(150, 180,50);
+var target = new PVector(0, 0);
+
+var bg = new backgroundObj();
+var goalPost = new goalPostObj(80,180,200);
+
+
+goalPostObj.prototype.draw = function() {
+    pushMatrix();
+    translate(this.position.x,this.position.y);
+    scale(0.8);
+    stroke(255,255,255);
+    strokeWeight(2);
+    for(var i = 1 ;  i < 11 ; i++){
+        line(20*i+5,-150,20*i+5,-10);
+        line(10,-15*i,208,-15*i);
+    }
+    fill(255,255,255);
+    noStroke();
+    rect(0,-160,10,160);
+    rect(200,-160,10,160);
+    rect(0,-160,200,10);
+    popMatrix();
+};
+
+// Ball Obj methods.
+ballObj.prototype.update = function() {
+    //this.pos3d.z += 1;
+//    if(start === 0){
+        this.velocity.add(this.acceleration);
+        this.pos3d.add(this.velocity);
+        if(this.timer > 0){
+            this.timer++;
+        }
+        if(this.timer > 60){
+            this.timer = 0;
+            this.pos3d.z = 50;
+            this.pos3d.y = 180;
+            this.pos3d.x = 150;
+            
+            this.velocity.x = random(-1,1);
+            this.velocity.y = random(-2,0.5);
+            this.velocity.z = 2;
+        }
+        if(this.pos3d.z > 200){
+            
+            this.timer++;
+            this.velocity.z *= -1;
+
+        }
+        if(this.pos3d.y > 180){
+            this.velocity.y *= -1;
+        }
+        
+ //   }
+    
+    projection.compute(this.pos3d);
+    this.position.set(projection.pt2d.x,projection.pt2d.y,0);
+
+    this.shadowPos3d.x = this.pos3d.x;
+    this.shadowPos3d.z = this.pos3d.z;
+
+    projection.compute(this.shadowPos3d);
+    this.shadowPos.set(projection.pt2d.x,projection.pt2d.y,0); 
+
+
+    this.aAcc = 1/10;	// modify constant 10
+    if (this.velocity.x < 0) {
+        this.aAcc = -this.aAcc;
+    }
+    this.aVelocity += this.aAcc;
+    this.aVelocity *= 0.98; // drag
+    this.angle += this.aVelocity/2;
+    this.idx  = floor((this.moveCount%60)/10);
+    this.changePos.set(this.position.x,this.position.y,0);
+    this.changePos.sub(this.prevPosition);
+    this.moveCount += floor(this.changePos.mag());
+    this.prevPosition.set(this.position.x,this.position.y,0);
+};
+
+ballObj.prototype.draw = function() {
+    pushMatrix();
+    translate(this.shadowPos.x, this.shadowPos.y);
+    scale(0.75);
+    var scl = (this.pos3d.z - 50)/150;
+    scale(1 - (0.1)*scl,1-(0.3)*scl);
+    //scale(1-(0.3*scl));
+    fill(0,0,0,128);
+    ellipse(0,0,40,40);
+    popMatrix();
+    
+    fill(255, 255, 255);
+    pushMatrix();
+    translate(this.position.x, this.position.y);
+    rotate(toPI*this.angle);
+    scale(0.75);
+    scl = (this.pos3d.z - 50)/150;
+    //scale(1 - (0.1)*scl,1-(0.3)*scl);
+    scale(1-(0.3*scl));
+    
+    image(ballImages[this.idx],-20,-20,40,40);
+    popMatrix();
+    
+    
+};
+
+
+var goalieObj  = function(x,y,z){
+    
+    this.initpos3d = new pt3d(x,y,z);
+    this.pos3d = new pt3d(x,y,z);
+    projection.compute(this.pos3d);
+    this.position = new PVector(projection.pt2d.x,projection.pt2d.y);
+    
+    this.imgIdx = 0;
+
+};
+
+goalieObj.prototype.draw = function() {
+    pushMatrix();
+    translate(this.position.x,this.position.y);
+
+    if(this.imgIdx === 0){
+        image(images[0],-40,-40,80,80);
+    }
+    else{
+        pushMatrix();
+        scale(1/0.75);
+        image(images[1],-40,-40,80,80);
+        popMatrix();
+    }
+    popMatrix();
+};
+
+goalieObj.prototype.update = function(){
+    this.pos3d.x  = ball.pos3d.x;
+    this.pos3d.y =  this.initpos3d.y - 0.25*abs(180 - ball.pos3d.y);
+    if(abs(this.pos3d.y - this.initpos3d.y) > 10){
+        this.imgIdx = 1;
+    }
+    else{
+        this.imgIdx = 0;
+    }
+    projection.compute(this.pos3d);
+    this.position = new PVector(projection.pt2d.x,projection.pt2d.y);
+};
+
+var goalie = new goalieObj(160,140,170);
+
+// main 2d game objects begin here :-  
+
+var main2dgameFieldObj = function(){
+
+};
+
+var main2dgameField = new main2dgameFieldObj();
+
+var main2dgameBallObj = function(x,y){
+    this.position = new PVector(x,y);
+    this.velocity = new PVector(0,0);
+    this.deceleration = new PVector(0,0);
+    this.radius = 10;
+	this.dragCoeff = 0.3;
+	this.prevPosition = new PVector(this.position.x,this.position.y);
+    this.changePos = new PVector(this.position.x,this.position.y);
+	this.heldBy = -1;
+//    this.drag = new PVector(0, 0);
+  //  this.aAcc = 0;
+//    this.aVelocity = 0;
+    this.angle = 0;
+    this.idx = 0;
+    this.moveCount = 0;
+
+	//for debug purposes :-
+	this.wanderState = false;
+	this.wanderAngle = 0;
+	this.wanderDist = 0;
+	this.step = new PVector(0,0);
+};
+
+var main2dgameBall = new main2dgameBallObj(400,200);
+
+var keyState = function(){
+
+};
+var haltState = function(){
+	this.timer = 180;
+};
+var chaseState = function(){
+
+};
+var controlState = function(){
+
+};
+
+var waitState = function(){
+	this.timer = 120 ;
+};
+var wanderPlayerState = function(){
+	this.step = new PVector(0,0);
+	this.wanderAngle = 0;
+	this.wanderDist = 0;
+	this.timer = 180;
+};
+
+var main2dgamePlayerObj = function(id,teamId){
+    
+    var x,y ; 
+    
+    if(id % 2 === 0){
+        y = round(random(240,280));
+    }
+    else{
+        y = round(random(140,180));
+    }
+    x = id*100 + round(random(40,80));
+    if(teamId === 1){
+        x = 800 - x;
+    }
+    this.position = new PVector(x,y);
+    this.velocity = new PVector(0,0);
+    this.team = teamId;
+    this.id = id;
+    this.angle = toPI*0;
+    this.step = new PVector(0,0);
+    this.keyPlayer = false;
+    this.hasControl = false;
+    this.holdsBall = false;
+    this.radius = 15;
+    this.relBallPos = new PVector(0,0);
+   
+	this.goalDir = -1;
+	if(teamId === 0){
+		this.goalDir = 1;
+	}
+
+    this.ballDist = sq(1000);
+    
+    this.states = [new keyState(), new haltState(), new chaseState(), new controlState(), new waitState(),new wanderPlayerState()];
+    this.currState = 1;  
+    
+    //Data for Image rendering :- 
+    this.prevPosition = new PVector(x,y);
+
+	this.rightImgIdx = 0;
+	this.leftImgIdx = 0;
+	this.frontImgIdx = 0;
+	this.backImgIdx = 0;
+
+	this.mode = 0;
+};
+
+main2dgamePlayerObj.prototype.resetState = function(){
+    
+    if(this.id % 2 === 0){
+        y = round(random(240,280));
+    }
+    else{
+        y = round(random(140,180));
+    }
+    x = 100*this.id + round(random(40,80));
+    if(this.team === 1){
+        x = 800 - x;
+    }
+    this.position.set(x,y,0);
+    this.velocity.mult(0);
+	if(!this.keyPlayer){
+	
+    	this.currState = 1;  
+	} 
+	if(this.id === 0 && this.team === 1 &&  random(0,100) < 50 ){
+		this.currState = 5;
+	}
+
+
+};
+
+
+main2dgamePlayerObj.prototype.changeState = function(x){
+    this.currState = x;
+};
+
+
+var prep2kickOffState = function(){
+
+};
+
+var defendState = function(){
+
+};
+
+var attackState = function(){
+
+};
+
+var teamObj = function(id){
+    this.id = id;
+	this.oppId = 0;
+    this.score = 0;
+    this.states = [new prep2kickOffState(),new defendState(), new attackState()];
+    this.currState = 0;
+    this.players = [new main2dgamePlayerObj(0,this.id),new main2dgamePlayerObj(1,this.id),new main2dgamePlayerObj(2,this.id),new main2dgamePlayerObj(3,this.id)];
+    this.keyPlayerIdx = 3;
+    if(id === 0){
+        this.players[this.keyPlayerIdx].changeState(0);
+    	this.oppId = 1;
+	}
+};
+teamObj.prototype.changeState = function(x){
+    this.currState = x;
+};
+
+var teams = [new teamObj(0), new teamObj(1)];
+var main2dgamePlayer = new main2dgamePlayerObj(3,0);
+
+main2dgameFieldObj.prototype.draw = function() {
+
+};
+
+main2dgameBallObj.prototype.resetState = function(){
+	
+	this.position.set(400,200,0);
+	this.velocity.set(0,0,0);
+	
+};
+
+main2dgameBallObj.prototype.draw = function() {
+    pushMatrix();
+    translate(this.position.x, this.position.y);
+    rotate(toPI*this.angle);
+    scale(0.4);
+    image(ballImages[this.idx],-20,-20,40,40);
+    popMatrix();
+    
+};
+main2dgamePlayerObj.prototype.draw = function() {
+
+    pushMatrix();
+        translate(this.position.x,this.position.y);
+        if(this.keyPlayer ){
+            if(!this.hasControl){
+                fill(0,0,0,175);
+            }
+            else{
+                fill(0,255,255,175);
+            }
+            triangle(-20,-35,0,-35,-10,-20);
+             rotate(this.angle + toPI*90);
+        noStroke();
+        fill(31, 28, 31,55);
+       // quad(-25,-10,25,-10,15,10,-15,10);
+                triangle(0,-20,15,10,-15,10);
+
+         rotate(-(this.angle + toPI*90));
+        }
+    if(this.team === 0){
+    switch(this.mode){
+		case 0 :
+				image(backPlayerBlue[this.backImgIdx],-20,-20,40,40);
+				break;
+		case 1 :
+				image(frontPlayerBlue[this.frontImgIdx],-20,-20,40,40);
+				break;
+		case 2 :
+				image(rightPlayerBlue[this.rightImgIdx],-20,-20,40,40);
+				break;
+		case 3 :
+				image(leftPlayerBlue[this.leftImgIdx],-20,-20,40,40);
+				break;
+		
+	}
+    }
+    else{
+            switch(this.mode){
+		case 0 :
+				image(backPlayerRed[this.backImgIdx],-20,-20,40,40);
+				break;
+		case 1 :
+				image(frontPlayerRed[this.frontImgIdx],-20,-20,40,40);
+				break;
+		case 2 :
+				image(rightPlayerRed[this.rightImgIdx],-20,-20,40,40);
+				break;
+		case 3 :
+				image(leftPlayerRed[this.leftImgIdx],-20,-20,40,40);
+				break;
+		
+	}
+        
+    }
+        
+
+        fill(13, 13, 12);
+        textSize(12);
+        text(this.id,-5 ,-20 );
+    popMatrix();
+};
+teamObj.prototype.draw = function() {
+    for(var i = 0 ; i < this.players.length ; i++){
+        this.players[i].draw();
+    }
+};
+
+keyState.prototype.execute = function(me){
+
+	var isMoved = false;
+	me.keyPlayer = true;
+//        if(me.holdsBall){
+//            if(keyArray[ALT] === 1){
+//				main2dgameBall.dribble(me);
+//				me.holdsBall = false;
+//            }
+//            return;
+//        }
+//       
+//        if(keyArray[RIGHT] === 1 && (frameCount % 3) === 0){
+//            me.angle = me.angle + 2*toPI;
+//            if(me.angle >= PI){
+//                me.angle = -PI;
+//            } 
+//        }
+//        if(keyArray[LEFT] === 1 && (frameCount % 3) === 0){
+//            me.angle = me.angle - 2*toPI;
+//            if(me.angle <= -PI){
+//                me.angle = PI;
+//            }
+//        }
+
+//		if(frameCount % 3 === 0){
+			if(keyArray[RIGHT] === 1){
+				me.angle = 0;
+			}
+			else if(keyArray[LEFT] === 1){
+				me.angle = PI;
+			}
+			else if(keyArray[DOWN] === 1){
+				me.angle = PI/2;
+			}
+			else if(keyArray[UP] === 1){
+				me.angle = -PI/2;
+			}
+			if(keyArray[RIGHT] + keyArray[LEFT] + keyArray[UP] + keyArray[DOWN] > 0){
+				isMoved = true;
+			}
+//		}
+
+		me.velocity.x = cos(me.angle);
+        me.velocity.y = sin(me.angle);
+        if(isMoved){
+            me.position.add(me.velocity);
+            if(me.hasControl){
+				if(keyArray[SHIFT] === 1){
+                    main2dgameBall.hold();
+                    me.holdsBall = true;
+				}
+				else if(keyArray[TAB] === 1){
+					var closeId =  teams[0].findClosestPlayer(me.id);
+					var xpos = teams[0].players[closeId].position.x - me.position.x;
+					var ypos = teams[1].players[closeId].position.y - me.position.y;
+					main2dgameBall.kick(xpos,ypos);
+				}
+				else{
+					main2dgameBall.dribble(me);
+		        }
+            }
+        }
+
+};
+haltState.prototype.execute = function(me){
+    this.timer--;
+	me.keyPlayer = false;
+    me.relBallPos.x = main2dgameBall.position.x - me.position.x;
+    me.relBallPos.y = main2dgameBall.position.y - me.position.y;
+    me.angle = me.relBallPos.heading();
+    if(me.ballDist <= sq(80) && main2dgameBall.heldBy !== me.team){
+		me.changeState(2);
+    }
+	else if(this.timer < 0){
+		me.changeState(5);
+		this.timer = 180 ; 
+	}
+};
+chaseState.prototype.execute = function(me){
+	if(main2dgameBall.position.x > 100 && main2dgameBall.position.y < 700){
+		if(main2dgameBall.position.y < 60 && main2dgameBall.position.y > 340){
+			me.changeState(5);
+			return;
+		}
+	}
+
+	//wander if too much crowd. 
+	var d ;
+	var count = 0 ;
+
+	for(var i = 0 ; i < teams[0].players.length ; i++){
+		d = sq(teams[0].players[i].position.x - me.position.x) + sq(teams[0].players[i].position.y - me.position.y);
+
+		if(d < 625){
+			count++;
+		}
+
+		d = sq(teams[1].players[i].position.x - me.position.x) + sq(teams[1].players[i].position.y - me.position.y);
+		if(d < 625){
+			count++;
+		}
+	}
+
+	if(count > 2){
+		me.changeState(5);
+		return;
+	}
+
+    me.velocity.x = main2dgameBall.position.x - me.position.x;
+    me.velocity.y = main2dgameBall.position.y - me.position.y;
+    me.velocity.normalize();
+    me.velocity.mult(1);
+    me.position.add(me.velocity);
+    me.angle = me.velocity.heading();
+	if(me.hasControl){
+		main2dgameBall.heldBy = me.team ;
+		if(teams[me.team].isAttacked(me.id) || main2dgameBall.position.y < 20 || main2dgameBall.position.y > 380){
+			
+
+			var closeId = teams[me.team].findClosestPlayer(me.id);
+			var x = teams[me.team].players[closeId].position.x - me.position.x;
+			var y = teams[me.team].players[closeId].position.y - me.position.y;
+			main2dgameBall.kick(x,y);
+		}
+		else{
+			main2dgameBall.dribble(me);
+		}
+
+		if(main2dgameBall.position.x < 70 && me.team === 1){
+			var xpos = - me.position.x ;
+			var ypos = 200 - me.position.y ;
+			main2dgameBall.kick(xpos,ypos);
+		}
+		if(main2dgameBall.position.x > 730 && me.team === 0){
+			var xpos1 = 800 - me.position.x;
+			var ypos1 = 200 - me.position.y ;
+			main2dgameBall.kick(xpos1,ypos1);
+		}
+
+
+	}
+};
+
+wanderPlayerState.prototype.execute = function(me){
+	
+	this.timer--;
+
+    this.step.set(cos(toPI*this.wanderAngle), sin(toPI*this.wanderAngle),0);
+    me.position.add(this.step);
+    me.angle = this.wanderAngle;
+	this.wanderAngle += random(-15, 15); //store in degrees
+    this.wanderDist--;
+    if (this.wanderDist < 0) {
+        this.wanderDist = random(70, 100);
+        this.wanderAngle += random(-90, 90);
+    }
+    
+    if(me.position.x > 800 || me.position.x < 0 || me.position.y < 0 || me.position.y > 400){
+        this.wanderAngle += 180;  
+    }
+    if(this.wanderAngle > 180){
+        this.wanderAngle -= 360 ; 
+    }  
+    if(this.wanderAngle < -180){
+        this.wanderAngle += 360 ;
+    }
+	if(this.timer < 0){
+		me.changeState(1);
+		this.timer = 180;
+	}
+
+};
+
+controlState.prototype.execute = function(me){
+//start taking the ball towards the goal :- 
+
+
+
+};
+
+// this will be useful for debug purposes
+waitState.prototype.execute = function(me){
+	this.timer--;
+	if(this.timer === 0){
+			this.timer = 120 ; 
+			me.changeState(1) ;  
+	}
+
+};
+
+
+main2dgamePlayerObj.prototype.move = function(){
+    this.states[this.currState].execute(this);
+    this.ballDist = (this.position.x - main2dgameBall.position.x)*(this.position.x - main2dgameBall.position.x) + (this.position.y - main2dgameBall.position.y)*(this.position.y - main2dgameBall.position.y);
+    if(this.ballDist <= sq(this.radius + main2dgameBall.radius) ){
+        this.hasControl = true;
+    }
+    else{
+        this.hasControl = false;
+    }
+    
+    var d = sq(this.position.x - this.prevPosition.x) + sq(this.position.y - this.prevPosition.y);
+
+	if(d >= 49){
+		this.prevPosition.x = this.position.x;
+		this.prevPosition.y = this.position.y;
+	
+		this.rightImgIdx = (this.rightImgIdx + 1)%rightPlayerBlue.length;
+
+		this.leftImgIdx = (this.leftImgIdx + 1)%leftPlayerBlue.length;
+		this.frontImgIdx = (this.frontImgIdx + 1)%frontPlayerBlue.length;
+		this.backImgIdx = (this.backImgIdx + 1)%backPlayerBlue.length;
+	
+	}
+    
+    if(this.angle > -PI/4 && this.angle < PI/4){
+        this.mode = 2;
+    }
+    if(this.angle > PI/4 && this.angle < 3*PI/4){
+        this.mode = 1;
+    }
+    if(this.angle > 3*PI/4 || this.angle < -3*PI/4){
+        this.mode = 3;
+    }
+    if(this.angle < -PI/4 && this.angle > -3*PI/4){
+        this.mode = 0;
+    }
+};
+
+main2dgameBallObj.prototype.hold = function(){
+    this.wanderState = false;
+	this.velocity.set(0,0);
+};
+
+main2dgameBallObj.prototype.dribble = function(me){
+	this.wanderState = false;
+	this.velocity.x = me.velocity.x;
+	this.velocity.y = me.velocity.y;
+	this.velocity.normalize();
+	this.velocity.x = 5*(me.goalDir);
+	this.velocity.normalize();
+	this.velocity.mult(5);
+	this.dragCoeff = 0.1 ; 
+};
+
+main2dgameBallObj.prototype.kick = function(x,y){
+	this.wanderState = false;
+	this.dragCoeffv = 0.05;
+	this.velocity.x = x;
+	this.velocity.y = y;
+	this.velocity.normalize();
+	this.velocity.mult(13);
+};
+
+
+main2dgameBallObj.prototype.wander = function() {
+    // make the ball wander around so that,chase logic of the players can be implemented.
+    this.step.set(cos(toPI*this.wanderAngle), sin(toPI*this.wanderAngle));
+    this.position.add(this.step);
+    this.wanderAngle += random(-15, 15); //store in degrees
+    this.wanderDist--;
+    if (this.wanderDist < 0) {
+        this.wanderDist = random(70, 100);
+        this.wanderAngle += random(-90, 90);
+    }
+    
+    if(this.position.x > 800 || this.position.x < 0 || this.position.y < 0 || this.position.y > 400){
+        this.wanderAngle += 180;  
+    }
+    if(this.wanderAngle > 180){
+        this.wanderAngle -= 360 ; 
+    }  
+    if(this.wanderAngle < -180){
+        this.wanderAngle += 360 ;
+    }
+};
+main2dgameBallObj.prototype.move = function(){
+    if(this.wanderState){
+        this.wander();
+        return;
+    }
+	if(this.velocity.mag() < 0.3){
+		this.velocity.mult(0);
+	}
+	this.deceleration.x = this.velocity.x;
+	this.deceleration.y = this.velocity.y;
+	this.deceleration.mult(-this.dragCoeff);
+	this.velocity.add(this.deceleration);
+	this.position.add(this.velocity);
+	if(this.position.x < 0 || this.position.x > 800 || this.position.y < 0 || this.position.y > 400){
+		this.velocity.mult(-1);
+	}
+
+    this.idx  = floor((this.moveCount%60)/10);
+    this.changePos.set(this.position.x,this.position.y,0);
+    this.changePos.sub(this.prevPosition);
+    this.moveCount += floor(this.changePos.mag());
+    this.prevPosition.set(this.position.x,this.position.y,0);
+};
+teamObj.prototype.move = function() {
+    if(this.id === 0 && (keyArray[CONTROL] === 1) && (frameCount % 10 === 0)){
+        this.players[this.keyPlayerIdx].changeState(1); //halt it
+        this.keyPlayerIdx = (this.keyPlayerIdx + 1)%4;
+        this.players[this.keyPlayerIdx].changeState(0);
+    }
+    for(var i = 0 ; i < this.players.length ; i++){
+        this.players[i].move();
+    }
+};
+teamObj.prototype.findClosestPlayer = function(id){
+
+	var minDist = 10000000;
+	var minIdx = -1;
+	var d;
+
+	for(var i = 0 ; i < this.players.length ; i++){
+		if(i !== id){
+			d = sq(this.players[id].position.x - this.players[i].position.x) + sq(this.players[id].position.y - this.players[i].position.y); 
+			if(d < minDist){
+				minDist = d;
+				minIdx = i ; 
+			}
+		
+		}
+	}
+	return minIdx;
+}; 
+
+teamObj.prototype.isAttacked = function(id){
+
+	var d ; 
+	for(var i = 0 ; i < teams[this.oppId].players.length ; i++){
+		d = sq(teams[this.oppId].players[i].position.x - this.players[id].position.x) +  sq(teams[this.oppId].players[i].position.y - this.players[id].position.y);
+		if(d < sq(90)){
+			return true;
+		}
+	
+	}
+	return false;
+};
+
+teamObj.prototype.resetState = function(){
+	for(var i = 0 ; i < this.players.length ; i++){
+		this.players[i].resetState();
+	}
+
+};
+///// main 2d Game Objects end here
+
+startScreenObj.prototype.draw = function() {
+    if(this.display === 1){
+        fill(48, 217, 70);
+        rect(0,0,400,400);
+    }
+    if(this.timer % 4000 < 2000){
+        fill(145, 36, 120,125 + (this.timer%2000)/16);
+    }
+    else{
+        fill(145, 36, 120,250 - (this.timer%2000)/16);
+    }
+    
+    if(this.display < 2){
+
+        noStroke();
+        pushMatrix();
+        translate(50,this.yPos);
+        rect(0,0,300,200,20);
+        fill(15, 244, 252);
+        textSize(25);
+        text("Soccer (available)",40,30);
+        fill(232, 213, 5);
+    
+        text("Instructions",40,120);
+        fill(198, 226, 227);
+    
+        text("Penalty kick(n/a)",40,90);
+        fill(232, 171, 18);
+        text("Credits",40,150);
+        textSize(15);
+        fill(230, 214, 207);
+        text("click mouse to select option",20,180);
+        popMatrix();
+
+    
+    }
+    
+    else if(this.display > 1){
+        fill(48, 217, 70);
+        rect(0,0,400,400);
+        fill(26, 26, 23);
+        textSize(30);
+        if(this.display === 2){
+			this.soccerTimer--;
+            text("Soccer",150,200);
+			textSize(15);
+			text("Game about to start in "+floor(this.soccerTimer/60) ,140,220);
+			if(this.soccerTimer <= 0){
+				start = 3;
+			}
+        }
+        else if(this.display === 4){
+            text("Penalty Shootout",100,200);
+        }
+        else if(this.display === 5){
+            textSize(18);
+            text("Instructions :-\nSelect one of the available games - \nSoccer or Soccer-in-a-maze or \njust practice Penalty kicks in 3-d !!\n(Soccer-in-a-maze is a new game which\ncan be said to be a hybrid of Soccer \nand Maze solving games.)\nGames marked n/a are under development \nand not available for playing for checkpoint 2\nUsing simple shapes for Players,\nwill be upgraded soon\n\nUse arrow keys to move \nthe controlling player around.\nUse TAB to shoot/kick.\nCHOOSE controlling player using CTRL key,\na triangle flashes on its head ",40,20);
+        }
+        else if(this.display === 6){
+            textSize(20);
+            text("Author : Ameya Khandekar\nVirginia Tech\nECE 4525\nVideo Game Design and Engg\nFinal Project ",80,150);
+            
+        }
+        if(this.display !== 2){        
+			fill(34, 75, 199);
+			rect(150,350,120,30,5);
+       		triangle(153,340,153,390,130,365);
+        	fill(48, 217, 70);
+	
+			textSize(20);
+        	text("Main Menu",155,370);		}
+    }
+};
+
+startScreenObj.prototype.processClick = function(){
+    if(this.display < 2){
+        if(mouseX > 80 && mouseX < 300){
+            if(mouseY > 110 && mouseY < 130){
+                this.display = 2;
+				this.soccerTimer = 180;
+            }
+            else if(mouseY > 140 && mouseY < 160){
+                this.display = 3;
+            }
+            else if(mouseY > 170 && mouseY < 190){
+                this.display = 4;
+            }
+            else if(mouseY > 200 && mouseY < 220){
+                this.display = 5;
+            }
+            else if(mouseY > 220 && mouseY < 250){
+                this.display = 6;
+            }
+        }
+    }
+    else{ //for now enable escape to main menu from all other screens
+        if(mouseX > 150 && mouseX < 270 && mouseY > 350 && mouseY < 380){
+        	if(this.display !== 2){
+				this.display = 0;
+			}
+        }
+    }
+};
+
+startScreenObj.prototype.update = function(){
+    if(this.timer > 120 && this.timer < 420){
+        this.yPos++;
+    }
+    this.timer++;
+};
+
+// Mouse Keyboard methods :- 
+var mouseClicked = function() {
+    if(start === 0 && startScreen.timer > 420){
+        startScreen.processClick();
+    }
+
+	if(start !== 0){
+		if(main2dgamePlayer.hasControl){
+        	main2dgameBall.velocity.x = 2*cos(main2dgamePlayer.angle);
+        	main2dgameBall.velocity.y = 2*sin(main2dgamePlayer.angle);
+        	main2dgameBall.velocity.normalize();
+        	main2dgameBall.velocity.mult(5);
+        	main2dgameBall.position.add(main2dgameBall.velocity);
+    	}
+
+	}
+
+};
+
+keyPressed = function(){
+    keyArray[keyCode] = 1;
+};
+keyReleased = function(){
+    keyArray[keyCode] = 0;
+};
+
+
+draw = function() {
+    
+    background(255,255,255);
+
+    if(start === 0){
+        if(customCharMade === 0){
+            customChar.create();
+        }
+        bg.draw();
+        goalPost.draw();
+        if(startScreen.display === 0){
+            goalie.draw();
+            goalie.update();
+            ball.draw();
+        //update methods :- 
+            ball.update();
+        }
+        startScreen.draw();
+        startScreen.update();
+    }
+    else{
+       background(57, 179, 23);
+         pushMatrix();
+         switch(translateState){
+            case 0:
+                if(main2dgameBall.position.x > 300){
+                    translateState = 1; 
+                }
+                break;
+            case 1:
+                if(main2dgameBall.position.x > 700){
+                    translateState = 2;
+                }
+                else if(main2dgameBall.position.x < 300){
+                    translateState = 0;
+                }
+                break;
+            case 2:
+                if(main2dgameBall.position.x < 700){
+                    translateState = 1;
+                }
+                break;
+            
+        }
+        
+        switch(translateState){
+
+            case 1:
+                translateDist = main2dgameBall.position.x - 300;
+                break;
+            case 2:
+                translateDist = 400;
+                break;
+            
+        }
+        translate(-translateDist, 0);
+
+        image(bgImages[0],0,0,400,400);
+        image(bgImages[1],400,0,400,400);
+
+		stroke(255,255,255);
+		noFill();
+		rect(0,160,30,80);
+		rect(770,160,30,80);
+        //draw the Objects :- 
+        main2dgameBall.draw();
+        for(var i = 0 ; i < teams.length ; i++){
+            teams[i].draw();
+        }
+        
+        popMatrix();
+        
+        main2dgameBall.move();
+        for(var i = 0 ; i < teams.length ; i++){
+            teams[i].move();
+        }
+		textSize(15);
+        fill(0,0,233);
+        text("Score "+teams[0].score,10,16);
+        fill(233,0,0);
+        text("Score "+teams[1].score,330,16);
+				if(main2dgameBall.position.y > 160 && main2dgameBall.position.y < 240){
+				if(main2dgameBall.position.x < 10){
+					teams[1].score++;
+				}
+				if(main2dgameBall.position.x > 790){
+					teams[0].score++;
+				}
+			}
+
+
+	
+		if(main2dgameBall.position.x < 10 || main2dgameBall.position.x > 790){
+			main2dgameBall.resetState();
+			teams[0].resetState();
+			teams[1].resetState();
+		}
+		
+    }
+};
+
+//Drawing the custom characters at the end of the code for better readability of rest of the file.
+customCharObj.prototype.create = function()
 {
 customCharMade = 1;
 
@@ -3671,1215 +4848,6 @@ line(197,267,159,249);
 ballImages.push(get(125,125,150,150)); //image 5 for soccer_animation_5*/
 
 };
-
-// 3-d Projection functions :- 
-//Data Structure for points in 3-d Space
-
-var pt3d = function(x,y,z){
-    this.x = x;
-    this.y = y;
-    this.z = z;
-};
-pt3d.prototype.add = function(node3){
-    this.x += node3.x;
-    this.y += node3.y;
-    this.z += node3.z;
-};
-pt3d.prototype.set = function(x,y,z){
-    this.x = x;
-    this.y = y;
-    this.z = z;
-};
-//add check for divide by zero later.
-pt3d.prototype.div = function(k){
-    this.x /= k ;
-    this.y /= k ;
-    this.z /= k ;
-};
-pt3d.prototype.mag = function(){
-    return sqrt(sq(this.x)+sq(this.y)+sq(this.z));
-};
-
-//converts point in 3-d to equivalent point in 2-d space.
-//for optimization purpose - we will avoid creation of new PVector in each call.
-
-var projectionObj = function(){
-    
-    this.f = 200;
-    this.camPos = new pt3d(80,50,-30);
-    this.pt2d = new PVector(0,0);
-
-};
-//this sets the pt2d object to the required value.
-//also for processingJS offline version make sure to use set function with (x,y,0) to avoid errors.
-projectionObj.prototype.compute = function(node3){
-    this.pt2d.set(round(this.f*((node3.x-this.camPos.x)/(node3.z - this.camPos.z)))+this.camPos.x,round(this.f*((node3.y-this.camPos.y)/(node3.z-this.camPos.z)))+this.camPos.y,0);
-    
-};
-
-projectionObj.prototype.getX = function(){
-    return this.pt2d.x;
-};
-
-projectionObj.prototype.getY = function(){
-    return this.pt2d.y;
-};
-
-var projection = new projectionObj();
-var startScreenObj = function(){
-    this.timer = 0;
-    this.yPos = -200;
-    this.display = 0;
-	this.soccerTimer = 0;
-};
-var startScreen = new startScreenObj();
-var backgroundObj = function(){
-
-// Marking 1 :- 
-this.node3 = new pt3d(-20,180,200);
-projection.compute(this.node3);
-this.line1pt1 = new PVector(projection.pt2d.x,projection.pt2d.y);
-
-this.node3.set(500,180,200);
-projection.compute(this.node3);
-this.line1pt2 = new PVector(projection.pt2d.x,projection.pt2d.y);
-
-this.node3.set(0,180,200);
-projection.compute(this.node3);
-this.line2pt1 = new PVector(projection.pt2d.x,projection.pt2d.y);
-
-this.node3.set(400,180,200);
-projection.compute(this.node3);
-this.line2pt2 = new PVector(projection.pt2d.x,projection.pt2d.y);
-
-
-this.node3.set(150,50,50);
-projection.compute(this.node3);
-this.line3pt1 = new PVector(projection.pt2d.x,projection.pt2d.y);
-
-this.node3.set(150,50,200);
-projection.compute(this.node3);
-this.line3pt2 = new PVector(projection.pt2d.x,projection.pt2d.y);
-
-
-this.node3.set(150,180,50);
-projection.compute(this.node3);
-this.line4pt1 = new PVector(projection.pt2d.x,projection.pt2d.y);
-
-this.node3.set(150,180,200);
-projection.compute(this.node3);
-this.line4pt2 = new PVector(projection.pt2d.x,projection.pt2d.y);
-
-
-
-};
-
-
-
-backgroundObj.prototype.draw = function() {
-
-    noStroke();
-    fill(48, 217, 70);
-    rect(0,140,400,260);
- 
-    stroke(0,0,0);
-    fill(60, 80, 110);
-    rect(0,100,400,40);
-    
-    fill(107, 79, 107);
-    rect(0,0,400,100);
-    
-    //the goal and above lines were drawn using normal co-ordinates. can be changed later.
-    
-    // Fix the markings first :- 
-    stroke(255, 255, 255);
-    line(this.line1pt1.x,this.line1pt1.y,this.line1pt2.x,this.line1pt2.y);
-/*
-    line(this.line2pt1.x,this.line2pt1.y,this.line2pt2.x,this.line2pt2.y);
-    
-    line(this.line3pt1.x,this.line3pt1.y,this.line3pt2.x,this.line3pt2.y);
-    line(this.line4pt1.x,this.line4pt1.y,this.line4pt2.x,this.line4pt2.y);
-*/
-
-};
-
-var goalPostObj = function(x,y,z){
-    this.pos3d = new pt3d(x,y,z);
-    projection.compute(this.pos3d);
-    this.position = new PVector(projection.pt2d.x,projection.pt2d.y);
-};
-
-var ballObj = function(x, y, z) {
-    this.init = new pt3d(x,y,z);
-    this.pos3d = new pt3d(x,y,z);
-    this.shadowPos3d = new pt3d(x,180,z);
-    
-    projection.compute(this.pos3d);
-    
-    this.position = new PVector(projection.pt2d.x,projection.pt2d.y);
-    this.initPos = new PVector(this.position.x,this.position.y);
-    
-    //assume ball is initially on ground :- 
-    projection.compute(this.shadowPos3d);
-    this.shadowPos = new PVector(projection.pt2d.x,projection.pt2d.y); 
-
-    
-    this.thrown = 0;
-    this.velocity = new pt3d(0,-2,2); // init velocity - later change using mouse click
-    this.acceleration = new pt3d(0, 0.01,0);
-    this.aVelocity = 0;
-    this.angle = 0;
-    this.bounceCoeff = -0.5;
-    this.boardCoeff = -0.001;
-    this.size = 25;
-    this.fallenFloor = 0;
-    this.hitBoard = 0;
-    this.bounce = 0;
-
-
-    this.timer = 0 ; 
-    
-    
-    this.prevPosition = new PVector(this.position.x,this.position.y);
-    this.changePos = new PVector(this.position.x,this.position.y);
-
-//    this.drag = new PVector(0, 0);
-  //  this.aAcc = 0;
-//    this.aVelocity = 0;
-    this.angle = 0;
-    this.idx = 0;
-    this.moveCount = 0;
-};
-
-var ball = new ballObj(150, 180,50);
-var target = new PVector(0, 0);
-
-var bg = new backgroundObj();
-var goalPost = new goalPostObj(80,180,200);
-
-
-goalPostObj.prototype.draw = function() {
-    pushMatrix();
-    translate(this.position.x,this.position.y);
-    scale(0.8);
-    stroke(255,255,255);
-    strokeWeight(2);
-    for(var i = 1 ;  i < 11 ; i++){
-        line(20*i+5,-150,20*i+5,-10);
-        line(10,-15*i,208,-15*i);
-    }
-    fill(255,255,255);
-    noStroke();
-    rect(0,-160,10,160);
-    rect(200,-160,10,160);
-    rect(0,-160,200,10);
-    popMatrix();
-};
-
-// Ball Obj methods.
-ballObj.prototype.update = function() {
-    //this.pos3d.z += 1;
-//    if(start === 0){
-        this.velocity.add(this.acceleration);
-        this.pos3d.add(this.velocity);
-        if(this.timer > 0){
-            this.timer++;
-        }
-        if(this.timer > 60){
-            this.timer = 0;
-            this.pos3d.z = 50;
-            this.pos3d.y = 180;
-            this.pos3d.x = 150;
-            
-            this.velocity.x = random(-1,1);
-            this.velocity.y = random(-2,0.5);
-            this.velocity.z = 2;
-        }
-        if(this.pos3d.z > 200){
-            
-            this.timer++;
-            this.velocity.z *= -1;
-
-        }
-        if(this.pos3d.y > 180){
-            this.velocity.y *= -1;
-        }
-        
- //   }
-    
-    projection.compute(this.pos3d);
-    this.position.set(projection.pt2d.x,projection.pt2d.y,0);
-
-    this.shadowPos3d.x = this.pos3d.x;
-    this.shadowPos3d.z = this.pos3d.z;
-
-    projection.compute(this.shadowPos3d);
-    this.shadowPos.set(projection.pt2d.x,projection.pt2d.y,0); 
-
-
-    this.aAcc = 1/10;	// modify constant 10
-    if (this.velocity.x < 0) {
-        this.aAcc = -this.aAcc;
-    }
-    this.aVelocity += this.aAcc;
-    this.aVelocity *= 0.98; // drag
-    this.angle += this.aVelocity/2;
-    this.idx  = floor((this.moveCount%60)/10);
-    this.changePos.set(this.position.x,this.position.y,0);
-    this.changePos.sub(this.prevPosition);
-    this.moveCount += floor(this.changePos.mag());
-    this.prevPosition.set(this.position.x,this.position.y,0);
-};
-
-ballObj.prototype.draw = function() {
-    pushMatrix();
-    translate(this.shadowPos.x, this.shadowPos.y);
-    scale(0.75);
-    var scl = (this.pos3d.z - 50)/150;
-    scale(1 - (0.1)*scl,1-(0.3)*scl);
-    //scale(1-(0.3*scl));
-    fill(0,0,0,128);
-    ellipse(0,0,40,40);
-    popMatrix();
-    
-    fill(255, 255, 255);
-    pushMatrix();
-    translate(this.position.x, this.position.y);
-    rotate(toPI*this.angle);
-    scale(0.75);
-    scl = (this.pos3d.z - 50)/150;
-    //scale(1 - (0.1)*scl,1-(0.3)*scl);
-    scale(1-(0.3*scl));
-    
-    image(ballImages[this.idx],-20,-20,40,40);
-    popMatrix();
-    
-    
-};
-
-
-var goalieObj  = function(x,y,z){
-    
-    this.initpos3d = new pt3d(x,y,z);
-    this.pos3d = new pt3d(x,y,z);
-    projection.compute(this.pos3d);
-    this.position = new PVector(projection.pt2d.x,projection.pt2d.y);
-    
-    this.imgIdx = 0;
-
-};
-
-goalieObj.prototype.draw = function() {
-    pushMatrix();
-    translate(this.position.x,this.position.y);
-
-    if(this.imgIdx === 0){
-        image(images[0],-40,-40,80,80);
-    }
-    else{
-        pushMatrix();
-        scale(1/0.75);
-        image(images[1],-40,-40,80,80);
-        popMatrix();
-    }
-    popMatrix();
-};
-
-goalieObj.prototype.update = function(){
-    this.pos3d.x  = ball.pos3d.x;
-    this.pos3d.y =  this.initpos3d.y - 0.25*abs(180 - ball.pos3d.y);
-    if(abs(this.pos3d.y - this.initpos3d.y) > 10){
-        this.imgIdx = 1;
-    }
-    else{
-        this.imgIdx = 0;
-    }
-    projection.compute(this.pos3d);
-    this.position = new PVector(projection.pt2d.x,projection.pt2d.y);
-};
-
-var goalie = new goalieObj(160,140,170);
-
-// Final Project Checkpoint 2 
-
-
-var trialFieldObj = function(){
-
-};
-
-var trialField = new trialFieldObj();
-
-var trialBallObj = function(x,y){
-    this.position = new PVector(x,y);
-    this.velocity = new PVector(0,0);
-    this.deceleration = new PVector(0,0);
-    this.radius = 10;
-	this.dragCoeff = 0.3;
-	this.prevPosition = new PVector(this.position.x,this.position.y);
-    this.changePos = new PVector(this.position.x,this.position.y);
-	this.heldBy = -1;
-//    this.drag = new PVector(0, 0);
-  //  this.aAcc = 0;
-//    this.aVelocity = 0;
-    this.angle = 0;
-    this.idx = 0;
-    this.moveCount = 0;
-
-	//for debug purposes :-
-	this.wanderState = false;
-	this.wanderAngle = 0;
-	this.wanderDist = 0;
-	this.step = new PVector(0,0);
-};
-
-var trialBall = new trialBallObj(400,200);
-
-var keyState = function(){
-
-};
-var haltState = function(){
-	this.timer = 180;
-};
-var chaseState = function(){
-
-};
-var controlState = function(){
-
-};
-
-var waitState = function(){
-	this.timer = 120 ;
-};
-var wanderPlayerState = function(){
-	this.step = new PVector(0,0);
-	this.wanderAngle = 0;
-	this.wanderDist = 0;
-	this.timer = 180;
-};
-
-var trialPlayerObj = function(id,teamId){
-    
-    var x,y ; 
-    
-    if(id % 2 === 0){
-        y = round(random(240,280));
-    }
-    else{
-        y = round(random(140,180));
-    }
-    x = id*100 + round(random(40,80));
-    if(teamId === 1){
-        x = 800 - x;
-    }
-    this.position = new PVector(x,y);
-    this.velocity = new PVector(0,0);
-    this.team = teamId;
-    this.id = id;
-    this.angle = toPI*0;
-    this.step = new PVector(0,0);
-    this.keyPlayer = false;
-    this.hasControl = false;
-    this.holdsBall = false;
-    this.radius = 15;
-    this.relBallPos = new PVector(0,0);
-    //this.dir = 0;
-   
-	this.goalDir = -1;
-	if(teamId === 0){
-		this.goalDir = 1;
-	}
-
-    this.ballDist = sq(1000);
-    
-    this.states = [new keyState(), new haltState(), new chaseState(), new controlState(), new waitState(),new wanderPlayerState()];
-    this.currState = 1;  
-    
-    //Image data :- 
-    this.prevPosition = new PVector(x,y);
-
-	this.rightImgIdx = 0;
-	this.leftImgIdx = 0;
-	this.frontImgIdx = 0;
-	this.backImgIdx = 0;
-
-	this.mode = 0;
-
-    
-    
-    
-    
-};
-
-trialPlayerObj.prototype.resetState = function(){
-    
-    if(this.id % 2 === 0){
-        y = round(random(240,280));
-    }
-    else{
-        y = round(random(140,180));
-    }
-    x = 100*this.id + round(random(40,80));
-    if(this.team === 1){
-        x = 800 - x;
-    }
-    this.position.set(x,y,0);
-    this.velocity.mult(0);
-	if(!this.keyPlayer){
-	
-    	this.currState = 1;  
-	} 
-
-};
-
-
-trialPlayerObj.prototype.changeState = function(x){
-    this.currState = x;
-};
-
-
-var prep2kickOffState = function(){
-
-};
-
-var defendState = function(){
-
-};
-
-var attackState = function(){
-
-};
-
-var teamObj = function(id){
-    this.id = id;
-	this.oppId = 0;
-    this.score = 0;
-    this.states = [new prep2kickOffState(),new defendState(), new attackState()];
-    this.currState = 0;
-    this.players = [new trialPlayerObj(0,this.id),new trialPlayerObj(1,this.id),new trialPlayerObj(2,this.id),new trialPlayerObj(3,this.id)];
-    this.keyPlayerIdx = 3;
-    if(id === 0){
-        this.players[this.keyPlayerIdx].changeState(0);
-    	this.oppId = 1;
-	}
-};
-teamObj.prototype.changeState = function(x){
-    this.currState = x;
-};
-
-var teams = [new teamObj(0), new teamObj(1)];
-var trialPlayer = new trialPlayerObj(3,0);
-
-trialFieldObj.prototype.draw = function() {
-    //if(trialPlayer.position.x 
-};
-
-trialBallObj.prototype.resetState = function(){
-	
-	this.position.set(400,200,0);
-	this.velocity.set(0,0,0);
-	
-};
-
-
-trialBallObj.prototype.draw = function() {
-    pushMatrix();
-    translate(this.position.x, this.position.y);
-    rotate(toPI*this.angle);
-    scale(0.4);
-    image(ballImages[this.idx],-20,-20,40,40);
-    popMatrix();
-    
-};
-trialPlayerObj.prototype.draw = function() {
-
-    pushMatrix();
-        translate(this.position.x,this.position.y);
-        if(this.keyPlayer ){
-            if(!this.hasControl){
-                fill(0,0,0,175);
-            }
-            else{
-                fill(0,255,255,175);
-            }
-            triangle(-20,-35,0,-35,-10,-20);
-             rotate(this.angle + toPI*90);
-        noStroke();
-        fill(31, 28, 31,55);
-       // quad(-25,-10,25,-10,15,10,-15,10);
-                triangle(0,-20,15,10,-15,10);
-
-         rotate(-(this.angle + toPI*90));
-        }
-    if(this.team === 0){
-    switch(this.mode){
-		case 0 :
-				image(backPlayerBlue[this.backImgIdx],-20,-20,40,40);
-				break;
-		case 1 :
-				image(frontPlayerBlue[this.frontImgIdx],-20,-20,40,40);
-				break;
-		case 2 :
-				image(rightPlayerBlue[this.rightImgIdx],-20,-20,40,40);
-				break;
-		case 3 :
-				image(leftPlayerBlue[this.leftImgIdx],-20,-20,40,40);
-				break;
-		
-	}
-    }
-    else{
-            switch(this.mode){
-		case 0 :
-				image(backPlayerRed[this.backImgIdx],-20,-20,40,40);
-				break;
-		case 1 :
-				image(frontPlayerRed[this.frontImgIdx],-20,-20,40,40);
-				break;
-		case 2 :
-				image(rightPlayerRed[this.rightImgIdx],-20,-20,40,40);
-				break;
-		case 3 :
-				image(leftPlayerRed[this.leftImgIdx],-20,-20,40,40);
-				break;
-		
-	}
-        
-    }
-        
-
-        fill(13, 13, 12);
-        textSize(12);
-        text(this.id,-5 ,-20 );
-    popMatrix();
-};
-teamObj.prototype.draw = function() {
-    for(var i = 0 ; i < this.players.length ; i++){
-        this.players[i].draw();
-    }
-};
-
-keyState.prototype.execute = function(me){
-        me.keyPlayer = true;
-        if(me.holdsBall){
-            if(keyArray[ALT] === 1){
-				trialBall.dribble(me);
-				me.holdsBall = false;
-            }
-            return;
-        }
-/*        if(keyArray[SHIFT] === 1){
-            if(me.hasControl){
-                trialBall.hold(); //this stops the ball if player wants to intercept
-            }y
-            return;
-        }*/
-        
-        if(keyArray[RIGHT] === 1 && (frameCount % 3) === 0){
-            me.angle = me.angle + 2*toPI;
-            if(me.angle >= PI){
-                me.angle = -PI;
-            } 
-        }
-        if(keyArray[LEFT] === 1 && (frameCount % 3) === 0){
-            me.angle = me.angle - 2*toPI;
-            if(me.angle <= -PI){
-                me.angle = PI;
-            }
-        }
-        me.velocity.x = cos(me.angle);
-        me.velocity.y = sin(me.angle);
-        if(keyArray[UP] === 1){
-            me.position.add(me.velocity);
-            if(me.hasControl){
-				if(keyArray[SHIFT] === 1){
-					//trialBall.kick();
-                    trialBall.hold();
-                    me.holdsBall = true;
-				}
-				else if(keyArray[TAB] === 1){
-					var closeId =  teams[0].findClosestPlayer(me.id);
-					var xpos = teams[0].players[closeId].position.x - me.position.x;
-					var ypos = teams[1].players[closeId].position.y - me.position.y;
-					trialBall.kick(xpos,ypos);
-				}
-				else{
-					trialBall.dribble(me);
-		        }
-//			   trialBall.velocity.mult(0.3);
-            }
-        }
-        if(keyArray[DOWN] === 1){
-            me.position.sub(me.velocity);
-        }
-};
-haltState.prototype.execute = function(me){
-    this.timer--;
-	me.keyPlayer = false;
-    me.relBallPos.x = trialBall.position.x - me.position.x;
-    me.relBallPos.y = trialBall.position.y - me.position.y;
-    me.angle = me.relBallPos.heading();
-    if(me.ballDist <= sq(80) && trialBall.heldBy !== me.team){
-		me.changeState(2);
-    }
-	else if(this.timer < 0){
-		me.changeState(5);
-		this.timer = 180 ; 
-	}
-};
-chaseState.prototype.execute = function(me){
-	if(trialBall.position.x > 100 && trialBall.position.y < 700){
-		if(trialBall.position.y < 60 && trialBall.position.y > 340){
-			me.changeState(5);
-			return;
-		}
-	}
-
-	//wander if too much crowd. 
-	var d ;
-	var count = 0 ;
-
-	for(var i = 0 ; i < teams[0].players.length ; i++){
-		d = sq(teams[0].players[i].position.x - me.position.x) + sq(teams[0].players[i].position.y - me.position.y);
-
-		if(d < 625){
-			count++;
-		}
-
-		d = sq(teams[1].players[i].position.x - me.position.x) + sq(teams[1].players[i].position.y - me.position.y);
-		if(d < 625){
-			count++;
-		}
-	}
-
-	if(count > 2){
-		me.changeState(5);
-		return;
-	}
-
-    me.velocity.x = trialBall.position.x - me.position.x;
-    me.velocity.y = trialBall.position.y - me.position.y;
-    me.velocity.normalize();
-    me.velocity.mult(1);
-    me.position.add(me.velocity);
-    me.angle = me.velocity.heading();
-	if(me.hasControl){
-		//me.changeState(4);  //changing to wait State for debug purposes.
-		//trialBall.hold();
-		trialBall.heldBy = me.team ;
-		if(teams[me.team].isAttacked(me.id) || trialBall.position.y < 20 || trialBall.position.y > 380){
-			
-
-			var closeId = teams[me.team].findClosestPlayer(me.id);
-			var x = teams[me.team].players[closeId].position.x - me.position.x;
-			var y = teams[me.team].players[closeId].position.y - me.position.y;
-			trialBall.kick(x,y);
-		}
-		else{
-			trialBall.dribble(me);
-		}
-
-		if(trialBall.position.x < 70 && me.team === 1){
-			var xpos = - me.position.x ;
-			var ypos = 200 - me.position.y ;
-			trialBall.kick(xpos,ypos);
-		}
-		if(trialBall.position.x > 730 && me.team === 0){
-			var xpos1 = 800 - me.position.x;
-			var ypos1 = 200 - me.position.y ;
-			trialBall.kick(xpos1,ypos1);
-		}
-
-
-	}
-};
-
-wanderPlayerState.prototype.execute = function(me){
-	
-	this.timer--;
-
-    this.step.set(cos(toPI*this.wanderAngle), sin(toPI*this.wanderAngle),0);
-    me.position.add(this.step);
-    me.angle = this.wanderAngle;
-	this.wanderAngle += random(-15, 15); //store in degrees
-    this.wanderDist--;
-    if (this.wanderDist < 0) {
-        this.wanderDist = random(70, 100);
-        this.wanderAngle += random(-90, 90);
-    }
-    
-    if(me.position.x > 800 || me.position.x < 0 || me.position.y < 0 || me.position.y > 400){
-        this.wanderAngle += 180;  
-    }
-    if(this.wanderAngle > 180){
-        this.wanderAngle -= 360 ; 
-    }  
-    if(this.wanderAngle < -180){
-        this.wanderAngle += 360 ;
-    }
-	if(this.timer < 0){
-		me.changeState(1);
-		this.timer = 180;
-	}
-
-};
-
-controlState.prototype.execute = function(me){
-//start taking the ball towards the goal :- 
-
-
-
-};
-
-// this will be useful for debug purposes
-waitState.prototype.execute = function(me){
-	this.timer--;
-	//if(this.timer === 30){
-	//	trialBall.wanderState = true;	
-	//}
-	if(this.timer === 0){
-			this.timer = 120 ; 
-			me.changeState(1) ;  
-	}
-
-};
-
-
-trialPlayerObj.prototype.move = function(){
-    this.states[this.currState].execute(this);
-    this.ballDist = (this.position.x - trialBall.position.x)*(this.position.x - trialBall.position.x) + (this.position.y - trialBall.position.y)*(this.position.y - trialBall.position.y);
-    if(this.ballDist <= sq(this.radius + trialBall.radius) ){
-        this.hasControl = true;
-    }
-    else{
-        this.hasControl = false;
-    }
-    
-    var d = sq(this.position.x - this.prevPosition.x) + sq(this.position.y - this.prevPosition.y);
-
-	if(d >= 49){
-		this.prevPosition.x = this.position.x;
-		this.prevPosition.y = this.position.y;
-	
-		this.rightImgIdx = (this.rightImgIdx + 1)%rightPlayerBlue.length;
-
-		this.leftImgIdx = (this.leftImgIdx + 1)%leftPlayerBlue.length;
-		this.frontImgIdx = (this.frontImgIdx + 1)%frontPlayerBlue.length;
-		this.backImgIdx = (this.backImgIdx + 1)%backPlayerBlue.length;
-	
-	}
-    
-    if(this.angle > -PI/4 && this.angle < PI/4){
-        this.mode = 2;
-    }
-    if(this.angle > PI/4 && this.angle < 3*PI/4){
-        this.mode = 1;
-    }
-    if(this.angle > 3*PI/4 || this.angle < -3*PI/4){
-        this.mode = 3;
-    }
-    if(this.angle < -PI/4 && this.angle > -3*PI/4){
-        this.mode = 0;
-    }
-};
-
-trialBallObj.prototype.hold = function(){
-    this.wanderState = false;
-	this.velocity.set(0,0);
-};
-
-trialBallObj.prototype.dribble = function(me){
-	this.wanderState = false;
-	this.velocity.x = me.velocity.x;
-	this.velocity.y = me.velocity.y;
-	this.velocity.normalize();
-	this.velocity.x = 5*(me.goalDir);
-	this.velocity.normalize();
-	this.velocity.mult(5);
-	this.dragCoeff = 0.1 ; 
-};
-
-trialBallObj.prototype.kick = function(x,y){
-	this.wanderState = false;
-	this.dragCoeffv = 0.05;
-	this.velocity.x = x;
-	this.velocity.y = y;
-	this.velocity.normalize();
-	this.velocity.mult(13);
-};
-
-
-trialBallObj.prototype.wander = function() {
-    // make the ball wander around so that,chase logic of the players can be implemented.
-
-    this.step.set(cos(toPI*this.wanderAngle), sin(toPI*this.wanderAngle));
-    this.position.add(this.step);
-    this.wanderAngle += random(-15, 15); //store in degrees
-    this.wanderDist--;
-    if (this.wanderDist < 0) {
-        this.wanderDist = random(70, 100);
-        this.wanderAngle += random(-90, 90);
-    }
-    
-    if(this.position.x > 800 || this.position.x < 0 || this.position.y < 0 || this.position.y > 400){
-        this.wanderAngle += 180;  
-    }
-    if(this.wanderAngle > 180){
-        this.wanderAngle -= 360 ; 
-    }  
-    if(this.wanderAngle < -180){
-        this.wanderAngle += 360 ;
-    }
-/*    if (this.position.x > 800) {this.position.x = -20;}
-    else if (this.position.x < -20) {this.position.x = 420;}
-    if (this.position.y > 420) {this.position.y = -20;}
-    else if (this.position.y < -20) {this.position.y = 420;}*/
-};
-
-
-trialBallObj.prototype.move = function(){
-    if(this.wanderState){
-        this.wander();
-        return;
-    }
-//    if(!trialPlayer.hasControl){
-	if(this.velocity.mag() < 0.3){
-		this.velocity.mult(0);
-	}
-	this.deceleration.x = this.velocity.x;
-	this.deceleration.y = this.velocity.y;
-	this.deceleration.mult(-this.dragCoeff);
-	this.velocity.add(this.deceleration);
-	this.position.add(this.velocity);
-	if(this.position.x < 0 || this.position.x > 800 || this.position.y < 0 || this.position.y > 400){
-		this.velocity.mult(-1);
-	}
-
-    this.idx  = floor((this.moveCount%60)/10);
-    this.changePos.set(this.position.x,this.position.y,0);
-    this.changePos.sub(this.prevPosition);
-    this.moveCount += floor(this.changePos.mag());
-    this.prevPosition.set(this.position.x,this.position.y,0);
-};
-
-teamObj.prototype.move = function() {
-    if(this.id === 0 && (keyArray[CONTROL] === 1) && (frameCount % 10 === 0)){
-        this.players[this.keyPlayerIdx].changeState(1); //halt it
-        this.keyPlayerIdx = (this.keyPlayerIdx + 1)%4;
-        this.players[this.keyPlayerIdx].changeState(0);
-    }
-    for(var i = 0 ; i < this.players.length ; i++){
-        this.players[i].move();
-    }
-};
-
-teamObj.prototype.findClosestPlayer = function(id){
-
-	var minDist = 10000000;
-	var minIdx = -1;
-	var d;
-
-	for(var i = 0 ; i < this.players.length ; i++){
-		if(i !== id){
-			d = sq(this.players[id].position.x - this.players[i].position.x) + sq(this.players[id].position.y - this.players[i].position.y); 
-			if(d < minDist){
-				minDist = d;
-				minIdx = i ; 
-			}
-		
-		}
-	}
-	return minIdx;
-}; 
-
-teamObj.prototype.isAttacked = function(id){
-
-	var d ; 
-	for(var i = 0 ; i < teams[this.oppId].players.length ; i++){
-		d = sq(teams[this.oppId].players[i].position.x - this.players[id].position.x) +  sq(teams[this.oppId].players[i].position.y - this.players[id].position.y);
-		if(d < sq(90)){
-			return true;
-		}
-	
-	}
-	return false;
-};
-
-
-teamObj.prototype.resetState = function(){
-	for(var i = 0 ; i < this.players.length ; i++){
-		this.players[i].resetState();
-	}
-
-};
-
-
-/////    final project checkpoint 2 objects End here
-
-
-//  Final Project CheckPoint 2
-
-startScreenObj.prototype.draw = function() {
-    if(this.display === 1){
-        fill(48, 217, 70);
-        rect(0,0,400,400);
-    }
-    if(this.timer % 4000 < 2000){
-        fill(145, 36, 120,125 + (this.timer%2000)/16);
-    }
-    else{
-        fill(145, 36, 120,250 - (this.timer%2000)/16);
-    }
-    
-    if(this.display < 2){
-
-        noStroke();
-        pushMatrix();
-        translate(50,this.yPos);
-        rect(0,0,300,200,20);
-        fill(15, 244, 252);
-        textSize(25);
-        text("Soccer (available)",40,30);
-        fill(232, 213, 5);
-//        text("Soccer-in-a-Maze(n/a)",40,60);
-//        fill(59, 240, 14);
-    
-        text("Instructions",40,120);
-        fill(198, 226, 227);
-    
-        text("Penalty kick(n/a)",40,90);
-        fill(232, 171, 18);
-        text("Credits",40,150);
-        textSize(15);
-        fill(230, 214, 207);
-        text("click mouse to select option",20,180);
-        popMatrix();
-
-    
-    }
-    
-    else if(this.display > 1){
-        fill(48, 217, 70);
-        rect(0,0,400,400);
-        fill(26, 26, 23);
-        textSize(30);
-        if(this.display === 2){
-			this.soccerTimer--;
-            text("Soccer",150,200);
-			textSize(15);
-			text("Game about to start in "+floor(this.soccerTimer/60) ,140,220);
-			if(this.soccerTimer <= 0){
-				start = 3;
-			}
-        }
-  //      else if(this.display === 3){
-    //        text("Soccer-in-a-Maze",100,200);
-    //    }
-        else if(this.display === 4){
-            text("Penalty Shootout",100,200);
-        }
-        else if(this.display === 5){
-            textSize(18);
-            text("Instructions :-\nSelect one of the available games - \nSoccer or Soccer-in-a-maze or \njust practice Penalty kicks in 3-d !!\n(Soccer-in-a-maze is a new game which\ncan be said to be a hybrid of Soccer \nand Maze solving games.)\nGames marked n/a are under development \nand not available for playing for checkpoint 2\nUsing simple shapes for Players,\nwill be upgraded soon\n\nUse arrow keys to move \nthe controlling player around.\nUse TAB to shoot/kick.\nCHOOSE controlling player using CTRL key,\na triangle flashes on its head ",40,20);
-        }
-        else if(this.display === 6){
-            textSize(20);
-            text("Author : Ameya Khandekar\nVirginia Tech\nECE 4525\nVideo Game Design and Engg\nFinal Project ",80,150);
-            
-        }
-        if(this.display !== 2){        
-			fill(34, 75, 199);
-			rect(150,350,120,30,5);
-       		triangle(153,340,153,390,130,365);
-        	fill(48, 217, 70);
-	
-			textSize(20);
-        	text("Main Menu",155,370);		}
-    }
-};
-
-startScreenObj.prototype.processClick = function(){
-    if(this.display < 2){
-        if(mouseX > 80 && mouseX < 300){
-            if(mouseY > 110 && mouseY < 130){
-                this.display = 2;
-				this.soccerTimer = 180;
-            }
-            else if(mouseY > 140 && mouseY < 160){
-                this.display = 3;
-            }
-            else if(mouseY > 170 && mouseY < 190){
-                this.display = 4;
-            }
-            else if(mouseY > 200 && mouseY < 220){
-                this.display = 5;
-            }
-            else if(mouseY > 220 && mouseY < 250){
-                this.display = 6;
-            }
-        }
-    }
-    else{ //for now enable escape to main menu from all other screens
-        //        rect(150,350,120,30,5);
-        if(mouseX > 150 && mouseX < 270 && mouseY > 350 && mouseY < 380){
-        	if(this.display !== 2){
-				this.display = 0;
-			}
-        }
-    }
-};
-
-startScreenObj.prototype.update = function(){
-    if(this.timer > 120 && this.timer < 420){
-        this.yPos++;
-    }
-    this.timer++;
-};
-
-// Mouse Keyboard methods :- 
-var mouseClicked = function() {
-    if(start === 0 && startScreen.timer > 420){
-        startScreen.processClick();
-    }
-
-	if(start !== 0){
-		if(trialPlayer.hasControl){
-        	trialBall.velocity.x = 2*cos(trialPlayer.angle);
-        	trialBall.velocity.y = 2*sin(trialPlayer.angle);
-        	trialBall.velocity.normalize();
-        	trialBall.velocity.mult(5);
-        	trialBall.position.add(trialBall.velocity);
-    	}
-
-	}
-
-};
-
-keyPressed = function(){
-    keyArray[keyCode] = 1;
-};
-keyReleased = function(){
-    keyArray[keyCode] = 0;
-};
-
-
-draw = function() {
-    
-    background(255,255,255);
-
-    if(start === 0){
-        if(customCharMade === 0){
-            customChar();
-        }
-        bg.draw();
-        goalPost.draw();
-        if(startScreen.display === 0){
-            goalie.draw();
-            goalie.update();
-            ball.draw();
-        //update methods :- 
-            ball.update();
-        }
-        startScreen.draw();
-        startScreen.update();
-    }
-    else{
-    //Draw methods :-
-		/*
-            bg.draw();
-            goalPost.draw();
-            goalie.draw();
-            goalie.update();
-            ball.draw();
-
-            //update methods :- 
-            ball.update();
-    	*/
-       background(57, 179, 23);
-        //image(bgImages[0],-20,0,400,400);
-        //image(bgImages[1],380,0,400,400);
-         pushMatrix();
-         switch(translateState){
-            case 0:
-                if(trialBall.position.x > 300){
-                    translateState = 1; 
-                }
-                break;
-            case 1:
-                if(trialBall.position.x > 700){
-                    translateState = 2;
-                }
-                else if(trialBall.position.x < 300){
-                    translateState = 0;
-                }
-                break;
-            case 2:
-                if(trialBall.position.x < 700){
-                    translateState = 1;
-                }
-                break;
-            
-        }
-        
-        switch(translateState){
-
-            case 1:
-                translateDist = trialBall.position.x - 300;
-                break;
-            case 2:
-                translateDist = 400;
-                break;
-            
-        }
-        translate(-translateDist, 0);
-
-        image(bgImages[0],0,0,400,400);
-        image(bgImages[1],400,0,400,400);
-
-		stroke(255,255,255);
-		noFill();
-		rect(0,160,30,80);
-		rect(770,160,30,80);
-        //draw the Objects :- 
-      //  trialPlayer.draw();
-        trialBall.draw();
-        for(var i = 0 ; i < teams.length ; i++){
-            teams[i].draw();
-        }
-        
-        popMatrix();
-        
-//        trialPlayer.move();
-        trialBall.move();
-        for(var i = 0 ; i < teams.length ; i++){
-            teams[i].move();
-        }
-		textSize(15);
-        fill(0,0,233);
-        text("Score "+teams[0].score,10,16);
-        fill(233,0,0);
-        text("Score "+teams[1].score,330,16);
-				if(trialBall.position.y > 160 && trialBall.position.y < 240){
-				if(trialBall.position.x < 10){
-					teams[1].score++;
-				}
-				if(trialBall.position.x > 790){
-					teams[0].score++;
-				}
-			}
-
-
-	
-		if(trialBall.position.x < 10 || trialBall.position.x > 790){
-			trialBall.resetState();
-			teams[0].resetState();
-			teams[1].resetState();
-		}
-		
-    }
-    //fill(0,0,0,120);
-    //rect(80,230,220,20);
-};
-
 
 
 
