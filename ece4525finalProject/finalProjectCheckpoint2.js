@@ -11,10 +11,19 @@ ECE 4525 - Video Game Design and Engineering
 Final Project Submission
 
 */
+
+
+
 var start = 0;
 var toPI = PI/180;
 
 var keyArray = [];
+//init keyArray :-
+keyArray[UP] = 0 ;
+keyArray[DOWN] = 0;
+keyArray[LEFT] = 0;
+keyArray[RIGHT] = 0;
+
 
 var ballImages = [];
 var pointSet = [];
@@ -144,6 +153,7 @@ var startScreenObj = function(){
     this.yPos = -200;
     this.display = 0;
 	this.soccerTimer = 0;
+	this.penaltyTimer  = 0;
 };
 var startScreen = new startScreenObj();
 var backgroundObj = function(){
@@ -207,24 +217,20 @@ backgroundObj.prototype.draw = function() {
     // Fix the markings first :- 
     stroke(255, 255, 255);
     line(this.line1pt1.x,this.line1pt1.y,this.line1pt2.x,this.line1pt2.y);
-/*
-    line(this.line2pt1.x,this.line2pt1.y,this.line2pt2.x,this.line2pt2.y);
-    
-    line(this.line3pt1.x,this.line3pt1.y,this.line3pt2.x,this.line3pt2.y);
-    line(this.line4pt1.x,this.line4pt1.y,this.line4pt2.x,this.line4pt2.y);
-*/
-
 };
 
-var goalPostObj = function(x,y,z){
+var goalPost3dObj = function(x,y,z){
     this.pos3d = new pt3d(x,y,z);
     projection.compute(this.pos3d);
     this.position = new PVector(projection.pt2d.x,projection.pt2d.y);
 };
 
-var ballObj = function(x, y, z) {
+var ball3dObj = function(x, y, z,startScr) {
     this.init = new pt3d(x,y,z);
     this.pos3d = new pt3d(x,y,z);
+
+	this.startScr = startScr ; 
+
     this.shadowPos3d = new pt3d(x,180,z);
     
     projection.compute(this.pos3d);
@@ -238,8 +244,17 @@ var ballObj = function(x, y, z) {
 
     
     this.thrown = 0;
-    this.velocity = new pt3d(0,-2,2); // init velocity - later change using mouse click
-    this.acceleration = new pt3d(0, 0.01,0);
+    this.velocity = new pt3d(0,0,0); // init velocity - later change using mouse click
+
+	if(this.startScr === 1){
+		this.velocity.y = -2 ;
+		this.velocity.z = 2;
+	}
+
+	this.acceleration = new pt3d(0, 0 ,0);
+	if(this.startScr === 1){
+		this.acceleration.x = 0.01;
+	}
     this.aVelocity = 0;
     this.angle = 0;
     this.bounceCoeff = -0.5;
@@ -255,23 +270,125 @@ var ballObj = function(x, y, z) {
     
     this.prevPosition = new PVector(this.position.x,this.position.y);
     this.changePos = new PVector(this.position.x,this.position.y);
-
-//    this.drag = new PVector(0, 0);
-  //  this.aAcc = 0;
-//    this.aVelocity = 0;
     this.angle = 0;
     this.idx = 0;
     this.moveCount = 0;
 };
 
-var ball = new ballObj(150, 180,50);
-var target = new PVector(0, 0);
+var goalieObj3d  = function(x,y,z,startScr){
+    
+    this.initpos3d = new pt3d(x,y,z);
+    this.pos3d = new pt3d(x,y,z);
+    projection.compute(this.pos3d);
+    this.position = new PVector(projection.pt2d.x,projection.pt2d.y);
+    this.startScr = startScr ; 
 
+    this.imgIdx = 0;
+	this.bias = 0 ; 
+};
+
+var goalie3dStartScr = new goalieObj3d(160,140,170,1);
+var goalie3d = new goalieObj3d(160,140,170,0);
+
+
+var penaltyKickGameObj = function(){
+
+	this.score = 0;
+	this.state = 0;
+	this.angle = 0; //for ease of updating store in degree, draw in radians.
+
+	this.yVel = 0;
+	this.yVelSign = 1;
+
+	this.aimPt1 = new pt3d(120,180,50);
+	projection.compute(this.aimPt1);
+	this.aim2dPt1 = new PVector(projection.pt2d.x,projection.pt2d.y);
+
+	this.aimPt2 = new pt3d(120,180,200);
+	projection.compute(this.aimPt2);
+	this.aim2dPt2 = new PVector(projection.pt2d.x,projection.pt2d.y);
+};
+
+var ball3dStartScr = new ball3dObj(150, 180,50,1);  //start Screen Ball
+var ball3dPen = new ball3dObj(120,180,50,0);
+var target3d = new PVector(0, 0);
+var penaltyKickGame = new penaltyKickGameObj();
 var bg = new backgroundObj();
-var goalPost = new goalPostObj(80,180,200);
+var goalPost3d = new goalPost3dObj(80,180,200);
+
+penaltyKickGameObj.prototype.processClick = function(){
+	if(mouseX > 280 && mouseX < 390 && mouseY > 350 && mouseY < 390){
+		this.state++;
+		if(this.state === 2){
+			ball3dPen.velocity.z = 3 ; 
+			ball3dPen.velocity.x = 3*tan(toPI*this.angle);
+			ball3dPen.velocity.y = -0.03*(this.yVel);
+			ball3dPen.acceleration.y = 0.01 ; 
+		}
+	}
+};
+penaltyKickGameObj.prototype.draw = function(){
+    fill(145, 36, 120,125);
+	noStroke();
+//	rect(20,350,110,40,15);
+	fill(13,228,15);
+	textSize(16);
+//	text("Score  "+this.score,30,370);
+
+	
+	if(this.state === 0){
+		fill(22,230,50);
+        text("Use LEFT and RIGHT arrow keys to change Angle.\n                                                            Click Set Angle",20,20);
+		
+		fill(145, 36, 120,125);
+		noStroke();
+		rect(280,350,110,40,15);
+		fill(13,228,15);
+		textSize(16);
+		text("Set Angle",290,370);
+		stroke(0,0,0);
+		line(this.aim2dPt1.x,this.aim2dPt1.y,this.aim2dPt2.x,this.aim2dPt2.y);
+	}
+	if(this.state === 1){
+        fill(145, 36, 120,125);
+		noStroke();
+		rect(280,150,50,100,15);
+		rect(280,350,110,40,15);
+		fill(223,228,15);
+		rect(280,250-this.yVel,50,this.yVel,15);
+		textSize(16);
+		text("Set Y Velocity",290,370);
+		if(frameCount % 3 === 0){
+			this.yVel = this.yVel + this.yVelSign ;
+			if(this.yVel > 99 || this.yVel < 1){
+				this.yVelSign *= -1;
+			}
+		}
+		
+	}
+};
+penaltyKickGameObj.prototype.update = function(){
+
+		if(this.state === 2 && ball3dPen.timer > 59){
+			ball3dPen.reset();
+			goalie3d.reset();
+			this.state = 0;
+		}
+
+		if(keyArray[LEFT] === 1 && this.angle > -40){
+			this.angle--;
+		}
+		if(keyArray[RIGHT] === 1 && this.angle < 60){
+			this.angle++;
+		}
+		this.aimPt2.x = 120 + 150*tan(toPI*this.angle); 
+		projection.compute(this.aimPt2);
+		this.aim2dPt2.x = projection.pt2d.x ;
+		this.aim2dPt2.y = projection.pt2d.y ;
+};
 
 
-goalPostObj.prototype.draw = function() {
+goalPost3dObj.prototype.draw = function() {
     pushMatrix();
     translate(this.position.x,this.position.y);
     scale(0.8);
@@ -290,16 +407,19 @@ goalPostObj.prototype.draw = function() {
 };
 
 // Ball Obj methods.
-ballObj.prototype.update = function() {
-    //this.pos3d.z += 1;
-//    if(start === 0){
-        this.velocity.add(this.acceleration);
-        this.pos3d.add(this.velocity);
-        if(this.timer > 0){
-            this.timer++;
-        }
-        if(this.timer > 60){
-            this.timer = 0;
+ball3dObj.prototype.reset = function(){
+            this.pos3d.z = 50;
+            this.pos3d.y = 180;
+            this.pos3d.x = 120;
+            
+            this.velocity.x = 0;
+            this.velocity.y = 0;
+            this.velocity.z = 0;
+			
+			this.acceleration.y = 0;
+};
+
+ball3dObj.prototype.startScreenMove = function(){
             this.pos3d.z = 50;
             this.pos3d.y = 180;
             this.pos3d.x = 150;
@@ -307,19 +427,37 @@ ballObj.prototype.update = function() {
             this.velocity.x = random(-1,1);
             this.velocity.y = random(-2,0.5);
             this.velocity.z = 2;
-        }
-        if(this.pos3d.z > 200){
             
+
+};
+
+ball3dObj.prototype.update = function() {
+    
+	if(this.timer > 0){
+        this.timer++;
+    }
+    if(this.timer > 60){
+            this.timer = 0;
+		if(this.startScr === 1){
+			this.startScreenMove() ;
+		}
+
+    }
+    if(this.pos3d.z > 200){
             this.timer++;
+    }
+
+	this.velocity.add(this.acceleration);
+    this.pos3d.add(this.velocity);
+    if(this.pos3d.z > 200){
+            
             this.velocity.z *= -1;
 
-        }
-        if(this.pos3d.y > 180){
-            this.velocity.y *= -1;
-        }
-        
- //   }
-    
+    }
+    if(this.pos3d.y > 180){
+    	this.velocity.y *= -1;
+    }
+	//3-d projection computations :- 
     projection.compute(this.pos3d);
     this.position.set(projection.pt2d.x,projection.pt2d.y,0);
 
@@ -328,9 +466,10 @@ ballObj.prototype.update = function() {
 
     projection.compute(this.shadowPos3d);
     this.shadowPos.set(projection.pt2d.x,projection.pt2d.y,0); 
+	
 
-
-    this.aAcc = 1/10;	// modify constant 10
+	//animation computations :- 
+    this.aAcc = this.acceleration.mag();	// modify constant 10
     if (this.velocity.x < 0) {
         this.aAcc = -this.aAcc;
     }
@@ -344,7 +483,7 @@ ballObj.prototype.update = function() {
     this.prevPosition.set(this.position.x,this.position.y,0);
 };
 
-ballObj.prototype.draw = function() {
+ball3dObj.prototype.draw = function() {
     pushMatrix();
     translate(this.shadowPos.x, this.shadowPos.y);
     scale(0.75);
@@ -371,18 +510,7 @@ ballObj.prototype.draw = function() {
 };
 
 
-var goalieObj  = function(x,y,z){
-    
-    this.initpos3d = new pt3d(x,y,z);
-    this.pos3d = new pt3d(x,y,z);
-    projection.compute(this.pos3d);
-    this.position = new PVector(projection.pt2d.x,projection.pt2d.y);
-    
-    this.imgIdx = 0;
-
-};
-
-goalieObj.prototype.draw = function() {
+goalieObj3d.prototype.draw = function() {
     pushMatrix();
     translate(this.position.x,this.position.y);
 
@@ -398,10 +526,27 @@ goalieObj.prototype.draw = function() {
     popMatrix();
 };
 
-goalieObj.prototype.update = function(){
-    this.pos3d.x  = ball.pos3d.x;
-    this.pos3d.y =  this.initpos3d.y - 0.25*abs(180 - ball.pos3d.y);
-    if(abs(this.pos3d.y - this.initpos3d.y) > 10){
+goalieObj3d.prototype.reset = function(){
+	this.pos3d.x = 160 ; 
+	this.pos3d.y = 140 ;
+	this.pos3d.z = 170 ;
+	this.imgIdx = 0 ; 
+	this.bias = random(-1,1);
+};
+
+goalieObj3d.prototype.update = function(){
+	if(this.startScr === 1){
+		this.pos3d.x  = ball3dStartScr.pos3d.x;
+	    this.pos3d.y =  this.initpos3d.y - 0.25*abs(180 - ball3dStartScr.pos3d.y);
+    }
+	else{
+		this.pos3d.x  = ball3dPen.pos3d.x + 30 * this.bias;
+	    if(this.pos3d.y > 100){
+			this.pos3d.y =  this.initpos3d.y - 0.25*abs(180 - ball3dPen.pos3d.y);
+		}
+	}
+
+	if(abs(this.pos3d.y - this.initpos3d.y) > 10){
         this.imgIdx = 1;
     }
     else{
@@ -410,18 +555,15 @@ goalieObj.prototype.update = function(){
     projection.compute(this.pos3d);
     this.position = new PVector(projection.pt2d.x,projection.pt2d.y);
 };
-
-var goalie = new goalieObj(160,140,170);
-
 // main 2d game objects begin here :-  
 
-var main2dgameFieldObj = function(){
+var fieldObj = function(){
 
 };
 
-var main2dgameField = new main2dgameFieldObj();
+var field = new fieldObj();
 
-var main2dgameBallObj = function(x,y){
+var ballObj = function(x,y){
     this.position = new PVector(x,y);
     this.velocity = new PVector(0,0);
     this.deceleration = new PVector(0,0);
@@ -444,7 +586,149 @@ var main2dgameBallObj = function(x,y){
 	this.step = new PVector(0,0);
 };
 
-var main2dgameBall = new main2dgameBallObj(400,200);
+var ball = new ballObj(400,200);
+
+
+var goalieHaltState = function(){
+	
+};
+var goalieDefendState = function(){
+	
+};
+
+
+
+goalieHaltState.prototype.execute = function(me){
+	me.velocity.x = 0;
+	me.velocity.y = 0;
+	if((ball.position.x < 100 && me.team === 0) ||(ball.position.x > 700 && me.team === 1)){
+		me.changeState(1);
+	}
+
+};
+
+goalieDefendState.prototype.execute = function(me){
+};
+
+
+var main2dgameGoalie = function(id){
+
+	this.team = id; 
+
+	this.position = new PVector(40,200);
+	this.velocity = new PVector(0,0);
+
+	this.states = [new goalieHaltState() , new goalieDefendState()];
+	this.currState = 0;
+
+	if(id === 1){
+		this.position.x = 760 ;
+	}
+ 
+    //Data for Image rendering :- 
+    this.prevPosition = new PVector(this.position.x,this.position.y);
+
+	this.rightImgIdx = 0;
+	this.leftImgIdx = 0;
+	this.frontImgIdx = 0;
+	this.backImgIdx = 0;
+
+	this.mode = 0;
+
+
+}; 
+
+main2dgameGoalie.prototype.changeState = function(x){
+	this.currState =  x;
+};
+
+main2dgameGoalie.prototype.move = function(){
+	this.states[this.currState].execute(this);
+	this.position.add(this.velocity);
+	//this.velocity.x = 0;
+	//this.velocity.y = 0;
+
+	//updates for rendering the images :- 
+    
+    var d = sq(this.position.x - this.prevPosition.x) + sq(this.position.y - this.prevPosition.y);
+
+	if(d >= 49){
+		this.prevPosition.x = this.position.x;
+		this.prevPosition.y = this.position.y;
+	
+		this.rightImgIdx = (this.rightImgIdx + 1)%rightPlayerBlue.length;
+
+		this.leftImgIdx = (this.leftImgIdx + 1)%leftPlayerBlue.length;
+		this.frontImgIdx = (this.frontImgIdx + 1)%frontPlayerBlue.length;
+		this.backImgIdx = (this.backImgIdx + 1)%backPlayerBlue.length;
+	
+	}
+    
+    if(this.angle > -PI/4 && this.angle < PI/4){
+        this.mode = 2;
+    }
+    if(this.angle > PI/4 && this.angle < 3*PI/4){
+        this.mode = 1;
+    }
+    if(this.angle > 3*PI/4 || this.angle < -3*PI/4){
+        this.mode = 3;
+    }
+    if(this.angle < -PI/4 && this.angle > -3*PI/4){
+        this.mode = 0;
+    }
+
+
+};
+
+main2dgameGoalie.prototype.draw = function(){
+
+    pushMatrix();
+    translate(this.position.x,this.position.y);
+    if(this.team === 0){
+    switch(this.mode){
+		case 0 :
+				image(backPlayerBlue[this.backImgIdx],-20,-20,40,40);
+				break;
+		case 1 :
+				image(frontPlayerBlue[this.frontImgIdx],-20,-20,40,40);
+				break;
+		case 2 :
+				image(rightPlayerBlue[this.rightImgIdx],-20,-20,40,40);
+				break;
+		case 3 :
+				image(leftPlayerBlue[this.leftImgIdx],-20,-20,40,40);
+				break;
+		
+	}
+    }
+    else{
+            switch(this.mode){
+		case 0 :
+				image(backPlayerRed[this.backImgIdx],-20,-20,40,40);
+				break;
+		case 1 :
+				image(frontPlayerRed[this.frontImgIdx],-20,-20,40,40);
+				break;
+		case 2 :
+				image(rightPlayerRed[this.rightImgIdx],-20,-20,40,40);
+				break;
+		case 3 :
+				image(leftPlayerRed[this.leftImgIdx],-20,-20,40,40);
+				break;
+		
+	}
+        
+    }
+        
+
+        fill(13, 13, 12);
+        textSize(12);
+        text("G"+this.team,-5 ,-20 );
+    popMatrix();
+
+};
+
+
 
 var keyState = function(){
 
@@ -469,7 +753,7 @@ var wanderPlayerState = function(){
 	this.timer = 180;
 };
 
-var main2dgamePlayerObj = function(id,teamId){
+var playerObj = function(id,teamId){
     
     var x,y ; 
     
@@ -516,8 +800,8 @@ var main2dgamePlayerObj = function(id,teamId){
 	this.mode = 0;
 };
 
-main2dgamePlayerObj.prototype.resetState = function(){
-    
+playerObj.prototype.resetState = function(){
+    var x,y ;
     if(this.id % 2 === 0){
         y = round(random(240,280));
     }
@@ -531,9 +815,8 @@ main2dgamePlayerObj.prototype.resetState = function(){
     this.position.set(x,y,0);
     this.velocity.mult(0);
 	if(!this.keyPlayer){
-	
-    	this.currState = 1;  
-	} 
+        this.currState = 1;
+    }
 	if(this.id === 0 && this.team === 1 &&  random(0,100) < 50 ){
 		this.currState = 5;
 	}
@@ -542,7 +825,7 @@ main2dgamePlayerObj.prototype.resetState = function(){
 };
 
 
-main2dgamePlayerObj.prototype.changeState = function(x){
+playerObj.prototype.changeState = function(x){
     this.currState = x;
 };
 
@@ -565,32 +848,31 @@ var teamObj = function(id){
     this.score = 0;
     this.states = [new prep2kickOffState(),new defendState(), new attackState()];
     this.currState = 0;
-    this.players = [new main2dgamePlayerObj(0,this.id),new main2dgamePlayerObj(1,this.id),new main2dgamePlayerObj(2,this.id),new main2dgamePlayerObj(3,this.id)];
-    this.keyPlayerIdx = 3;
+    this.players = [new playerObj(0,this.id),new playerObj(1,this.id),new playerObj(2,this.id),new playerObj(3,this.id)];
+//    this.goalie = new main2dgameGoalie(id) ; 
+	this.keyPlayerIdx = 3;
     if(id === 0){
-        this.players[this.keyPlayerIdx].changeState(0);
-    	this.oppId = 1;
-	}
+        this.players[this.keyPlayerIdx].changeState(0);this.oppId = 1;
+    }
+
 };
 teamObj.prototype.changeState = function(x){
     this.currState = x;
 };
 
 var teams = [new teamObj(0), new teamObj(1)];
-var main2dgamePlayer = new main2dgamePlayerObj(3,0);
+var player = new playerObj(3,0);
 
-main2dgameFieldObj.prototype.draw = function() {
+fieldObj.prototype.draw = function() {
 
 };
 
-main2dgameBallObj.prototype.resetState = function(){
-	
+ballObj.prototype.resetState = function(){
 	this.position.set(400,200,0);
 	this.velocity.set(0,0,0);
-	
 };
 
-main2dgameBallObj.prototype.draw = function() {
+ballObj.prototype.draw = function() {
     pushMatrix();
     translate(this.position.x, this.position.y);
     rotate(toPI*this.angle);
@@ -599,7 +881,7 @@ main2dgameBallObj.prototype.draw = function() {
     popMatrix();
     
 };
-main2dgamePlayerObj.prototype.draw = function() {
+playerObj.prototype.draw = function() {
 
     pushMatrix();
         translate(this.position.x,this.position.y);
@@ -610,14 +892,8 @@ main2dgamePlayerObj.prototype.draw = function() {
             else{
                 fill(0,255,255,175);
             }
+			noStroke();
             triangle(-20,-35,0,-35,-10,-20);
-             rotate(this.angle + toPI*90);
-        noStroke();
-        fill(31, 28, 31,55);
-       // quad(-25,-10,25,-10,15,10,-15,10);
-                triangle(0,-20,15,10,-15,10);
-
-         rotate(-(this.angle + toPI*90));
         }
     if(this.team === 0){
     switch(this.mode){
@@ -665,34 +941,13 @@ teamObj.prototype.draw = function() {
     for(var i = 0 ; i < this.players.length ; i++){
         this.players[i].draw();
     }
+//	this.goalie.draw();
 };
 
 keyState.prototype.execute = function(me){
 
 	var isMoved = false;
 	me.keyPlayer = true;
-//        if(me.holdsBall){
-//            if(keyArray[ALT] === 1){
-//				main2dgameBall.dribble(me);
-//				me.holdsBall = false;
-//            }
-//            return;
-//        }
-//       
-//        if(keyArray[RIGHT] === 1 && (frameCount % 3) === 0){
-//            me.angle = me.angle + 2*toPI;
-//            if(me.angle >= PI){
-//                me.angle = -PI;
-//            } 
-//        }
-//        if(keyArray[LEFT] === 1 && (frameCount % 3) === 0){
-//            me.angle = me.angle - 2*toPI;
-//            if(me.angle <= -PI){
-//                me.angle = PI;
-//            }
-//        }
-
-//		if(frameCount % 3 === 0){
 			if(keyArray[RIGHT] === 1){
 				me.angle = 0;
 			}
@@ -708,7 +963,6 @@ keyState.prototype.execute = function(me){
 			if(keyArray[RIGHT] + keyArray[LEFT] + keyArray[UP] + keyArray[DOWN] > 0){
 				isMoved = true;
 			}
-//		}
 
 		me.velocity.x = cos(me.angle);
         me.velocity.y = sin(me.angle);
@@ -716,17 +970,17 @@ keyState.prototype.execute = function(me){
             me.position.add(me.velocity);
             if(me.hasControl){
 				if(keyArray[SHIFT] === 1){
-                    main2dgameBall.hold();
+                    ball.hold();
                     me.holdsBall = true;
 				}
 				else if(keyArray[TAB] === 1){
 					var closeId =  teams[0].findClosestPlayer(me.id);
 					var xpos = teams[0].players[closeId].position.x - me.position.x;
 					var ypos = teams[1].players[closeId].position.y - me.position.y;
-					main2dgameBall.kick(xpos,ypos);
+					ball.kick(xpos,ypos);
 				}
 				else{
-					main2dgameBall.dribble(me);
+					ball.dribble(me);
 		        }
             }
         }
@@ -735,10 +989,10 @@ keyState.prototype.execute = function(me){
 haltState.prototype.execute = function(me){
     this.timer--;
 	me.keyPlayer = false;
-    me.relBallPos.x = main2dgameBall.position.x - me.position.x;
-    me.relBallPos.y = main2dgameBall.position.y - me.position.y;
+    me.relBallPos.x = ball.position.x - me.position.x;
+    me.relBallPos.y = ball.position.y - me.position.y;
     me.angle = me.relBallPos.heading();
-    if(me.ballDist <= sq(80) && main2dgameBall.heldBy !== me.team){
+    if(me.ballDist <= sq(80) && ball.heldBy !== me.team){
 		me.changeState(2);
     }
 	else if(this.timer < 0){
@@ -747,8 +1001,8 @@ haltState.prototype.execute = function(me){
 	}
 };
 chaseState.prototype.execute = function(me){
-	if(main2dgameBall.position.x > 100 && main2dgameBall.position.y < 700){
-		if(main2dgameBall.position.y < 60 && main2dgameBall.position.y > 340){
+	if(ball.position.x > 100 && ball.position.y < 700){
+		if(ball.position.y < 60 && ball.position.y > 340){
 			me.changeState(5);
 			return;
 		}
@@ -776,35 +1030,35 @@ chaseState.prototype.execute = function(me){
 		return;
 	}
 
-    me.velocity.x = main2dgameBall.position.x - me.position.x;
-    me.velocity.y = main2dgameBall.position.y - me.position.y;
+    me.velocity.x = ball.position.x - me.position.x;
+    me.velocity.y = ball.position.y - me.position.y;
     me.velocity.normalize();
     me.velocity.mult(1);
     me.position.add(me.velocity);
     me.angle = me.velocity.heading();
 	if(me.hasControl){
-		main2dgameBall.heldBy = me.team ;
-		if(teams[me.team].isAttacked(me.id) || main2dgameBall.position.y < 20 || main2dgameBall.position.y > 380){
+		ball.heldBy = me.team ;
+		if(teams[me.team].isAttacked(me.id) || ball.position.y < 20 || ball.position.y > 380){
 			
 
 			var closeId = teams[me.team].findClosestPlayer(me.id);
 			var x = teams[me.team].players[closeId].position.x - me.position.x;
 			var y = teams[me.team].players[closeId].position.y - me.position.y;
-			main2dgameBall.kick(x,y);
+			ball.kick(x,y);
 		}
 		else{
-			main2dgameBall.dribble(me);
+			ball.dribble(me);
 		}
 
-		if(main2dgameBall.position.x < 70 && me.team === 1){
+		if(ball.position.x < 70 && me.team === 1){
 			var xpos = - me.position.x ;
 			var ypos = 200 - me.position.y ;
-			main2dgameBall.kick(xpos,ypos);
+			ball.kick(xpos,ypos);
 		}
-		if(main2dgameBall.position.x > 730 && me.team === 0){
+		if(ball.position.x > 730 && me.team === 0){
 			var xpos1 = 800 - me.position.x;
 			var ypos1 = 200 - me.position.y ;
-			main2dgameBall.kick(xpos1,ypos1);
+			ball.kick(xpos1,ypos1);
 		}
 
 
@@ -859,10 +1113,10 @@ waitState.prototype.execute = function(me){
 };
 
 
-main2dgamePlayerObj.prototype.move = function(){
+playerObj.prototype.move = function(){
     this.states[this.currState].execute(this);
-    this.ballDist = (this.position.x - main2dgameBall.position.x)*(this.position.x - main2dgameBall.position.x) + (this.position.y - main2dgameBall.position.y)*(this.position.y - main2dgameBall.position.y);
-    if(this.ballDist <= sq(this.radius + main2dgameBall.radius) ){
+    this.ballDist = (this.position.x - ball.position.x)*(this.position.x - ball.position.x) + (this.position.y - ball.position.y)*(this.position.y - ball.position.y);
+    if(this.ballDist <= sq(this.radius + ball.radius) ){
         this.hasControl = true;
     }
     else{
@@ -897,12 +1151,12 @@ main2dgamePlayerObj.prototype.move = function(){
     }
 };
 
-main2dgameBallObj.prototype.hold = function(){
+ballObj.prototype.hold = function(){
     this.wanderState = false;
 	this.velocity.set(0,0);
 };
 
-main2dgameBallObj.prototype.dribble = function(me){
+ballObj.prototype.dribble = function(me){
 	this.wanderState = false;
 	this.velocity.x = me.velocity.x;
 	this.velocity.y = me.velocity.y;
@@ -913,7 +1167,7 @@ main2dgameBallObj.prototype.dribble = function(me){
 	this.dragCoeff = 0.1 ; 
 };
 
-main2dgameBallObj.prototype.kick = function(x,y){
+ballObj.prototype.kick = function(x,y){
 	this.wanderState = false;
 	this.dragCoeffv = 0.05;
 	this.velocity.x = x;
@@ -923,7 +1177,7 @@ main2dgameBallObj.prototype.kick = function(x,y){
 };
 
 
-main2dgameBallObj.prototype.wander = function() {
+ballObj.prototype.wander = function() {
     // make the ball wander around so that,chase logic of the players can be implemented.
     this.step.set(cos(toPI*this.wanderAngle), sin(toPI*this.wanderAngle));
     this.position.add(this.step);
@@ -944,7 +1198,7 @@ main2dgameBallObj.prototype.wander = function() {
         this.wanderAngle += 360 ;
     }
 };
-main2dgameBallObj.prototype.move = function(){
+ballObj.prototype.move = function(){
     if(this.wanderState){
         this.wander();
         return;
@@ -976,6 +1230,7 @@ teamObj.prototype.move = function() {
     for(var i = 0 ; i < this.players.length ; i++){
         this.players[i].move();
     }
+//	this.goalie.move();
 };
 teamObj.prototype.findClosestPlayer = function(id){
 
@@ -1037,13 +1292,13 @@ startScreenObj.prototype.draw = function() {
         rect(0,0,300,200,20);
         fill(15, 244, 252);
         textSize(25);
-        text("Soccer (available)",40,30);
+        text("Soccer ",40,60);
         fill(232, 213, 5);
     
         text("Instructions",40,120);
         fill(198, 226, 227);
     
-        text("Penalty kick(n/a)",40,90);
+        text("Penalty kick",40,90);
         fill(232, 171, 18);
         text("Credits",40,150);
         textSize(15);
@@ -1069,40 +1324,36 @@ startScreenObj.prototype.draw = function() {
 			}
         }
         else if(this.display === 4){
-            text("Penalty Shootout",100,200);
+    		this.penaltyTimer--;
+            text("Penalty Shootout",120,200);
+			textSize(15);
+			text("Game about to start in "+floor(this.penaltyTimer/60) ,140,220);
+			if(this.penaltyTimer <= 0){
+				start = 4;
+			}
         }
         else if(this.display === 5){
             textSize(18);
-            text("Instructions :-\nSelect one of the available games - \nSoccer or Soccer-in-a-maze or \njust practice Penalty kicks in 3-d !!\n(Soccer-in-a-maze is a new game which\ncan be said to be a hybrid of Soccer \nand Maze solving games.)\nGames marked n/a are under development \nand not available for playing for checkpoint 2\nUsing simple shapes for Players,\nwill be upgraded soon\n\nUse arrow keys to move \nthe controlling player around.\nUse TAB to shoot/kick.\nCHOOSE controlling player using CTRL key,\na triangle flashes on its head ",40,20);
+            text("Instructions :-\nSelect one of the available games - \nSoccer  or \njust practice Penalty kicks in 3-d !!\nUse arrow keys to move \nthe controlling player around.\nUse TAB to shoot/kick.\nCHOOSE controlling player using CTRL key,\na triangle flashes on its head ",40,120);
         }
         else if(this.display === 6){
             textSize(20);
             text("Author : Ameya Khandekar\nVirginia Tech\nECE 4525\nVideo Game Design and Engg\nFinal Project ",80,150);
             
         }
-        if(this.display !== 2){        
-			fill(34, 75, 199);
-			rect(150,350,120,30,5);
-       		triangle(153,340,153,390,130,365);
-        	fill(48, 217, 70);
-	
-			textSize(20);
-        	text("Main Menu",155,370);		}
     }
 };
 
 startScreenObj.prototype.processClick = function(){
     if(this.display < 2){
         if(mouseX > 80 && mouseX < 300){
-            if(mouseY > 110 && mouseY < 130){
+            if(mouseY > 140 && mouseY < 160){
                 this.display = 2;
 				this.soccerTimer = 180;
             }
-            else if(mouseY > 140 && mouseY < 160){
-                this.display = 3;
-            }
             else if(mouseY > 170 && mouseY < 190){
                 this.display = 4;
+				this.penaltyTimer = 180 ; 
             }
             else if(mouseY > 200 && mouseY < 220){
                 this.display = 5;
@@ -1114,7 +1365,8 @@ startScreenObj.prototype.processClick = function(){
     }
     else{ //for now enable escape to main menu from all other screens
         if(mouseX > 150 && mouseX < 270 && mouseY > 350 && mouseY < 380){
-        	if(this.display !== 2){
+
+        if(this.display !== 2){
 				this.display = 0;
 			}
         }
@@ -1133,16 +1385,8 @@ var mouseClicked = function() {
     if(start === 0 && startScreen.timer > 420){
         startScreen.processClick();
     }
-
-	if(start !== 0){
-		if(main2dgamePlayer.hasControl){
-        	main2dgameBall.velocity.x = 2*cos(main2dgamePlayer.angle);
-        	main2dgameBall.velocity.y = 2*sin(main2dgamePlayer.angle);
-        	main2dgameBall.velocity.normalize();
-        	main2dgameBall.velocity.mult(5);
-        	main2dgameBall.position.add(main2dgameBall.velocity);
-    	}
-
+	if(start === 4){
+		penaltyKickGame.processClick();
 	}
 
 };
@@ -1154,6 +1398,9 @@ keyReleased = function(){
     keyArray[keyCode] = 0;
 };
 
+///// for easy debugging :- 
+//customChar.create();
+//start = 4;
 
 draw = function() {
     
@@ -1164,36 +1411,45 @@ draw = function() {
             customChar.create();
         }
         bg.draw();
-        goalPost.draw();
+        goalPost3d.draw();
         if(startScreen.display === 0){
-            goalie.draw();
-            goalie.update();
-            ball.draw();
-        //update methods :- 
-            ball.update();
+            goalie3dStartScr.draw();
+            goalie3dStartScr.update();
+            ball3dStartScr.draw();
+            ball3dStartScr.update();
         }
         startScreen.draw();
         startScreen.update();
     }
-    else{
+	else if(start === 4){
+		bg.draw();
+		goalPost3d.draw();
+	    goalie3d.draw();
+        ball3dPen.draw();
+		penaltyKickGame.draw();
+        goalie3d.update();
+        ball3dPen.update();
+		penaltyKickGame.update();
+	}
+    else if(start === 3){
        background(57, 179, 23);
          pushMatrix();
          switch(translateState){
             case 0:
-                if(main2dgameBall.position.x > 300){
+                if(ball.position.x > 300){
                     translateState = 1; 
                 }
                 break;
             case 1:
-                if(main2dgameBall.position.x > 700){
+                if(ball.position.x > 700){
                     translateState = 2;
                 }
-                else if(main2dgameBall.position.x < 300){
+                else if(ball.position.x < 300){
                     translateState = 0;
                 }
                 break;
             case 2:
-                if(main2dgameBall.position.x < 700){
+                if(ball.position.x < 700){
                     translateState = 1;
                 }
                 break;
@@ -1203,7 +1459,7 @@ draw = function() {
         switch(translateState){
 
             case 1:
-                translateDist = main2dgameBall.position.x - 300;
+                translateDist = ball.position.x - 300;
                 break;
             case 2:
                 translateDist = 400;
@@ -1220,14 +1476,14 @@ draw = function() {
 		rect(0,160,30,80);
 		rect(770,160,30,80);
         //draw the Objects :- 
-        main2dgameBall.draw();
+        ball.draw();
         for(var i = 0 ; i < teams.length ; i++){
             teams[i].draw();
         }
         
         popMatrix();
         
-        main2dgameBall.move();
+        ball.move();
         for(var i = 0 ; i < teams.length ; i++){
             teams[i].move();
         }
@@ -1236,19 +1492,19 @@ draw = function() {
         text("Score "+teams[0].score,10,16);
         fill(233,0,0);
         text("Score "+teams[1].score,330,16);
-				if(main2dgameBall.position.y > 160 && main2dgameBall.position.y < 240){
-				if(main2dgameBall.position.x < 10){
+				if(ball.position.y > 160 && ball.position.y < 240){
+				if(ball.position.x < 10){
 					teams[1].score++;
 				}
-				if(main2dgameBall.position.x > 790){
+				if(ball.position.x > 790){
 					teams[0].score++;
 				}
 			}
 
 
 	
-		if(main2dgameBall.position.x < 10 || main2dgameBall.position.x > 790){
-			main2dgameBall.resetState();
+		if(ball.position.x < 10 || ball.position.x > 790){
+			ball.resetState();
 			teams[0].resetState();
 			teams[1].resetState();
 		}
@@ -4850,7 +5106,5 @@ ballImages.push(get(125,125,150,150)); //image 5 for soccer_animation_5*/
 };
 
 
-
-//End of sketch
 
 }};
