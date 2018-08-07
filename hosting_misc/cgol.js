@@ -1,6 +1,10 @@
 var sketchProc=function(processingInstance){ with (processingInstance){
-var gamestate = 0;
 
+size(400, 400); 
+frameRate(60);
+  
+var gamestate = 0;
+    
 var gameboard = function()
 {
     this.framenum = 0;
