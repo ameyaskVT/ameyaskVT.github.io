@@ -23,34 +23,36 @@ But before that let us first look into operator overloading for the function () 
 An example of overloading () is :-
 
 
-struct Accumulator
-{
-    int counter = 0;
-    int operator()(int i) { return counter += i; }
-}
-...
-Accumulator acc;
-cout << acc(10) << endl; //prints "10"
-cout << acc(20) << endl; //prints "30"
-Overloading () helps to use the class as a function with arguments.
+	struct Accumulator
+	{
+		int counter = 0;
+		int operator()(int i) { return counter += i; }
+	}
+	...
+	Accumulator acc;
+	cout << acc(10) << endl; //prints "10"
+	cout << acc(20) << endl; //prints "30"
+	Overloading () helps to use the class as a function with arguments.
 
 Here is how it will be useful as a functor :-
 
 
-template <typename InputIterator, typename Functor>
-void for_each(InputIterator first, InputIterator last, Functor f)
-{
-    while (first != last) f(*first++);
-}
+	template <typename InputIterator, typename Functor>
+	void for_each(InputIterator first, InputIterator last, Functor f)
+	{
+		while (first != last) f(*first++);
+	}
 
-////
+	////
 
-std::vector<int> vec;
-// Fill vec
+	std::vector<int> vec;
+	// Fill vec
 
-// Using a functor
-Accumulator acc;
-std::for_each(vec.begin(), vec.end(), acc);
+	// Using a functor
+	Accumulator acc;
+	std::for_each(vec.begin(), vec.end(), acc);
+	
+	
 Overloading () is useful :-
 1. As it helps to use functors.
 2. A constructor for a class can’t be used instead, because constructor can’t be made to return different types. (In this example we are returning int).
@@ -61,18 +63,20 @@ Coming back to the discussion of hashing for custom class.
 The following is a custom class we wish to hash :-
 
 
-struct Key
-{
-  std::string first;
-  std::string second;
-  int         third;
+	struct Key
+	{
+	  std::string first;
+	  std::string second;
+	  int         third;
 
-  bool operator==(const Key &other) const
-  { return (first == other.first
-            && second == other.second
-            && third == other.third);
-  }
-};
+	  bool operator==(const Key &other) const
+	  { return (first == other.first
+				&& second == other.second
+				&& third == other.third);
+	  }
+	};
+	
+	
 Overloading the ‘==’ operator above takes care of the case where there are collisions of the hash.
 
 The hash can be defined in the following way :-
@@ -95,10 +99,13 @@ The hash can be defined in the following way :-
             return res;
         }
     };
+	
 The unordered_map can then be finally defined as :-
 
 
-std::unordered_map<Key,std::string>  m6
+	std::unordered_map<Key,std::string>  m6
+
+
 std::hash is actually a template in C++.
 As can be seen in this example – hash<string> , hash<int> are already defined,
 and hash<string>() (str) would return the hash of the string str.
@@ -117,44 +124,44 @@ And it may create duplicate keys in the dictionary.
 For example :-
 
 
-class Student(object):
-    name = ""
-    age = 0
-    major = ""
+	class Student(object):
+		name = ""
+		age = 0
+		major = ""
 
-    # The class "constructor" - It's actually an initializer 
-    def __init__(self, name, age, major):
-        self.name = name
-        self.age = age
-        self.major = major
-    
-    def __hash__(self):
-        return hash((self.name, self.age, self.major))
+		# The class "constructor" - It's actually an initializer 
+		def __init__(self, name, age, major):
+			self.name = name
+			self.age = age
+			self.major = major
+		
+		def __hash__(self):
+			return hash((self.name, self.age, self.major))
 
-    def __eq__(self, other):
-        return (self.name, self.age, self.major) == (other.name, other.age, other.major)
+		def __eq__(self, other):
+			return (self.name, self.age, self.major) == (other.name, other.age, other.major)
 
-    def __ne__(self, other):
-        # Not strictly necessary, but to avoid having both x==y and x!=y
-        # True at the same time
-        return not(self == other)
+		def __ne__(self, other):
+			# Not strictly necessary, but to avoid having both x==y and x!=y
+			# True at the same time
+			return not(self == other)
 
-st = Student("Ben",11,"cs")
-st_dup = Student("Ben", 11, "cs") #Identical to previous object
-
-
-print(st)
-print (st_dup)
-
-dict = {}
-print(dict)
+	st = Student("Ben",11,"cs")
+	st_dup = Student("Ben", 11, "cs") #Identical to previous object
 
 
-dict[st] = 1
-dict[st_dup] = 1
+	print(st)
+	print (st_dup)
 
-for student in dict:
-  print(student.name)
+	dict = {}
+	print(dict)
+
+
+	dict[st] = 1
+	dict[st_dup] = 1
+
+	for student in dict:
+	  print(student.name)
 
 Had we not defined the __hash__, __eq__, __ne__ functions, Python would generate its own hash for the object instances and it may lead to separate entries in the dictionary for “st” and “st_dup”.
 
