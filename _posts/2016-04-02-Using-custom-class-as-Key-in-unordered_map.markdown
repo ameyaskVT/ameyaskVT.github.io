@@ -107,8 +107,8 @@ The unordered_map can then be finally defined as :-
 
 
 std::hash is actually a template in C++.
-As can be seen in this example – hash<string> , hash<int> are already defined,
-and hash<string>() (str) would return the hash of the string str.
+As can be seen in this example – hash&lt;string&gt; , hash&lt;int&gt; are already defined,
+and hash&lt;string&gt;() (str) would return the hash of the string str.
 If we stick to the namespace std, we can add our custom class “Key” to this template by defining struct hash<Key> instead of a struct KeyHasher, in that case we can directly use the Key in unordered_map without having to pass a struct like KeyHasher.
 
 While overloading the operator :- a constant reference to the Key should be provided as an argument, and it should return size_t type. I think returning size_t maintains uniformity. This helps to combine hash’ of different member variables to create the hash of the composite object.
